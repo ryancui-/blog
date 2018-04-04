@@ -2,6 +2,7 @@
 title: 再聊箭头函数 Arrow Function
 date: 2017-08-30 13:14:40
 tags: [JavaScript]
+categories: [技术, 前端]
 ---
 
 昨天面试的时候问了一个关于箭头函数的问题，回来发现好像自己说错了（装逼失败），于是便重新认识一下这个 ES6 用得最多的东西。
@@ -13,7 +14,7 @@ tags: [JavaScript]
 
 先说说在此之前我对箭头函数的理解吧：箭头函数里的 `this` 是「继承」的，本身不存在自己的 `this`，当调用到 `this` 时用的其实是上一层作用域的 `this`。现在看来这个理解还是有一定偏差。
 
-# 闭包与词法作用域
+## 闭包与词法作用域
 
 摘录一段犀牛书的代码，就能很好说明闭包和词法作用域的问题了：
 
@@ -33,7 +34,7 @@ checkscope()();
 
 注意无论 f 在何时何地调用，返回的 `scope` 总是 `'local scope'`，这是由于作用域查找**总是**从 f 开始，因此 `scope` 的值通过**词法作用域**确定了。
 
-# Function 的 this
+## Function 的 this
 
 在 ES5 中，函数中的 `this` 是动态变化的，会根据调用方式的不同产生不同的绑定，只有在被调用时才能确定 `this` 的值：
 
@@ -70,7 +71,7 @@ console.log(a);
 console.log(newObj.a);
 ```
 
-# Arrow Function 的 this
+## Arrow Function 的 this
 
 先看 MDN 的说明：[MDN - 箭头函数](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Arrow_functions)，其实写得很清楚了。关键在于箭头函数的 `this` 是词法作用域绑定这个概念。这意味着箭头函数的 `this` 类似于一个变量，在定义的时候就已经确定了指向的上下文，而非动态获取。看个例子：
 
@@ -104,7 +105,7 @@ ff();
 
 进一步说明这种作用域查找规则的是下面两行，输出是 100. 由于此时 `obj2.b` 的调用是一个普通函数调用，因此 `this` 的值是全局对象，所以输出的是 `window.a` 了。
 
-# Arrow Function 到底是啥
+## Arrow Function 到底是啥
 
 在了解到箭头函数内部的 `this` 其实是一个词法绑定的变量时，我不禁怀疑这个箭头函数究竟是个啥，甚至于它是不是一个函数，有没有自己的作用域？
 
@@ -128,7 +129,7 @@ f.prototype
 
 各种证据表明这个箭头函数的确是一个「函数」，只是没有原型对象，因此也就无法作为构造函数调用（`new f()`）。另外 MDN 提到，箭头函数内除了 `this`，还有其他普通函数中常用的变量如 `arguments` 也是词法绑定的，这些变量在箭头函数调用时是沿着作用域链向上查找的。
 
-# 看看规范
+## 看看规范
 
 [14.2.16 Runtime Semantics: Evaluation](http://www.ecma-international.org/ecma-262/8.0/index.html#sec-arrow-function-definitions-runtime-semantics-evaluation)
 

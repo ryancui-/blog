@@ -2,9 +2,10 @@
 title: Ionic 构建生产版本报错 Maximum call stack size
 date: 2017-11-18 10:30:03
 tags: [Ionic, Bug]
+categories: [技术, 前端]
 ---
 
-# Ionic 构建失败
+## Ionic 构建失败
 
 使用 `ionic-app-scripts build` 构建一个应用的生产版本时，发现出现了以下的错误：
 
@@ -37,7 +38,7 @@ const sock = new SockJS(WEBSOCKET_URL + '/consulting?token=' + this.globalData.t
 
 另外，直接用 `npm run build` 打包并不会有什么问题，只有 `npm run build --prod` 才出现问题。由于使用了 `--prod` 打出的包体积比 `--dev` 会小很多，因此这个问题必须解决。
 
-# 怎么办
+## 怎么办
 
 遇事不决找 Google，一番查找找到了一个一毛一样的问题，可惜三个月了并没有人鸟他。
 
@@ -45,14 +46,14 @@ const sock = new SockJS(WEBSOCKET_URL + '/consulting?token=' + this.globalData.t
 
 实在太惨了，看来这个问题有点复杂啊。
 
-## 是谁的锅
+### 是谁的锅
 
 先把锅分出去，涉及到这个 build 的有：
 
-- `Ionic Framework`
-- `Webpack`
-- `TypeScript`
-- `sockjs-client`
+- Ionic Framework
+- Webpack
+- TypeScript
+- sockjs-client
 
 因此，首先在用 `angular-cli` 初始的项目里打包一下这个 `sockjs`，发现并没有问题，加上 build 日志中的 `ngc` 编译没有报错，报错出现在 `webpack started` 后，因此 `TypeScript` 和 `sockjs-client` 都应该是清白的。
 
@@ -64,7 +65,7 @@ const sock = new SockJS(WEBSOCKET_URL + '/consulting?token=' + this.globalData.t
 
 现在我们遇到的问题是调用栈满了，为什么调用栈会满了呢？一般来说 `sockjs-client` 这种使用这么广泛的库应该不会是代码的 bug, 联想一下其实跟这个遇到的问题是类似的。
 
-## 解决
+### 解决
 
 Issue 说在 2.1.4 没问题，3.1.2 堆溢出了，但我们在用 2.1.4 啊，特么调用栈溢出了啊。Fine, Let's try 3.1.2
 

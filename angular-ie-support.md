@@ -2,6 +2,7 @@
 title: Angular 兼容 IE 过程遇到的问题
 date: 2018-02-06 09:54:05
 tags: [Angular, IE, 浏览器兼容]
+categories: [技术, 前端]
 ---
 
 由于众所周知的原因，Web 应用还是需要兼容 Windows 下最「著名」的浏览器 Internet Explorer 的，可能现在不需要再兼容到 IE6 这么低的版本，但 IE9/10/11 的兼容可能也够麻烦了。
@@ -10,7 +11,7 @@ tags: [Angular, IE, 浏览器兼容]
 
 <!-- more -->
 
-# 开启官方提供的 Polyfills
+## 开启官方提供的 Polyfills
 
 查阅的无数资料第一步准是让你把 angular-cli 生成项目中的 `polyfills.ts` 中的**一切**都打开，本着「加载慢不慢先不管，能不能用最重要」的原则，我们当然把全部都打开了。
 
@@ -22,9 +23,9 @@ $ npm install --save intl
 
 把注释里的全部安装完毕，以为兼容 IE 就是这么 Easy, 打开网页依然是一堆的报错...
 
-# 逐个击破
+## 逐个击破
 
-## date 管道解析报错
+### date 管道解析报错
 
 我们后端返回的日期时间类型是一个形如 `YYYY-MM-DD HH:mm:ss` 的字符串，当使用自带的 `date` 管道进行格式化时：
 
@@ -36,7 +37,7 @@ $ npm install --save intl
 
 **Solved**
 
-## IE11 报错「不能执行已释放 Script 的代码」
+### IE11 报错「不能执行已释放 Script 的代码」
 
 在 IE11 下会报这个错，错误定位的代码是这样：
 
@@ -67,7 +68,7 @@ if ((testString === FUNCTION_WRAPPER || testString == BROWSER_TOOLS)) {
 
 **Solved**
 
-## Array.prototype.includes polyfills
+### Array.prototype.includes polyfills
 
 在项目中使用了 `Array.prototype.includes` 这个 ES7 新特性，需要额外的 polyfills，否则 IE 不支持。到 MDN 找一下就好。
 
@@ -77,7 +78,7 @@ if ((testString === FUNCTION_WRAPPER || testString == BROWSER_TOOLS)) {
 
 **Solved**
 
-## IE10 Flexbox 支持
+### IE10 Flexbox 支持
 
 > 如果要兼容到 IE9，你可以忽略这部分内容了，请禁止你（和团队）使用 Flexbox 吧 :Smile:
 
@@ -95,7 +96,7 @@ div {
 
 **Solved**
 
-## IE11 无法获取未定义或 null 引用的属性 "call"
+### IE11 无法获取未定义或 null 引用的属性 "call"
 
 这个问题是一个量子态的问题，偶尔会出现，但关掉 IE 再重启又没问题了，真的是来搞笑的。
 
@@ -103,7 +104,7 @@ div {
 
 **Observe**
 
-## IE9 不支持 FileReader
+### IE9 不支持 FileReader
 
 我们实现的图片上传组件，使用了 `FileReader` 来获得图片的 base64 编码，并通过编码上传的服务器。但在 IE9 下，并不支持 `FileReader`.
 
@@ -111,7 +112,7 @@ div {
 
 **Under development**
 
-## IE10 使用了 [hidden] 隐藏元素
+### IE10 使用了 [hidden] 隐藏元素
 
 在一些自定义的组件中，对一些元素使用了 `hidden` 属性来进行隐藏，在 IE10 下会无法隐藏。
 
@@ -133,7 +134,7 @@ div {
 
 **Solved**
 
-## IE9 requestAnimationFrame undefined
+### IE9 requestAnimationFrame undefined
 
 如果使用了 Angular 的动画 `@angular/animation`， 在 IE9 下会由于[不支持](https://caniuse.com/#search=requestAnimationFrame) `requestAnimationFrame` 而报错。自行加上对应的 [Polyfill](https://gist.github.com/paulirish/1579671) 即可。
 
@@ -141,7 +142,7 @@ div {
 
 **Solved**
 
-## IE11 下改变 file input value 会重新触发 change 事件
+### IE11 下改变 file input value 会重新触发 change 事件
 
 这个跟 Angular 关系不大，我们实现的不少图片上传或文件上传组件，做法都是隐藏一个 input 框，当有某些 click 事件时调用 `input.click()` 调出文件选择器，选择后通过 `change` 事件处理。
 
@@ -165,7 +166,7 @@ this.fileEle.nativeElement.value = '';
 
 **Solved**
 
-## IE9 下 Int32Array undefined
+### IE9 下 Int32Array undefined
 
 在 IE9 下，启动应用并进入时控制台会报这个错，`Int32Array undefined` 之类的。找到了[这个](https://github.com/angular/angular/issues/11831)，加上新的 polyfill 即可。
 

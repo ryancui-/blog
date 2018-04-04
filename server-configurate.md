@@ -2,9 +2,12 @@
 title: 服务器由零配置
 date: 2017-12-06 14:55:31
 tags: [服务器, MySQL, Nginx]
+categories: [技术, 运维]
 ---
 
 一直都在用 Vultr 的服务器，但是网速真的太特么慢了，100+ 毫秒的 ping，经常连 4G 都访问不了，做做实验还行，有应用部署在上面就完全用不了。所以最后还是选择了国内大哥阿里云（尼玛贵了一倍有多
+
+<!-- more -->
 
 那么又要重新在上面部署安装各种环境、软件了，这里记录一下，防止以后又要再迁移。
 
@@ -15,16 +18,16 @@ tags: [服务器, MySQL, Nginx]
 - Node.js
 - Git
 
-# MySQL
+## MySQL
 
-## 查看 CentOS 版本
+### 查看 CentOS 版本
 
 ```
 $ cat /etc/redhat-release
 CentOS Linux release 7.4.1708 (Core)
 ```
 
-## 配置 Yum 源
+### 配置 Yum 源
 
 ```
 $ curl -LO http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
@@ -38,13 +41,13 @@ mysql-tools-community/x86_64      MySQL Tools Community                     55
 mysql57-community/x86_64          MySQL 5.7 Community Server               227
 ```
 
-## 安装
+### 安装
 
 ```
 $ sudo yum install mysql-community-server
 ```
 
-## 启动服务并查看服务状态
+### 启动服务并查看服务状态
 
 ```
 $ sudo systemctl enable mysqld
@@ -54,7 +57,7 @@ $ sudo systemctl start mysqld
 $ sudo systemctl status mysqld
 ```
 
-## 修改 root 密码并设置允许远程访问
+### 修改 root 密码并设置允许远程访问
 
 MySQL 5.7 启动后，在 `/var/log/mysqld.log` 文件中给 root 生成了一个默认密码。通过下面的方式找到 root 默认密码，然后登录 mysql 进行修改：
 
@@ -71,7 +74,7 @@ mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY '<新密码>';
 
 > 这里注意 MySQL 有相应的密码策略，不允许设置一些强度较低的密码，一般来说有大小写字母与数字字母即可通过校验。若要取消限制可参考
 
-## 配置默认编码为 UTF-8mb4
+### 配置默认编码为 UTF-8mb4
 
 在配置文件中的对应位置，加上以下配置。（默认引擎使用 InnoDB 可以去掉，看实际需求）
 
@@ -111,7 +114,7 @@ mysql> SHOW VARIABLES LIKE 'character%';
 8 rows in set (0.22 sec)
 ```
 
-## 开启端口
+### 开启端口
 
 如果启用了防火墙，需要开启端口。
 
@@ -123,7 +126,7 @@ $ sudo firewall-cmd --reload
 
 > 如果使用阿里云的话，还需要在管理控制台配置安全组，在公网入方向开放 3306 端口，否则外网无法远程连接到 MySQL 上
 
-# Nginx
+## Nginx
 
 之前在 Vultr 上装的 Nginx 不能开 HTTP2，因为 OpenSSL 的版本不对，要源码编译安装用 1.0.2 的 openssl. 但现在 CentOS 7.4 已经用上了最新的 openssl 了，所以直接用 yum 装就可以支持 http2 了！
 
@@ -140,13 +143,13 @@ $ nginx
 
 然后有几件事要搞定：HTTPS、gzip、单页路由配置、API 代理
 
-## HTTPS/HTTP2
+### HTTPS/HTTP2
 
 这里应该是包括了 HTTP2 的，但是最新版的 nginx 的 https 模块是默认开启了 h2 的，所以只需要开启 https 就可以了。
 
 https 需要证书认证，免费证书非 Let‘s encrypt 最好用了，配合 certbot 工具，拿到一个证书易如反掌。
 
-### 获取 Certbot 客户端
+#### 获取 Certbot 客户端
 
 ```
 $ wget https://dl.eff.org/certbot-auto
@@ -156,7 +159,7 @@ $ chmod a+x ./certbot-auto
 $./certbot-auto --help
 ```
 
-### 验证域名，并配置 nginx 使用证书
+#### 验证域名，并配置 nginx 使用证书
 
 在 nginx 的配置文件 server 中添加下列配置，为了通过 Let's Encrypt 的验证
 
@@ -213,7 +216,7 @@ $ nginx -s reload
 
 > 证书与域名是一一对应的，当需要使用二级域名时，需要再按这个流程申请一个新的证书
 
-### 自动更新证书
+#### 自动更新证书
 
 测试一下更新，这一步没有在真的更新，只是在调用 Certbot 进行测试
 
@@ -230,7 +233,7 @@ $ ./certbot-auto renew -v
 $ ./certbot-auto renew --quiet --no-self-upgrade
 ```
 
-## 开启 gzip
+### 开启 gzip
 
 在 `/etc/nginx/nginx.conf` 的 `server` 域加入以下语句
 
@@ -244,7 +247,7 @@ gzip_comp_level 5;
 gzip_types text/plain application/x-javascript text/css application/xml text/javascript application/x-httpd-php application/javascript;
 ```
 
-## 单页路由设置
+### 单页路由设置
 
 当我们部署了单页应用在 nginx 上时（如 Vue、Angular 等），如果应用的前端路由是使用 HTML5 新的 history API 来做路由（就是地址栏看不到 #，不是用的 Hash），当用户刷新页面的时候，会由于直接找到 nginx 对应的 Web 目录而报 404。因此需要设置 nginx 当找不到文件时，定位回 index.html.
 
@@ -256,7 +259,7 @@ location /fastfood/ {
 
 `try_files` 会检查文件是否存在，不存在就跳转至应用所在的 `index.html`
 
-## API 代理
+### API 代理
 
 使用 nginx 可以代理开放在内部端口的 API 后端应用，这样就不用处理跨域的问题，而且安全性更好
 
@@ -277,7 +280,7 @@ location ^~ /fastfood/api/ {
 
 将所有 `/fastfood/api` 的请求代理到后端的 8360 端口。
 
-# Node.js
+## Node.js
 
 按官网说明，直接用 yum 安装即可。
 
@@ -291,11 +294,11 @@ $ node -v
 $ npm -v
 ```
 
-# Git
+## Git
 
 直接使用 `yum install git` 安装即可。
 
-# 参考资料
+## 参考资料
 
 1. [CentOS 7 下 Yum 安装 MySQL 5.7](http://qizhanming.com/blog/2017/05/10/centos-7-yum-install-mysql-57)
 2. [HTTPS 简介及使用官方工具 Certbot 配置 Let’s Encrypt SSL 安全证书详细教程](https://linuxstory.org/deploy-lets-encrypt-ssl-certificate-with-certbot/)

@@ -2,6 +2,7 @@
 title: Mac 上清除 git osxkeychain 保存的登录名密码
 date: 2018-01-09 09:25:32
 tags: [Mac, Git]
+categories: [技术]
 ---
 
 昨天在公司的 Mac 上 clone 项目时报错，提示无法找到项目。在确信地址没错的情况下，就应该是权限不足导致的无法找到项目。
@@ -17,7 +18,7 @@ remote: The project you were looking for could not be found.
 fatal: repository 'http://172.16.18.121/erp/mobileApproval.git/' not found
 ```
 
-# Git 凭证管理
+## Git 凭证管理
 
 由于平时大多数时候都在使用 SSH 方式连接 Git 仓库，对使用 HTTP 方式的用户名密码管理不是很熟，因此去看了下官方文档，[Git - 凭证管理](https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8)，里面提到了几点：
 
@@ -29,7 +30,7 @@ fatal: repository 'http://172.16.18.121/erp/mobileApproval.git/' not found
 
 特别关注永不过期与 Mac 等关键字可以筛选出这几段描述，简单来说就是「可以把你的用户名密码永远存在电脑上」，因此解决这个问题只需要把这个删掉就可以了。
 
-# OSXKeychain
+## OSXKeychain
 
 根据官方说明，是通过这个命令设置缓存的
 

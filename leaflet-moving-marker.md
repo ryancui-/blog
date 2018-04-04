@@ -2,6 +2,7 @@
 title: Leaflet MovingMarker 轨迹回放功能
 date: 2018-03-12 11:42:33
 tags: [Leaflet, 动画, MVC, 声明式]
+categories: [技术]
 ---
 
 最近有一个关于地图轨迹回放的功能，使用了 Leaflet 的 MovingMarker 插件后仍有不少问题需要解决，本文介绍了实现这个需求的过程与方案。

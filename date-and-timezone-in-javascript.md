@@ -1,7 +1,8 @@
 ---
 title: Date Format in JavaScript
 date: 2018-03-07 10:30:40
-tags: [ECMASCript, JavaScript, Date]
+tags: [ECMAScript, JavaScript, Date]
+categories: [技术, 前端]
 ---
 
 俗话说得好，代码重构火葬场。最近接手了一个微信商城的项目，代码量不是很大，但其中还是有不少的坑可以深陷其中，包括一个关于 JavaScript 的 Date Format 问题。另外网上的很多文章在 Date Format 上的理解略有偏颇，因此结合着 ECMAScript 规范把这部分的知识整理一下。
