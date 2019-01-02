@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>小程序 Page 获取登录态，异步满天飞？ | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="小程序,Async">
+    <meta name="description" content="最近在开发微信小程序，在处理登录逻辑和后续业务页面的关系时，遇到了异步太多太乱的问题，本文来做个关于小程序登录态异步的总结。">
+<meta name="keywords" content="小程序,Async">
+<meta property="og:type" content="article">
+<meta property="og:title" content="小程序 Page 获取登录态，异步满天飞？">
+<meta property="og:url" content="https://blog.imtouch.info/2017/11/09/wechat-mini-async-hell/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="最近在开发微信小程序，在处理登录逻辑和后续业务页面的关系时，遇到了异步太多太乱的问题，本文来做个关于小程序登录态异步的总结。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-04T15:12:07.130Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="小程序 Page 获取登录态，异步满天飞？">
+<meta name="twitter:description" content="最近在开发微信小程序，在处理登录逻辑和后续业务页面的关系时，遇到了异步太多太乱的问题，本文来做个关于小程序登录态异步的总结。">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">小程序 Page 获取登录态，异步满天飞？</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">小程序 Page 获取登录态，异步满天飞？</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-09T03:08:18.000Z" itemprop="datePublished" class="page-time">
+  2017-11-09
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#登录逻辑与登录态"><span class="post-toc-number">1.</span> <span class="post-toc-text">登录逻辑与登录态</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#业务页面获取数据"><span class="post-toc-number">2.</span> <span class="post-toc-text">业务页面获取数据</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#全特么是异步"><span class="post-toc-number">3.</span> <span class="post-toc-text">全特么是异步</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#每个页面都要这样？"><span class="post-toc-number">4.</span> <span class="post-toc-text">每个页面都要这样？</span></a></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-wechat-mini-async-hell"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">小程序 Page 获取登录态，异步满天飞？</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-09 11:08:18" datetime="2017-11-09T03:08:18.000Z"  itemprop="datePublished">2017-11-09</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>最近在开发微信小程序，在处理登录逻辑和后续业务页面的关系时，遇到了异步太多太乱的问题，本文来做个关于小程序登录态异步的总结。</p>
+<a id="more"></a>
+<h2 id="登录逻辑与登录态"><a href="#登录逻辑与登录态" class="headerlink" title="登录逻辑与登录态"></a>登录逻辑与登录态</h2><p>根据小程序文档与官方 Demo 的例子，微信登录逻辑在 <code>app.js</code> 的 <code>App.onLaunch</code> 中实现。另外还需要自行与第三方服务器独立进行一套授权机制，这里我使用了 JWT，在换取 <code>openid</code> 的接口中返回。</p>
+<p>整个 <code>app.js</code> 的登录逻辑大致如下，进入小程序后检查微信登录态是否过期，过期了重新调起微信登录并换取新的 JWT 作为与第三方服务器通信的凭证；未过期则从 <code>localStorage</code> 中拉取 token 与用户信息。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">App(&#123;</span><br><span class="line">  onLaunch: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> that = <span class="keyword">this</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 检查用户登录态是否过期，过期了重新登录</span></span><br><span class="line">    wx.checkSession(&#123;</span><br><span class="line">      success: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">//session 未过期，并且在本生命周期一直有效</span></span><br><span class="line">        that.globalData.token = wx.getStorageSync(<span class="string">'token'</span>);</span><br><span class="line">        that.globalData.userInfo = wx.getStorageSync(<span class="string">'userInfo'</span>);</span><br><span class="line">      &#125;,</span><br><span class="line">      fail: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">        that.initLoginState();</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;,</span><br><span class="line">  globalData: &#123;</span><br><span class="line">    token: <span class="string">''</span>,</span><br><span class="line">    userInfo: <span class="literal">null</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 重新登录</span></span><br><span class="line">  initLoginState: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> that = <span class="keyword">this</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 登录</span></span><br><span class="line">    wx.login(&#123;</span><br><span class="line">      success: <span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="comment">// 调用获取用户信息接口</span></span><br><span class="line">        wx.getUserInfo(&#123;</span><br><span class="line">          success: <span class="function"><span class="params">fullUserInfo</span> =&gt;</span> &#123;</span><br><span class="line">            <span class="comment">// 发送 res.code 到后台换取 openId, sessionKey, unionId</span></span><br><span class="line">            wx.request(&#123;</span><br><span class="line">              url: <span class="string">`<span class="subst">$&#123;host&#125;</span>/api/auth/loginwx`</span>,</span><br><span class="line">              method: <span class="string">'POST'</span>,</span><br><span class="line">              data: &#123;</span><br><span class="line">                code: res.code,</span><br><span class="line">                userInfo: fullUserInfo</span><br><span class="line">              &#125;,</span><br><span class="line">              success: <span class="function">(<span class="params">&#123;data&#125;</span>) =&gt;</span> &#123;</span><br><span class="line">                wx.setStorageSync(<span class="string">'token'</span>, data.data.token);</span><br><span class="line">                wx.setStorageSync(<span class="string">'userInfo'</span>, data.data.userInfo);</span><br><span class="line">                that.globalData.token = data.data.token;</span><br><span class="line">                that.globalData.userInfo = data.data.userInfo;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="业务页面获取数据"><a href="#业务页面获取数据" class="headerlink" title="业务页面获取数据"></a>业务页面获取数据</h2><p>在 Page 中，不可避免地需要调用第三方服务器的接口获取数据，此时需要使用 JWT 进行授权。当进入页面时就需要拉数据时，请求放在了 <code>Page.onLoad</code> 方法中。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> app = getApp();</span><br><span class="line"><span class="keyword">const</span> host = <span class="built_in">require</span>(<span class="string">'../../config'</span>).host;</span><br><span class="line"></span><br><span class="line">Page(&#123;</span><br><span class="line">  data: &#123;</span><br><span class="line">    groups: []</span><br><span class="line">  &#125;,</span><br><span class="line">  onLoad: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.listGroups();</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// 获取订单团信息</span></span><br><span class="line">  listGroups: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    wx.request(&#123;</span><br><span class="line">      url: <span class="string">`<span class="subst">$&#123;host&#125;</span>/api/group/list`</span>,</span><br><span class="line">      header: &#123;</span><br><span class="line">        <span class="string">'authorization'</span>: app.globalData.token</span><br><span class="line">      &#125;,</span><br><span class="line">      success: <span class="function">(<span class="params">&#123;data&#125;</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">this</span>.setData(&#123;</span><br><span class="line">          groups: data.data</span><br><span class="line">        &#125;)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>测试时却发现有时候页面有数据，有时候页面无数据。进一步查看请求便发现有时 <code>token</code> 有值，有时 <code>token</code> 拿不到值。</p>
+<h2 id="全特么是异步"><a href="#全特么是异步" class="headerlink" title="全特么是异步"></a>全特么是异步</h2><p>仔细想想就能够明白，原因在于 <code>App.globalData.token</code> 的设置是<strong>异步</strong>，虽然 <code>App.onLaunch</code> 与 <code>Page.onLoad</code> 有明确的时序性（文档上没有说明，通过测试可发现 <code>Page.onLoad</code> 总在 <code>App.onLaunch</code> 后执行），但「设置 token」与「请求业务接口」两个步骤不能<strong>保证</strong>其时序性，因此会出现偶尔请求失败的情况。</p>
+<p>既然无法保证时序，第一个想法就是 EventBus 了，这种很 free 的东西，用起来功能强大但也很危险。</p>
+<p>给 <code>App</code> 添加了一个自己实现的简单全局 <code>EventBus</code> ，并在 <code>checkSession.success</code> 和重新登录设置好 <code>token</code> 后都广播一个登陆成功事件。这时候 Page 就变成这样了。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">loggingSubs: <span class="literal">null</span>,</span><br><span class="line">onLoad: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (app.globalData.token) &#123;</span><br><span class="line">    <span class="keyword">this</span>.listGroups();</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">this</span>.loggingSubs = app.eventBus.on(<span class="string">'LOGGING-SUCCESS'</span>, <span class="keyword">this</span>.listGroups.bind(<span class="keyword">this</span>));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;,</span><br><span class="line">onUnload: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">this</span>.loggingSubs.off();</span><br><span class="line">&#125;,</span><br></pre></td></tr></table></figure>
+<p>由于不能保证时序性，如果在 <code>onLoad</code> 方法<strong>只</strong>订阅事件就会出现：</p>
+<ul>
+<li>登录成功了，广播登陆成功事件（没有人订阅，消息被丢弃）</li>
+<li>执行 <code>Page.onLoad</code> 方法，订阅事件</li>
+</ul>
+<p>结果没有调用业务接口，因此需要处理两种情况。</p>
+<blockquote>
+<p>其实 RxJS 提供了 <code>ReplaySubject</code> 这样的 <code>Observable</code> 来使后订阅的观察者也能收到之前的所有通知，自行实现一个 <code>ReplaySubject</code> 就能去掉这种判断，详见<a href="https://blog.imtouch.info/2017/11/09/implement-a-replay-subject/">实现一个超简单的 ReplaySubject</a></p>
+</blockquote>
+<h2 id="每个页面都要这样？"><a href="#每个页面都要这样？" class="headerlink" title="每个页面都要这样？"></a>每个页面都要这样？</h2><p>如果每个业务 Page 都需要在初始化时调用业务接口，都需要写一套这样的逻辑？有没有什么更好的解决办法？</p>
+<p>更甚之，就算是一些事件绑定，理论上也不能保证事件调用时已经完成登录，难道每次调用业务接口都要写一套这样的判断？</p>
+<p>这个问题的出现根本在于登录态的获取、token 的设置是异步的，而这个异步与业务接口调用需要同步（必须先有 token 才能调用），能否把这个过程通过小程序框架固定成同步？如 <code>Page.onLoad</code> 方法的调用必须在 App 的某个钩子之后？</p>
+<p>如果有更好的解决方法，请不吝赐教，谢谢。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-04T15:12:07.130Z" itemprop="dateUpdated">2018-04-04 23:12:07</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Async/">Async</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/小程序/">小程序</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2017/11/09/wechat-mini-async-hell/&title=《小程序 Page 获取登录态，异步满天飞？》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2017/11/09/wechat-mini-async-hell/&title=《小程序 Page 获取登录态，异步满天飞？》 — Random Notes&source=最近在开发微信小程序，在处理登录逻辑和后续业务页面的关系时，遇到了异步太多太乱的问题，本文来做个关于小程序登录态异步的总结。" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2017/11/09/wechat-mini-async-hell/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《小程序 Page 获取登录态，异步满天飞？》 — Random Notes&url=https://blog.imtouch.info/2017/11/09/wechat-mini-async-hell/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2017/11/09/wechat-mini-async-hell/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/11/18/ionic-maximum-call-error/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Ionic 构建生产版本报错 Maximum call stack size</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/11/09/implement-a-replay-subject/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">实现一个超简单的 ReplaySubject</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2017/11/09/wechat-mini-async-hell/&title=《小程序 Page 获取登录态，异步满天飞？》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2017/11/09/wechat-mini-async-hell/&title=《小程序 Page 获取登录态，异步满天飞？》 — Random Notes&source=最近在开发微信小程序，在处理登录逻辑和后续业务页面的关系时，遇到了异步太多太乱的问题，本文来做个关于小程序登录态异步的总结。" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2017/11/09/wechat-mini-async-hell/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《小程序 Page 获取登录态，异步满天飞？》 — Random Notes&url=https://blog.imtouch.info/2017/11/09/wechat-mini-async-hell/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2017/11/09/wechat-mini-async-hell/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACK0lEQVR42u3aWY6kQAwFwLr/pZkDIJhnG1oiM/KrRLMFLVle8veL13Fa5+NX5yf3zK8aLQwMjM8yjtuVMCYf4nyf++deUjEwMDZgXD346pz8qh41fwoGBgbGJAgmd6h+PgwMDIz8JSbhMi9iMTAwMKpF7P359697n2LmxfMDtTgGBsYHGXl5+fe/X5lvYGBgfIpxFFc1UOYB+hgsDAyMtRl5gKuWl0nrrVCgJk/BwMBYlFEtLye5WW/jRXQEAwNjacZ8o0OeICbDgHxIEPUOMTAwFmUkF+QpXbWtX91ShoGBsRsjL02ThC/fbFFN/qKEFQMDYzlGtenfC9NPNeYK/wEMDIxFGfnvvGSdDAOSe2JgYOzDSBpevWZ93ujPRwiXqSEGBsZyjF5DvxdYeyOEwm4RDAyMRRnzpK33117Y/d0vDAyMbRjVkJq0xpIgO3kHDAyMtRnVkWQe5aqAQmA9wzAwMJZmTJr486HmU8UwBgbGzoxeAlcNo9Xk8rEtFxgYGJ9iVIvM3laJPIg3hwcYGBgbMPLwmjfFqiG1F/oxMDB2Y0xeKB9PFjLWOLhjYGCsyui19athOh8qjOpvDAyMRRnVYWGvWV8oRCepIQYGxtKMN7ZHTLZT5CF71LHDwMD4IKM6hqymhtXU85VaHAMDY0tGfnySbkZ3xsDAwCiG1PuX7n2a/5yJgYGxASMpYnu9uuTaXvGMgYGxD6NXOubJXK8/9spQEwMD43uMfwhEIuDKbINFAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

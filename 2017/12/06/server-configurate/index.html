@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>服务器由零配置 | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="服务器,MySQL,Nginx">
+    <meta name="description" content="一直都在用 Vultr 的服务器，但是网速真的太特么慢了，100+ 毫秒的 ping，经常连 4G 都访问不了，做做实验还行，有应用部署在上面就完全用不了。所以最后还是选择了国内大哥阿里云（尼玛贵了一倍有多">
+<meta name="keywords" content="服务器,MySQL,Nginx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="服务器由零配置">
+<meta property="og:url" content="https://blog.imtouch.info/2017/12/06/server-configurate/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="一直都在用 Vultr 的服务器，但是网速真的太特么慢了，100+ 毫秒的 ping，经常连 4G 都访问不了，做做实验还行，有应用部署在上面就完全用不了。所以最后还是选择了国内大哥阿里云（尼玛贵了一倍有多">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-04T15:11:50.603Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="服务器由零配置">
+<meta name="twitter:description" content="一直都在用 Vultr 的服务器，但是网速真的太特么慢了，100+ 毫秒的 ping，经常连 4G 都访问不了，做做实验还行，有应用部署在上面就完全用不了。所以最后还是选择了国内大哥阿里云（尼玛贵了一倍有多">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">服务器由零配置</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">服务器由零配置</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-12-06T06:55:31.000Z" itemprop="datePublished" class="page-time">
+  2017-12-06
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/运维/">运维</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#MySQL"><span class="post-toc-number">1.</span> <span class="post-toc-text">MySQL</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#查看-CentOS-版本"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">查看 CentOS 版本</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#配置-Yum-源"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">配置 Yum 源</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#安装"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">安装</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#启动服务并查看服务状态"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">启动服务并查看服务状态</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#修改-root-密码并设置允许远程访问"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">修改 root 密码并设置允许远程访问</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#配置默认编码为-UTF-8mb4"><span class="post-toc-number">1.6.</span> <span class="post-toc-text">配置默认编码为 UTF-8mb4</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#开启端口"><span class="post-toc-number">1.7.</span> <span class="post-toc-text">开启端口</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Nginx"><span class="post-toc-number">2.</span> <span class="post-toc-text">Nginx</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HTTPS-HTTP2"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">HTTPS/HTTP2</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#获取-Certbot-客户端"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">获取 Certbot 客户端</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#验证域名，并配置-nginx-使用证书"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">验证域名，并配置 nginx 使用证书</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#自动更新证书"><span class="post-toc-number">2.1.3.</span> <span class="post-toc-text">自动更新证书</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#开启-gzip"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">开启 gzip</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#单页路由设置"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">单页路由设置</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#API-代理"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">API 代理</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Node-js"><span class="post-toc-number">3.</span> <span class="post-toc-text">Node.js</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Git"><span class="post-toc-number">4.</span> <span class="post-toc-text">Git</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考资料"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考资料</span></a></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-server-configurate"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">服务器由零配置</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-12-06 14:55:31" datetime="2017-12-06T06:55:31.000Z"  itemprop="datePublished">2017-12-06</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/运维/">运维</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>一直都在用 Vultr 的服务器，但是网速真的太特么慢了，100+ 毫秒的 ping，经常连 4G 都访问不了，做做实验还行，有应用部署在上面就完全用不了。所以最后还是选择了国内大哥阿里云（尼玛贵了一倍有多</p>
+<a id="more"></a>
+<p>那么又要重新在上面部署安装各种环境、软件了，这里记录一下，防止以后又要再迁移。</p>
+<p>本文使用的服务器为 CentOS 7.4，需要配置的环境包括：</p>
+<ul>
+<li>MySQL，远程访问 / 中文编码</li>
+<li>Nginx，配置 https / http2 / 开启gzip / SPA 支持 / 代理 RESTFul 路由</li>
+<li>Node.js</li>
+<li>Git</li>
+</ul>
+<h2 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h2><h3 id="查看-CentOS-版本"><a href="#查看-CentOS-版本" class="headerlink" title="查看 CentOS 版本"></a>查看 CentOS 版本</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ cat /etc/redhat-release</span><br><span class="line">CentOS Linux release 7.4.1708 (Core)</span><br></pre></td></tr></table></figure>
+<h3 id="配置-Yum-源"><a href="#配置-Yum-源" class="headerlink" title="配置 Yum 源"></a>配置 Yum 源</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ curl -LO http://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm</span><br><span class="line"></span><br><span class="line">$ sudo yum localinstall mysql57-community-release-el7-11.noarch.rpm</span><br><span class="line"></span><br><span class="line"># 检查是否安装成功</span><br><span class="line">$ sudo yum repolist enabled | grep &quot;mysql.*-community.*&quot;</span><br><span class="line">mysql-connectors-community/x86_64 MySQL Connectors Community                42</span><br><span class="line">mysql-tools-community/x86_64      MySQL Tools Community                     55</span><br><span class="line">mysql57-community/x86_64          MySQL 5.7 Community Server               227</span><br></pre></td></tr></table></figure>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo yum install mysql-community-server</span><br></pre></td></tr></table></figure>
+<h3 id="启动服务并查看服务状态"><a href="#启动服务并查看服务状态" class="headerlink" title="启动服务并查看服务状态"></a>启动服务并查看服务状态</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo systemctl enable mysqld</span><br><span class="line"></span><br><span class="line">$ sudo systemctl start mysqld</span><br><span class="line"></span><br><span class="line">$ sudo systemctl status mysqld</span><br></pre></td></tr></table></figure>
+<h3 id="修改-root-密码并设置允许远程访问"><a href="#修改-root-密码并设置允许远程访问" class="headerlink" title="修改 root 密码并设置允许远程访问"></a>修改 root 密码并设置允许远程访问</h3><p>MySQL 5.7 启动后，在 <code>/var/log/mysqld.log</code> 文件中给 root 生成了一个默认密码。通过下面的方式找到 root 默认密码，然后登录 mysql 进行修改：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ grep &apos;temporary password&apos; /var/log/mysqld.log</span><br><span class="line">[Note] A temporary password is generated for root@localhost: **********</span><br><span class="line"></span><br><span class="line">$ mysql -u root -p</span><br><span class="line">Enter password: </span><br><span class="line">mysql&gt; ALTER USER &apos;root&apos;@&apos;localhost&apos; IDENTIFIED BY &apos;&lt;新密码&gt;&apos;;</span><br><span class="line"></span><br><span class="line">mysql&gt; GRANT ALL PRIVILEGES ON *.* TO &apos;root&apos;@&apos;%&apos; IDENTIFIED BY &apos;&lt;新密码&gt;&apos;;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这里注意 MySQL 有相应的密码策略，不允许设置一些强度较低的密码，一般来说有大小写字母与数字字母即可通过校验。若要取消限制可参考</p>
+</blockquote>
+<h3 id="配置默认编码为-UTF-8mb4"><a href="#配置默认编码为-UTF-8mb4" class="headerlink" title="配置默认编码为 UTF-8mb4"></a>配置默认编码为 UTF-8mb4</h3><p>在配置文件中的对应位置，加上以下配置。（默认引擎使用 InnoDB 可以去掉，看实际需求）</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ vi /etc/my.cnf</span><br><span class="line">[mysqld]</span><br><span class="line">character_set_server=utf8mb4</span><br><span class="line">collation-server=utf8mb4_unicode_ci</span><br><span class="line">default-storage-engine=INNODB</span><br><span class="line"></span><br><span class="line">[client]</span><br><span class="line">default-character-set=utf8</span><br></pre></td></tr></table></figure>
+<p>重启服务</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo systemctl restart mysqld</span><br></pre></td></tr></table></figure>
+<p>登录 MySQL 查看设置是否成功。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">mysql&gt; SHOW VARIABLES LIKE &apos;character%&apos;;</span><br><span class="line">+--------------------------+----------------------------+</span><br><span class="line">| Variable_name            | Value                      |</span><br><span class="line">+--------------------------+----------------------------+</span><br><span class="line">| character_set_client     | utf8                       |</span><br><span class="line">| character_set_connection | utf8                       |</span><br><span class="line">| character_set_database   | utf8mb4                    |</span><br><span class="line">| character_set_filesystem | binary                     |</span><br><span class="line">| character_set_results    | utf8                       |</span><br><span class="line">| character_set_server     | utf8mb4                    |</span><br><span class="line">| character_set_system     | utf8                       |</span><br><span class="line">| character_sets_dir       | /usr/share/mysql/charsets/ |</span><br><span class="line">+--------------------------+----------------------------+</span><br><span class="line">8 rows in set (0.22 sec)</span><br></pre></td></tr></table></figure>
+<h3 id="开启端口"><a href="#开启端口" class="headerlink" title="开启端口"></a>开启端口</h3><p>如果启用了防火墙，需要开启端口。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ sudo firewall-cmd --zone=public --add-port=3306/tcp --permanent</span><br><span class="line"></span><br><span class="line">$ sudo firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如果使用阿里云的话，还需要在管理控制台配置安全组，在公网入方向开放 3306 端口，否则外网无法远程连接到 MySQL 上</p>
+</blockquote>
+<h2 id="Nginx"><a href="#Nginx" class="headerlink" title="Nginx"></a>Nginx</h2><p>之前在 Vultr 上装的 Nginx 不能开 HTTP2，因为 OpenSSL 的版本不对，要源码编译安装用 1.0.2 的 openssl. 但现在 CentOS 7.4 已经用上了最新的 openssl 了，所以直接用 yum 装就可以支持 http2 了！</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ yum install nginx</span><br><span class="line"></span><br><span class="line">$ nginx</span><br></pre></td></tr></table></figure>
+<p>装好之后马上启动，就能访问了，这样安装的默认配置为</p>
+<ul>
+<li>Nginx 配置文件：<code>/etc/nginx</code></li>
+<li>Nginx Web 根目录：<code>/usr/share/nginx/html</code></li>
+</ul>
+<p>然后有几件事要搞定：HTTPS、gzip、单页路由配置、API 代理</p>
+<h3 id="HTTPS-HTTP2"><a href="#HTTPS-HTTP2" class="headerlink" title="HTTPS/HTTP2"></a>HTTPS/HTTP2</h3><p>这里应该是包括了 HTTP2 的，但是最新版的 nginx 的 https 模块是默认开启了 h2 的，所以只需要开启 https 就可以了。</p>
+<p>https 需要证书认证，免费证书非 Let‘s encrypt 最好用了，配合 certbot 工具，拿到一个证书易如反掌。</p>
+<h4 id="获取-Certbot-客户端"><a href="#获取-Certbot-客户端" class="headerlink" title="获取 Certbot 客户端"></a>获取 Certbot 客户端</h4><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ wget https://dl.eff.org/certbot-auto</span><br><span class="line"></span><br><span class="line">$ chmod a+x ./certbot-auto</span><br><span class="line"></span><br><span class="line">$./certbot-auto --help</span><br></pre></td></tr></table></figure>
+<h4 id="验证域名，并配置-nginx-使用证书"><a href="#验证域名，并配置-nginx-使用证书" class="headerlink" title="验证域名，并配置 nginx 使用证书"></a>验证域名，并配置 nginx 使用证书</h4><p>在 nginx 的配置文件 server 中添加下列配置，为了通过 Let’s Encrypt 的验证</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">location ^~ /.well-known/acme-challenge/ &#123;</span><br><span class="line">   default_type &quot;text/plain&quot;;</span><br><span class="line">   root     /usr/share/nginx/html;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">location = /.well-known/acme-challenge/ &#123;</span><br><span class="line">   return 404;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>测试配置文件是否有效，重启 nginx</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ nginx -t</span><br><span class="line"></span><br><span class="line">$ nginx -s reload</span><br></pre></td></tr></table></figure>
+<p>生成证书，最后换成需要进行认证的域名</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ./certbot-auto certonly --webroot -w /usr/share/nginx/html -d imtouch.info</span><br></pre></td></tr></table></figure>
+<p>成功后，在 nginx 的配置文件中添加，注意 <code>ssl_certificate</code>/<code>ssl_certificate_key</code> 的路径正确</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">  listen       443 ssl http2 default_server;</span><br><span class="line">  listen       [::]:443 ssl http2 default_server;</span><br><span class="line">  server_name  imtouch.info;</span><br><span class="line">  root         /usr/share/nginx/html;</span><br><span class="line"></span><br><span class="line">  ssl_certificate &quot;/etc/letsencrypt/live/imtouch.info/fullchain.pem&quot;;</span><br><span class="line">  ssl_certificate_key &quot;/etc/letsencrypt/live/imtouch.info/privkey.pem&quot;;</span><br><span class="line">  ssl_session_cache shared:SSL:1m;</span><br><span class="line">  ssl_session_timeout  10m;</span><br><span class="line">  ssl_ciphers HIGH:!aNULL:!MD5;</span><br><span class="line">  ssl_prefer_server_ciphers on;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再次确认配置文件正确，重启 nginx 即可</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ nginx -t</span><br><span class="line"></span><br><span class="line">$ nginx -s reload</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>证书与域名是一一对应的，当需要使用二级域名时，需要再按这个流程申请一个新的证书</p>
+</blockquote>
+<h4 id="自动更新证书"><a href="#自动更新证书" class="headerlink" title="自动更新证书"></a>自动更新证书</h4><p>测试一下更新，这一步没有在真的更新，只是在调用 Certbot 进行测试</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ ./certbot-auto renew --dry-run</span><br></pre></td></tr></table></figure>
+<p>看到成功之后就可以配置自动更新了</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 手动更新</span><br><span class="line">$ ./certbot-auto renew -v</span><br><span class="line"></span><br><span class="line">$ ./certbot-auto renew --quiet --no-self-upgrade</span><br></pre></td></tr></table></figure>
+<h3 id="开启-gzip"><a href="#开启-gzip" class="headerlink" title="开启 gzip"></a>开启 gzip</h3><p>在 <code>/etc/nginx/nginx.conf</code> 的 <code>server</code> 域加入以下语句</p>
+<blockquote>
+<p>注意 JavaScript 的资源有可能 content-type 是 application/javascript，漏了这个一直没压缩 js</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">gzip on;</span><br><span class="line">gzip_min_length 1k;</span><br><span class="line">gzip_buffers 4 16k;</span><br><span class="line">gzip_comp_level 5;</span><br><span class="line">gzip_types text/plain application/x-javascript text/css application/xml text/javascript application/x-httpd-php application/javascript;</span><br></pre></td></tr></table></figure>
+<h3 id="单页路由设置"><a href="#单页路由设置" class="headerlink" title="单页路由设置"></a>单页路由设置</h3><p>当我们部署了单页应用在 nginx 上时（如 Vue、Angular 等），如果应用的前端路由是使用 HTML5 新的 history API 来做路由（就是地址栏看不到 #，不是用的 Hash），当用户刷新页面的时候，会由于直接找到 nginx 对应的 Web 目录而报 404。因此需要设置 nginx 当找不到文件时，定位回 index.html.</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">location /fastfood/ &#123;</span><br><span class="line">  try_files $uri $uri/ /fastfood/index.html;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>try_files</code> 会检查文件是否存在，不存在就跳转至应用所在的 <code>index.html</code></p>
+<h3 id="API-代理"><a href="#API-代理" class="headerlink" title="API 代理"></a>API 代理</h3><p>使用 nginx 可以代理开放在内部端口的 API 后端应用，这样就不用处理跨域的问题，而且安全性更好</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">location ^~ /fastfood/api/ &#123;</span><br><span class="line">   rewrite ^/fastfood/api/(.*) /fastfood/api/$1 break;</span><br><span class="line">   proxy_http_version 1.1;</span><br><span class="line">   proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">   proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">   proxy_set_header Host $http_host;</span><br><span class="line">   proxy_set_header X-NginX-Proxy true;</span><br><span class="line">   proxy_set_header Upgrade $http_upgrade;</span><br><span class="line">   proxy_set_header Connection &quot;upgrade&quot;;</span><br><span class="line">   proxy_pass http://127.0.0.1:8360/;</span><br><span class="line">   proxy_redirect off;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>将所有 <code>/fastfood/api</code> 的请求代理到后端的 8360 端口。</p>
+<h2 id="Node-js"><a href="#Node-js" class="headerlink" title="Node.js"></a>Node.js</h2><p>按官网说明，直接用 yum 安装即可。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -</span><br><span class="line"></span><br><span class="line">$ sudo yum -y install nodejs</span><br><span class="line"></span><br><span class="line">$ node -v</span><br><span class="line"></span><br><span class="line">$ npm -v</span><br></pre></td></tr></table></figure>
+<h2 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h2><p>直接使用 <code>yum install git</code> 安装即可。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><a href="http://qizhanming.com/blog/2017/05/10/centos-7-yum-install-mysql-57" target="_blank" rel="noopener">CentOS 7 下 Yum 安装 MySQL 5.7</a></li>
+<li><a href="https://linuxstory.org/deploy-lets-encrypt-ssl-certificate-with-certbot/" target="_blank" rel="noopener">HTTPS 简介及使用官方工具 Certbot 配置 Let’s Encrypt SSL 安全证书详细教程</a></li>
+<li><a href="https://nodejs.org/en/download/package-manager/" target="_blank" rel="noopener">Installing Node.js via package manager</a></li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-04T15:11:50.603Z" itemprop="dateUpdated">2018-04-04 23:11:50</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MySQL/">MySQL</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Nginx/">Nginx</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/服务器/">服务器</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2017/12/06/server-configurate/&title=《服务器由零配置》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2017/12/06/server-configurate/&title=《服务器由零配置》 — Random Notes&source=一直都在用 Vultr 的服务器，但是网速真的太特么慢了，100+ 毫秒的 ping，经常连 4G 都访问不了，做做实验还行，有应用部署在上面就完全用不了..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2017/12/06/server-configurate/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《服务器由零配置》 — Random Notes&url=https://blog.imtouch.info/2017/12/06/server-configurate/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2017/12/06/server-configurate/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/01/02/angular-formdata-upload-bug/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">激坑！Angular 使用 Http 模块和 FormData 上传文件</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/11/18/ionic-maximum-call-error/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Ionic 构建生产版本报错 Maximum call stack size</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2017/12/06/server-configurate/&title=《服务器由零配置》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2017/12/06/server-configurate/&title=《服务器由零配置》 — Random Notes&source=一直都在用 Vultr 的服务器，但是网速真的太特么慢了，100+ 毫秒的 ping，经常连 4G 都访问不了，做做实验还行，有应用部署在上面就完全用不了..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2017/12/06/server-configurate/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《服务器由零配置》 — Random Notes&url=https://blog.imtouch.info/2017/12/06/server-configurate/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2017/12/06/server-configurate/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACL0lEQVR42u3aQY7DIBBEUd//0p5tpIyhqhpHovmsosgOvCxa1cB1yeP+Gp/f688/Pfn91vXGgAEDxraMezieJtAne/od5a9RnocBA8Y5DGV6BTBehF4z9bXBgAEDhvJ5bQSEAQMGjDpDX9z4FyoBFAYMGGcy9MZyVVgcz/5iLw4DBowNGdmW2W8+v3K+AQMGjK0Ytznc6d3ynQ0YMGD0ZugFbhzLsusXRoMqHCHAgAHjBIayxPG2vt5wZjPa220wYMBoxKiU3WwrzX3XOASFAQNGU4YS9bJQqCyufiEDBgwYvRnu5Qa9QdWRbvib7BrCgAGjKSM7vFR49paZ8Ewp1cKAAaMFQ0+U74VCe14YMGAczNC3zyoBMSvNk2gIAwaMdoxsSuPClvwXuE2slB9hwICxOUNfbnaE4MZB/fqFfc0CBgwY2zKyJeolUi+yesmeJFwYMGC0Y+jFLjvsdNta95gBBgwYJzCyUJg1n/UUF162gAEDxuaMrLAqDap7ncKd6/E3YcCA0ZRRKabZQUI9UP7zDQwYMA5gKNcmVsW7ypacfR4LAwaMRows9rnf24k1u2wBAwaMRozbHJW2U1/Wgv4bBgwYjRj6CLfpheVWDiRsGAwYMLZlZFtdSrl0W+KsZMOAAeMcRlb49Ii5KvZNci4MGDBgrEqaciH+UcGFAQPGAYxKZMxa5ckRJgwYMJoyKpHOfVcBKAcSMGDAOIfh5q5K6cyuayw71IQBA8Z+jD9LTwPxmmUcZAAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

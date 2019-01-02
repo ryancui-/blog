@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Angular 兼容 IE 过程遇到的问题 | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Angular,IE,浏览器兼容">
+    <meta name="description" content="由于众所周知的原因，Web 应用还是需要兼容 Windows 下最「著名」的浏览器 Internet Explorer 的，可能现在不需要再兼容到 IE6 这么低的版本，但 IE9/10/11 的兼容可能也够麻烦了。 由于我们使用的 Angular + NG-ZORRO-ANTD，两者的官网都说能支持 IE9+，因此我们愉快地开始了 IE 兼容的踩坑之旅。">
+<meta name="keywords" content="Angular,IE,浏览器兼容">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular 兼容 IE 过程遇到的问题">
+<meta property="og:url" content="https://blog.imtouch.info/2018/02/06/angular-ie-support/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="由于众所周知的原因，Web 应用还是需要兼容 Windows 下最「著名」的浏览器 Internet Explorer 的，可能现在不需要再兼容到 IE6 这么低的版本，但 IE9/10/11 的兼容可能也够麻烦了。 由于我们使用的 Angular + NG-ZORRO-ANTD，两者的官网都说能支持 IE9+，因此我们愉快地开始了 IE 兼容的踩坑之旅。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-04T15:20:30.588Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Angular 兼容 IE 过程遇到的问题">
+<meta name="twitter:description" content="由于众所周知的原因，Web 应用还是需要兼容 Windows 下最「著名」的浏览器 Internet Explorer 的，可能现在不需要再兼容到 IE6 这么低的版本，但 IE9/10/11 的兼容可能也够麻烦了。 由于我们使用的 Angular + NG-ZORRO-ANTD，两者的官网都说能支持 IE9+，因此我们愉快地开始了 IE 兼容的踩坑之旅。">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Angular 兼容 IE 过程遇到的问题</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Angular 兼容 IE 过程遇到的问题</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-02-06T01:54:05.000Z" itemprop="datePublished" class="page-time">
+  2018-02-06
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#开启官方提供的-Polyfills"><span class="post-toc-number">1.</span> <span class="post-toc-text">开启官方提供的 Polyfills</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#逐个击破"><span class="post-toc-number">2.</span> <span class="post-toc-text">逐个击破</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#date-管道解析报错"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">date 管道解析报错</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#IE11-报错「不能执行已释放-Script-的代码」"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">IE11 报错「不能执行已释放 Script 的代码」</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Array-prototype-includes-polyfills"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">Array.prototype.includes polyfills</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#IE10-Flexbox-支持"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">IE10 Flexbox 支持</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#IE11-无法获取未定义或-null-引用的属性-“call”"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">IE11 无法获取未定义或 null 引用的属性 “call”</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#IE9-不支持-FileReader"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">IE9 不支持 FileReader</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#IE10-使用了-hidden-隐藏元素"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">IE10 使用了 [hidden] 隐藏元素</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#IE9-requestAnimationFrame-undefined"><span class="post-toc-number">2.8.</span> <span class="post-toc-text">IE9 requestAnimationFrame undefined</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#IE11-下改变-file-input-value-会重新触发-change-事件"><span class="post-toc-number">2.9.</span> <span class="post-toc-text">IE11 下改变 file input value 会重新触发 change 事件</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#IE9-下-Int32Array-undefined"><span class="post-toc-number">2.10.</span> <span class="post-toc-text">IE9 下 Int32Array undefined</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-angular-ie-support"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Angular 兼容 IE 过程遇到的问题</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-02-06 09:54:05" datetime="2018-02-06T01:54:05.000Z"  itemprop="datePublished">2018-02-06</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>由于众所周知的原因，Web 应用还是需要兼容 Windows 下最「著名」的浏览器 Internet Explorer 的，可能现在不需要再兼容到 IE6 这么低的版本，但 IE9/10/11 的兼容可能也够麻烦了。</p>
+<p>由于我们使用的 Angular + NG-ZORRO-ANTD，两者的官网都说能支持 IE9+，因此我们愉快地开始了 IE 兼容的踩坑之旅。</p>
+<a id="more"></a>
+<h2 id="开启官方提供的-Polyfills"><a href="#开启官方提供的-Polyfills" class="headerlink" title="开启官方提供的 Polyfills"></a>开启官方提供的 Polyfills</h2><p>查阅的无数资料第一步准是让你把 angular-cli 生成项目中的 <code>polyfills.ts</code> 中的<strong>一切</strong>都打开，本着「加载慢不慢先不管，能不能用最重要」的原则，我们当然把全部都打开了。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">$ npm install --save classlist.js</span><br><span class="line">$ npm install --save web-animations-js</span><br><span class="line">$ npm install --save intl</span><br></pre></td></tr></table></figure>
+<p>把注释里的全部安装完毕，以为兼容 IE 就是这么 Easy, 打开网页依然是一堆的报错…</p>
+<h2 id="逐个击破"><a href="#逐个击破" class="headerlink" title="逐个击破"></a>逐个击破</h2><h3 id="date-管道解析报错"><a href="#date-管道解析报错" class="headerlink" title="date 管道解析报错"></a>date 管道解析报错</h3><p>我们后端返回的日期时间类型是一个形如 <code>YYYY-MM-DD HH:mm:ss</code> 的字符串，当使用自带的 <code>date</code> 管道进行格式化时：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line">&#123;&#123;startDate | date: 'YYYY年MM月DD日'&#125;&#125;</span><br></pre></td></tr></table></figure>
+<p>报错了，IE11 无法将不标准的日期字符串转换为 <code>Date</code> 对象，因此需要<strong>自定义</strong>一个日期时间格式化管道。</p>
+<p><strong>Solved</strong></p>
+<h3 id="IE11-报错「不能执行已释放-Script-的代码」"><a href="#IE11-报错「不能执行已释放-Script-的代码」" class="headerlink" title="IE11 报错「不能执行已释放 Script 的代码」"></a>IE11 报错「不能执行已释放 Script 的代码」</h3><p>在 IE11 下会报这个错，错误定位的代码是这样：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> testString = delegate.toString();   <span class="comment">// &lt;===== HERE!</span></span><br><span class="line"><span class="keyword">if</span> ((testString === FUNCTION_WRAPPER || testString == BROWSER_TOOLS)) &#123;</span><br><span class="line">    nativeDelegate.apply(target, args);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>去搜了一下，马上就找到解决方法了，出错原因可以看里面的解释。</p>
+<p><a href="https://stackoverflow.com/questions/45675781/angular-4-app-using-ie-11-cant-execute-code-from-a-freed-script" target="_blank" rel="noopener">Angular 4 app using IE 11, “Can’t execute code from a freed script”</a></p>
+<p><a href="https://stackoverflow.com/questions/45691804/angular-4-put-a-global-constant-available-to-zone-js" target="_blank" rel="noopener">Angular 4 put a global constant available to zone.js</a></p>
+<p>一模一样的情况，在 <code>index.html</code> 加上一行 <code>script</code> 把那个全局变量加上去。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">app-root</span>&gt;</span><span class="tag">&lt;/<span class="name">app-root</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">    <span class="built_in">window</span>[<span class="string">'__Zone_disable_IE_check'</span>] = <span class="literal">true</span>;</span></span><br><span class="line"><span class="undefined">  </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>Solved</strong></p>
+<h3 id="Array-prototype-includes-polyfills"><a href="#Array-prototype-includes-polyfills" class="headerlink" title="Array.prototype.includes polyfills"></a>Array.prototype.includes polyfills</h3><p>在项目中使用了 <code>Array.prototype.includes</code> 这个 ES7 新特性，需要额外的 polyfills，否则 IE 不支持。到 MDN 找一下就好。</p>
+<p><a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/includes" target="_blank" rel="noopener">MDN - Array.prototype.includes()</a></p>
+<p>我们新建了一个 <code>src/polyfills.js</code> 并在 <code>polyfills.ts</code> 的最后 import 进去，把自己实现的 polyfill 放到 js 文件里。</p>
+<p><strong>Solved</strong></p>
+<h3 id="IE10-Flexbox-支持"><a href="#IE10-Flexbox-支持" class="headerlink" title="IE10 Flexbox 支持"></a>IE10 Flexbox 支持</h3><blockquote>
+<p>如果要兼容到 IE9，你可以忽略这部分内容了，请禁止你（和团队）使用 Flexbox 吧 :Smile:</p>
+</blockquote>
+<p>在业务中，非常频繁的使用了 Flexbox 布局，CanIUse 上表示 Flexbox 对 IE11 也只是部分支持，IE10 直接标红了。但其实 IE10 能够通过 prefix 来实现。</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">div</span> &#123;</span><br><span class="line">  <span class="attribute">display</span>: -ms-flexbox;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那当然不可能手动每个 div 加啊，我们需要 PostCSS 的 Autoprefixer，经过一番查找，发现 angular-cli 已经集成了 autoprefixer（╰(<em>°▽°</em>)╯），配置一下浏览器列表就能起效了。</p>
+<p><a href="https://github.com/angular/angular-cli/wiki/stories-autoprefixer" target="_blank" rel="noopener">Change target browsers for Autoprefixer</a></p>
+<p><strong>Solved</strong></p>
+<h3 id="IE11-无法获取未定义或-null-引用的属性-“call”"><a href="#IE11-无法获取未定义或-null-引用的属性-“call”" class="headerlink" title="IE11 无法获取未定义或 null 引用的属性 “call”"></a>IE11 无法获取未定义或 null 引用的属性 “call”</h3><p>这个问题是一个量子态的问题，偶尔会出现，但关掉 IE 再重启又没问题了，真的是来搞笑的。</p>
+<p>暂时认为是 livereload 导致的代码片段出错，不处理。</p>
+<p><strong>Observe</strong></p>
+<h3 id="IE9-不支持-FileReader"><a href="#IE9-不支持-FileReader" class="headerlink" title="IE9 不支持 FileReader"></a>IE9 不支持 FileReader</h3><p>我们实现的图片上传组件，使用了 <code>FileReader</code> 来获得图片的 base64 编码，并通过编码上传的服务器。但在 IE9 下，并不支持 <code>FileReader</code>.</p>
+<p>其实我们只需要能够将图片转成 base64 编码就可以了，查了一下可以用 canvas 来转诶，而且 canvas IE9 也支持，可以尝试。</p>
+<p><strong>Under development</strong></p>
+<h3 id="IE10-使用了-hidden-隐藏元素"><a href="#IE10-使用了-hidden-隐藏元素" class="headerlink" title="IE10 使用了 [hidden] 隐藏元素"></a>IE10 使用了 [hidden] 隐藏元素</h3><p>在一些自定义的组件中，对一些元素使用了 <code>hidden</code> 属性来进行隐藏，在 IE10 下会无法隐藏。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"close"</span></span></span><br><span class="line"><span class="tag">      [<span class="attr">hidden</span>]=<span class="string">"!allowRemove || !showControlBtn[i]"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>很可惜，<code>hidden</code> 在 IE10 上<a href="https://caniuse.com/#search=hidden" target="_blank" rel="noopener">并不支持</a>。</p>
+<p>改成利用 <code>display: none</code> 来隐藏，问题解决。</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">span</span> <span class="attr">class</span>=<span class="string">"close"</span></span></span><br><span class="line"><span class="tag">      [<span class="attr">class.close-not-exist</span>]=<span class="string">"!allowRemove || !showControlBtn[i]"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>Solved</strong></p>
+<h3 id="IE9-requestAnimationFrame-undefined"><a href="#IE9-requestAnimationFrame-undefined" class="headerlink" title="IE9 requestAnimationFrame undefined"></a>IE9 requestAnimationFrame undefined</h3><p>如果使用了 Angular 的动画 <code>@angular/animation</code>， 在 IE9 下会由于<a href="https://caniuse.com/#search=requestAnimationFrame" target="_blank" rel="noopener">不支持</a> <code>requestAnimationFrame</code> 而报错。自行加上对应的 <a href="https://gist.github.com/paulirish/1579671" target="_blank" rel="noopener">Polyfill</a> 即可。</p>
+<p>需要注意的是，这个 <code>requestAnimationFrame</code> 的 polyfill 需要在 Angular 自带的 <code>polyfills.ts</code> 之前引入，因为下面的代码会用到这个函数，把 import 语句放在 <code>polyfills.ts</code> 的开头即可。</p>
+<p><strong>Solved</strong></p>
+<h3 id="IE11-下改变-file-input-value-会重新触发-change-事件"><a href="#IE11-下改变-file-input-value-会重新触发-change-事件" class="headerlink" title="IE11 下改变 file input value 会重新触发 change 事件"></a>IE11 下改变 file input value 会重新触发 change 事件</h3><p>这个跟 Angular 关系不大，我们实现的不少图片上传或文件上传组件，做法都是隐藏一个 input 框，当有某些 click 事件时调用 <code>input.click()</code> 调出文件选择器，选择后通过 <code>change</code> 事件处理。</p>
+<p>在 <code>change</code> 的处理函数的最后，会有这么一句</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">this</span>.fileEle.nativeElement.value = <span class="string">''</span>;</span><br></pre></td></tr></table></figure>
+<p>在每次处理完用户选择的文件后，把该 input 框的值清空。这么做的原因是 <code>change</code> 事件只有在文件变化时才被触发，当需要处理两次上传同一个文件的情况时</p>
+<ul>
+<li>第一次选择了文件 A，第二次依然选择了文件 A</li>
+</ul>
+<p>符合组件预期的行为应该是调用两次 <code>change</code> 回调。这里需要说明的是，<code>change</code> 本身的语义是没有问题的，只有文件变化才调用，但组件层面上的语义应该是每次用户选择了文件都执行一个回调，因此单纯的 <code>change</code> 事件不能满足需求。</p>
+<p>因此每次把 <code>value = &#39;&#39;</code> 即可解决这个问题。</p>
+<p>但在 IE11 的实现认为，设置 <code>value</code> 相当于改变文件，也需要调用 <code>change</code> 回调（Chrome / Firefox 甚至 IE10 也不会调用），因此 <code>change</code> 回调执行了两次，其中第二次的 <code>e.target.files</code> 为空数组，需要特别的处理。</p>
+<blockquote>
+<p>这里有个<a href="https://www.zhihu.com/question/62288493" target="_blank" rel="noopener">知乎上的讨论</a>，对 input file 的特性还需要进一步实践，先记录下来</p>
+</blockquote>
+<p><strong>Solved</strong></p>
+<h3 id="IE9-下-Int32Array-undefined"><a href="#IE9-下-Int32Array-undefined" class="headerlink" title="IE9 下 Int32Array undefined"></a>IE9 下 Int32Array undefined</h3><p>在 IE9 下，启动应用并进入时控制台会报这个错，<code>Int32Array undefined</code> 之类的。找到了<a href="https://github.com/angular/angular/issues/11831" target="_blank" rel="noopener">这个</a>，加上新的 polyfill 即可。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="string">'core-js/es6/typed'</span>;</span><br></pre></td></tr></table></figure>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-04T15:20:30.588Z" itemprop="dateUpdated">2018-04-04 23:20:30</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Angular/">Angular</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/IE/">IE</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/浏览器兼容/">浏览器兼容</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/02/06/angular-ie-support/&title=《Angular 兼容 IE 过程遇到的问题》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/02/06/angular-ie-support/&title=《Angular 兼容 IE 过程遇到的问题》 — Random Notes&source=由于众所周知的原因，Web 应用还是需要兼容 Windows 下最「著名」的浏览器 Internet Explorer 的，可能现在不需要再兼容到 IE6..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/02/06/angular-ie-support/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Angular 兼容 IE 过程遇到的问题》 — Random Notes&url=https://blog.imtouch.info/2018/02/06/angular-ie-support/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/02/06/angular-ie-support/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/02/28/details-in-angular-detect-change/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Angular 变化检测中的细节</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/01/09/mac-clear-osxkeychain/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Mac 上清除 git osxkeychain 保存的登录名密码</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/02/06/angular-ie-support/&title=《Angular 兼容 IE 过程遇到的问题》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/02/06/angular-ie-support/&title=《Angular 兼容 IE 过程遇到的问题》 — Random Notes&source=由于众所周知的原因，Web 应用还是需要兼容 Windows 下最「著名」的浏览器 Internet Explorer 的，可能现在不需要再兼容到 IE6..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/02/06/angular-ie-support/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Angular 兼容 IE 过程遇到的问题》 — Random Notes&url=https://blog.imtouch.info/2018/02/06/angular-ie-support/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/02/06/angular-ie-support/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACK0lEQVR42u3aS27DMAwFwNz/0ukJ7DyScgHJ41VQJLbGC5a/zye+vsF19f3knvmvRhcGBsa2jORw98ftPeXqPlfPvb8DBgbGGxhXD776Tv6rPIxevb77p2BgYGDcH66aCCbfx8DAwFgVcJMQmYTsPE3EwMDASIrY+4QvP1bylwdrcQwMjA0ZebPs/z8/Mt/AwMDYivEtXknQnIfL8qkwMDCOZuQBbj7UrKae1fNgYGCczeiNISfhNV+8qA5QMTAwTmXkh64OJpNhwHxdDAMD42xGXqwm6xHVQy9bC8PAwHgx4+nStBqsLwM0BgbG0YxVQTNvkPXuXHgWBgbGoYzqutXaMWfvJUYJIgYGxhGMXnM/b71F3b4gZP94TRgYGEczqsncZAm1+mqqrT0MDIw3MKpDysk6Ra+QXvzuMTAwtmJMUrd8JDkfXjZ3RjAwMDZnPJfM5ctevf8PGBgY72H0Ql4eRnv52+JlCwwMjIMYveNWE768eXd/6EJZi4GBcQSjOqScB8pqUy8aHmBgYLyG0VtoqC6H9UrlqGuIgYFxNKNacM6Lz8J8NW+0YWBgHMf4Fq8kaFbL12SJ9kf9jYGBcTRjEuZWrXzlDbjJ0zEwMHZnTIJsdVQ5KYkXTDMwMDA2Z1SHi70RQvK5d1oMDAyMXkuulwI2c1gMDAyM29Sw14DLjx6tqWFgYLyAkRSxvZXWVaOFZe02DAyMDRmTNK76mLxwfWSoiYGBsR/jD/hKA/GZmAFtAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

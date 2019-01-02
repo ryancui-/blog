@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Mac 上清除 git osxkeychain 保存的登录名密码 | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Mac,Git">
+    <meta name="description" content="昨天在公司的 Mac 上 clone 项目时报错，提示无法找到项目。在确信地址没错的情况下，就应该是权限不足导致的无法找到项目。 但一般使用 HTTP 协议来进行 clone 时，都会提示输入用户名密码，但奇怪的是这次并没有提示，而是直接报错，因此怀疑是 Mac 上有记录了默认的用户名和密码，且该用户在 Gitlab 上没有这个仓库的权限。">
+<meta name="keywords" content="Mac,Git">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mac 上清除 git osxkeychain 保存的登录名密码">
+<meta property="og:url" content="https://blog.imtouch.info/2018/01/09/mac-clear-osxkeychain/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="昨天在公司的 Mac 上 clone 项目时报错，提示无法找到项目。在确信地址没错的情况下，就应该是权限不足导致的无法找到项目。 但一般使用 HTTP 协议来进行 clone 时，都会提示输入用户名密码，但奇怪的是这次并没有提示，而是直接报错，因此怀疑是 Mac 上有记录了默认的用户名和密码，且该用户在 Gitlab 上没有这个仓库的权限。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-04T15:10:14.690Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mac 上清除 git osxkeychain 保存的登录名密码">
+<meta name="twitter:description" content="昨天在公司的 Mac 上 clone 项目时报错，提示无法找到项目。在确信地址没错的情况下，就应该是权限不足导致的无法找到项目。 但一般使用 HTTP 协议来进行 clone 时，都会提示输入用户名密码，但奇怪的是这次并没有提示，而是直接报错，因此怀疑是 Mac 上有记录了默认的用户名和密码，且该用户在 Gitlab 上没有这个仓库的权限。">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Mac 上清除 git osxkeychain 保存的登录名密码</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Mac 上清除 git osxkeychain 保存的登录名密码</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-01-09T01:25:32.000Z" itemprop="datePublished" class="page-time">
+  2018-01-09
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Git-凭证管理"><span class="post-toc-number">1.</span> <span class="post-toc-text">Git 凭证管理</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#OSXKeychain"><span class="post-toc-number">2.</span> <span class="post-toc-text">OSXKeychain</span></a></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-mac-clear-osxkeychain"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Mac 上清除 git osxkeychain 保存的登录名密码</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-01-09 09:25:32" datetime="2018-01-09T01:25:32.000Z"  itemprop="datePublished">2018-01-09</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>昨天在公司的 Mac 上 clone 项目时报错，提示无法找到项目。在确信地址没错的情况下，就应该是权限不足导致的无法找到项目。</p>
+<p>但一般使用 HTTP 协议来进行 clone 时，都会提示输入用户名密码，但奇怪的是这次并没有提示，而是直接报错，因此怀疑是 Mac 上有记录了默认的用户名和密码，且该用户在 Gitlab 上没有这个仓库的权限。</p>
+<a id="more"></a>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ git <span class="built_in">clone</span> http://172.16.18.121/erp/mobileApproval.git</span><br><span class="line">Cloning into <span class="string">'mobileApproval'</span>...</span><br><span class="line">remote: The project you were looking <span class="keyword">for</span> could not be found.</span><br><span class="line">fatal: repository <span class="string">'http://172.16.18.121/erp/mobileApproval.git/'</span> not found</span><br></pre></td></tr></table></figure>
+<h2 id="Git-凭证管理"><a href="#Git-凭证管理" class="headerlink" title="Git 凭证管理"></a>Git 凭证管理</h2><p>由于平时大多数时候都在使用 SSH 方式连接 Git 仓库，对使用 HTTP 方式的用户名密码管理不是很熟，因此去看了下官方文档，<a href="https://git-scm.com/book/zh/v2/Git-%E5%B7%A5%E5%85%B7-%E5%87%AD%E8%AF%81%E5%AD%98%E5%82%A8" target="_blank" rel="noopener">Git - 凭证管理</a>，里面提到了几点：</p>
+<blockquote>
+<p>默认所有都不缓存。 每一次连接都会询问你的用户名和密码。</p>
+<p>“store” 模式会将凭证用明文的形式存放在磁盘中，并且永不过期。 这意味着除非你修改了你在 Git 服务器上的密码，否则你永远不需要再次输入你的凭证信息。 这种方式的缺点是你的密码是用明文的方式存放在你的 home 目录下。</p>
+<p>如果你使用的是 Mac，Git 还有一种 “osxkeychain” 模式，它会将凭证缓存到你系统用户的钥匙串中。 这种方式将凭证存放在磁盘中，并且永不过期，但是是被加密的，这种加密方式与存放 HTTPS 凭证以及 Safari 的自动填写是相同的。</p>
+</blockquote>
+<p>特别关注永不过期与 Mac 等关键字可以筛选出这几段描述，简单来说就是「可以把你的用户名密码永远存在电脑上」，因此解决这个问题只需要把这个删掉就可以了。</p>
+<h2 id="OSXKeychain"><a href="#OSXKeychain" class="headerlink" title="OSXKeychain"></a>OSXKeychain</h2><p>根据官方说明，是通过这个命令设置缓存的</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">git config --global credential.helper &lt;mode&gt;</span><br></pre></td></tr></table></figure>
+<p>模式可能是 <code>cache</code> 或者是 <code>store</code>，可能还有一些其他数据。当执行完后，其实也就是往 <code>.gitconfig</code> 文件添加内容（也有可能是 <code>.git-credential</code>），经过一番摸索，发现这些文件都没有什么异常，没有找到任何与账号密码相关的信息。</p>
+<p>于是觉得很大可能会是文档提到的 <code>osxkeychain</code> 导致的（OS X 有时候就是这么傻）。了解了原因之后就可以去 Google 了，搜一下 git disable credential-helper osxkeychain 这几个关键字很容易找到这篇</p>
+<p><a href="https://stackoverflow.com/questions/16052602/disable-git-credential-osxkeychain" target="_blank" rel="noopener">disable git credential-osxkeychain</a></p>
+<p>按高票回答做了一遍</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 全部 unset 一遍呗</span></span><br><span class="line">$ git config --<span class="built_in">local</span> --<span class="built_in">unset</span> credential.helper</span><br><span class="line">$ git config --global --<span class="built_in">unset</span> credential.helper</span><br><span class="line"><span class="comment"># 这个要 sudo</span></span><br><span class="line">$ sudo git config --system --<span class="built_in">unset</span> credential.helper</span><br><span class="line"></span><br><span class="line"><span class="comment"># 这三个命令都没有显示任何东西了</span></span><br><span class="line">$ git config --<span class="built_in">local</span> credential.helper</span><br><span class="line">$ git config --global credential.helper</span><br><span class="line">$ git config --system credential.helper</span><br></pre></td></tr></table></figure>
+<p>但发现还是不能成功提示输入用户名密码，继续尝试第二顺位的回答</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 还真的依然有 osxkeychain</span></span><br><span class="line">$ git config -l</span><br><span class="line">credential.helper=osxkeychain</span><br><span class="line"></span><br><span class="line"><span class="comment"># 跟回答一毛一样</span></span><br><span class="line">$ git config --show-origin --get credential.helper</span><br><span class="line">file:/Applications/Xcode.app/Contents/Developer/usr/share/git-core/gitconfig    osxkeychain</span><br></pre></td></tr></table></figure>
+<p>好了，终于发现这个用户名密码是哪里搞出来的了，把那个文件里的 <code>credential</code> 配置删掉即可重新提示输入用户名密码了。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-04T15:10:14.690Z" itemprop="dateUpdated">2018-04-04 23:10:14</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Git/">Git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mac/">Mac</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/01/09/mac-clear-osxkeychain/&title=《Mac 上清除 git osxkeychain 保存的登录名密码》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/01/09/mac-clear-osxkeychain/&title=《Mac 上清除 git osxkeychain 保存的登录名密码》 — Random Notes&source=昨天在公司的 Mac 上 clone 项目时报错，提示无法找到项目。在确信地址没错的情况下，就应该是权限不足导致的无法找到项目。
+但一般使用 HTTP 协..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/01/09/mac-clear-osxkeychain/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mac 上清除 git osxkeychain 保存的登录名密码》 — Random Notes&url=https://blog.imtouch.info/2018/01/09/mac-clear-osxkeychain/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/01/09/mac-clear-osxkeychain/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/02/06/angular-ie-support/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Angular 兼容 IE 过程遇到的问题</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/01/02/angular-formdata-upload-bug/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">激坑！Angular 使用 Http 模块和 FormData 上传文件</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/01/09/mac-clear-osxkeychain/&title=《Mac 上清除 git osxkeychain 保存的登录名密码》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/01/09/mac-clear-osxkeychain/&title=《Mac 上清除 git osxkeychain 保存的登录名密码》 — Random Notes&source=昨天在公司的 Mac 上 clone 项目时报错，提示无法找到项目。在确信地址没错的情况下，就应该是权限不足导致的无法找到项目。
+但一般使用 HTTP 协..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/01/09/mac-clear-osxkeychain/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Mac 上清除 git osxkeychain 保存的登录名密码》 — Random Notes&url=https://blog.imtouch.info/2018/01/09/mac-clear-osxkeychain/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/01/09/mac-clear-osxkeychain/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACOElEQVR42u3aQW7DMAwF0dz/0u62RSplPiUHMDVaBYHt6HnBUCRfL7yuX+v9+9Hn9+tHT07vKi4ZMmQ8lnFN1+gavon5NfyZoz3IkCHjHAYJhXy7czwP62RvMmTIkDHfIt8EeQK5S4YMGTJSxsqxM30RMmTIkEEOseRoWnsOPzxvOIvLkCHjgYw0OH7z8y39DRkyZDyKcYWLpGu8qbCykz9PkyFDRmsGD3A8LZu3DXgrNB7+kCFDRlNGbZyCJI5zdq3lMPxGhgwZrRnzcnyt6ZiOX9RS0uH/hgwZMtoxas1CchyttRzIq/znt2TIkHEA444EkW+xFtyHVUMZMmS0Y5AwF5Tmw8IZSUl5W0KGDBm9GeSGlQQuTShru5IhQ0ZXRtqSJAV9fiVvfKJymwwZMlozXmDtagnEpbRd0yIyZMh4LIMDVkYu+EbT0psMGTJOY6zcPE8K+StIC3nDs7gMGTIaMdIBLF69W2lPxn8DMmTIaM3gIY+PopIQSZoE8bCFDBkyWjNqAxYrAZfnrfwXZciQcTIDTWqETUcevoNWqAwZMg5g8PC3bUgCNzvREVeGDBnHMNJWQRpS04ZBXGiTIUNGO8YVrrRtWSucBQdXGTJkHMCoDYfxZK6W6pHrSSFPhgwZnRhpqau2Ff7+0utlyJBxDmO9DFf7pnaIlSFDhow04attK205fAjBMmTIkLH8M7saoh8OsTJkyGjNIIfYldGKu4c2ZMiQ0ZtROzruBdcKdjJkyDiA8QNVAZNhBpeLqgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

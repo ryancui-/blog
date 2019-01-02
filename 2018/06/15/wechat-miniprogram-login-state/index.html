@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>再谈微信小程序登录态维护 | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="小程序,前端">
+    <meta name="description" content="在之前的文章小程序 Page 获取登录态，异步满天飞？中，曾经讨论了一番微信小程序中登录态的获取维护与具体页面的业务数据接口调用之间的关系，由于无法保证登录逻辑与业务接口的时序性（而业务接口又必须依赖登录逻辑的完成才能获取 Token 进行验证），因此当时使用了类似 EventBus 的方法来串行化，使业务接口必须等待全局登录逻辑完成。 这样的方案不仅侵入性高，而且当业务页面变得越来越多时，Eve">
+<meta name="keywords" content="小程序,前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="再谈微信小程序登录态维护">
+<meta property="og:url" content="https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="在之前的文章小程序 Page 获取登录态，异步满天飞？中，曾经讨论了一番微信小程序中登录态的获取维护与具体页面的业务数据接口调用之间的关系，由于无法保证登录逻辑与业务接口的时序性（而业务接口又必须依赖登录逻辑的完成才能获取 Token 进行验证），因此当时使用了类似 EventBus 的方法来串行化，使业务接口必须等待全局登录逻辑完成。 这样的方案不仅侵入性高，而且当业务页面变得越来越多时，Eve">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/miniprogram-offical-login.jpg">
+<meta property="og:image" content="https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/whole-flow.png">
+<meta property="og:image" content="https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/login-detail-flow.png">
+<meta property="og:image" content="https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/concurrent-login-request.png">
+<meta property="og:updated_time" content="2018-06-20T03:13:59.594Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="再谈微信小程序登录态维护">
+<meta name="twitter:description" content="在之前的文章小程序 Page 获取登录态，异步满天飞？中，曾经讨论了一番微信小程序中登录态的获取维护与具体页面的业务数据接口调用之间的关系，由于无法保证登录逻辑与业务接口的时序性（而业务接口又必须依赖登录逻辑的完成才能获取 Token 进行验证），因此当时使用了类似 EventBus 的方法来串行化，使业务接口必须等待全局登录逻辑完成。 这样的方案不仅侵入性高，而且当业务页面变得越来越多时，Eve">
+<meta name="twitter:image" content="https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/miniprogram-offical-login.jpg">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">再谈微信小程序登录态维护</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">再谈微信小程序登录态维护</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-06-15T08:15:11.000Z" itemprop="datePublished" class="page-time">
+  2018-06-15
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#背景：登录态与第三方-Session-的获取维护"><span class="post-toc-number">1.</span> <span class="post-toc-text">背景：登录态与第三方 Session 的获取维护</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#产生了问题：业务接口与登录逻辑的时序"><span class="post-toc-number">2.</span> <span class="post-toc-text">产生了问题：业务接口与登录逻辑的时序</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#通过中间层屏蔽登录逻辑"><span class="post-toc-number">3.</span> <span class="post-toc-text">通过中间层屏蔽登录逻辑</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#统一的后端中间层"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">统一的后端中间层</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#代码实现"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">代码实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#小程序-API-Promise-化"><span class="post-toc-number">3.2.1.</span> <span class="post-toc-text">小程序 API Promise 化</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#request-实现"><span class="post-toc-number">3.2.2.</span> <span class="post-toc-text">request 实现</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#三个方法"><span class="post-toc-number">3.2.3.</span> <span class="post-toc-text">三个方法</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#新的问题：并发业务接口导致多次进入登录逻辑"><span class="post-toc-number">4.</span> <span class="post-toc-text">新的问题：并发业务接口导致多次进入登录逻辑</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Promise-race"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">Promise.race</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#改造登录逻辑"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">改造登录逻辑</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#总结"><span class="post-toc-number">5.</span> <span class="post-toc-text">总结</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#参考资料"><span class="post-toc-number">6.</span> <span class="post-toc-text">参考资料</span></a></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-wechat-miniprogram-login-state"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">再谈微信小程序登录态维护</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-06-15 16:15:11" datetime="2018-06-15T08:15:11.000Z"  itemprop="datePublished">2018-06-15</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>在之前的文章<a href="https://blog.imtouch.info/2017/11/09/wechat-mini-async-hell/">小程序 Page 获取登录态，异步满天飞？</a>中，曾经讨论了一番微信小程序中登录态的获取维护与具体页面的业务数据接口调用之间的关系，由于无法保证登录逻辑与业务接口的时序性（而业务接口又必须依赖登录逻辑的完成才能获取 Token 进行验证），因此当时使用了类似 EventBus 的方法来串行化，使业务接口<strong>必须等待</strong>全局登录逻辑完成。</p>
+<p>这样的方案不仅侵入性高，而且当业务页面变得越来越多时，EventBus 事件与回调的维护将变得一团糟。因此经过与 Gayhub 大神的探讨后，整理出这样的一套方案。</p>
+<a id="more"></a>
+<h1 id="背景：登录态与第三方-Session-的获取维护"><a href="#背景：登录态与第三方-Session-的获取维护" class="headerlink" title="背景：登录态与第三方 Session 的获取维护"></a>背景：登录态与第三方 Session 的获取维护</h1><p>对于微信小程序的应用来说，有两个需要维护的状态，一个是<strong>微信的登录态</strong>，另一个<strong>第三方 Session 的状态</strong>，先看微信官方的登录态时序图：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="miniprogram-offical-login.jpg" alt="微信官方登录态时序图" title="">
+                </div>
+                <div class="image-caption">微信官方登录态时序图</div>
+            </figure>
+<p>结合 API 文档可以知道，通过 <code>wx.login</code> 和 <code>wx.checkSession</code> 两个前端接口来进行刷新和维护；而第三方 Session 的获取就是整个登录态中的某一步：在调用第三方开发者服务器用 code 换取 openid 的接口中返回我们自己定义的登录态（即第三方 Session）。</p>
+<p>换言之，如果是第三方 Session 过期了，我们可以完全可以直接重新走一遍这个登录态流程来同时刷新微信登录态和第三方的登录态，而不需要独立进行第三方的刷新。</p>
+<h1 id="产生了问题：业务接口与登录逻辑的时序"><a href="#产生了问题：业务接口与登录逻辑的时序" class="headerlink" title="产生了问题：业务接口与登录逻辑的时序"></a>产生了问题：业务接口与登录逻辑的时序</h1><p>按照登录态时序图来实现整个登录逻辑本来是没有问题的，一般来说我们会在一开始进入小程序时就进行登录态的获取，换言之，就是在 <code>App</code> 的 <code>onLaunch</code> 事件中执行这个登录逻辑。但注意到登录时序中有一步：</p>
+<ul>
+<li><code>wx.request</code> 发起业务请求，携带自定义登录态</li>
+</ul>
+<p>一般来说，这些业务请求是放在了各个 <code>Page</code> 里面进行的，换言之，这个数据的获取是在 <code>Page</code> 的 <code>onLoad</code> 等事件里执行的。这样就会产生一个先后顺序的问题，详细介绍请看上一篇文章<a href="https://blog.imtouch.info/2017/11/09/wechat-mini-async-hell/">《小程序 Page 获取登录态，异步满天飞？》</a>。</p>
+<p>总之， 这种采用登录逻辑与业务逻辑分离的做法会带来很多不必要的代码冗余（包括处理 EventBus 事件的代码），能不能有一种方法可以优雅地解决这个问题呢？使 <code>Page</code> 只需要关注业务逻辑，到后端拿数据只是一段简单的函数调用而不必关注登录态？</p>
+<h1 id="通过中间层屏蔽登录逻辑"><a href="#通过中间层屏蔽登录逻辑" class="headerlink" title="通过中间层屏蔽登录逻辑"></a>通过中间层屏蔽登录逻辑</h1><h2 id="统一的后端中间层"><a href="#统一的后端中间层" class="headerlink" title="统一的后端中间层"></a>统一的后端中间层</h2><p>当我把这个问题发到 Github 上后，有同学提出了这样一种解决方案：对所有的 <code>request</code> 路由到一个中间层，通过中间层来处理登录逻辑。</p>
+<p>Amazing~当我们重新审视这个问题的出现原因时，我们发现正是由于我们把整个登录态逻辑放在两个时序不相关的地方：<code>App.onLaunch</code> 和 <code>Page.onLoad</code>。那么为什么一定要进入小程序时就需要执行登录态获取的逻辑呢？只需要确保在执行请求的时候成功获取登录态与第三方 Session 就可以了。这样一来就可以严格地控制登录态与业务请求的先后顺序，不会出现业务请求时，token 为空的情况了。</p>
+<p>根据这个思路，每一个 <code>request</code> 都会执行这样的一个流程图：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="whole-flow.png" alt="总体流程图" title="">
+                </div>
+                <div class="image-caption">总体流程图</div>
+            </figure>
+<p>对于每一个请求，都去判断一下登录态的情况，如果发现没有登录，则执行相应的登录逻辑，登录逻辑的细节是这样的：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="login-detail-flow.png" alt="登录逻辑流程图" title="">
+                </div>
+                <div class="image-caption">登录逻辑流程图</div>
+            </figure>
+<p>整个逻辑其实就是 A/B/C 三个函数调用，C 的流程是根据微信官方时序实现的，并且加入了获取个人信息部分，因为大部分的第三方登录接口都需要保存诸如微信头像地址等个人信息。</p>
+<h2 id="代码实现"><a href="#代码实现" class="headerlink" title="代码实现"></a>代码实现</h2><h3 id="小程序-API-Promise-化"><a href="#小程序-API-Promise-化" class="headerlink" title="小程序 API Promise 化"></a>小程序 API Promise 化</h3><p>由于小程序提供的 API 全是回调函数的方式，在实现上文提到的 C 流程时会导致典型的回调地狱，因此首先需要一个把小程序 API 都返回 Promise 的 Wrapper.</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> promisify = <span class="function"><span class="params">wxMethod</span> =&gt;</span> options =&gt; <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">const</span> extendOptions = <span class="built_in">Object</span>.assign(&#123;</span><br><span class="line">    success(res) &#123;</span><br><span class="line">      resolve(res);</span><br><span class="line">    &#125;,</span><br><span class="line">    fail(res) &#123;</span><br><span class="line">      reject(res);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, options);</span><br><span class="line">  wxMethod(extendOptions);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">WeixinWrapper</span> </span>&#123;</span><br><span class="line">  login = promisify(wx.login);</span><br><span class="line">  request = promisify(wx.request);</span><br><span class="line">  getSetting = promisify(wx.getSetting);</span><br><span class="line">  getUserInfo = promisify(wx.getUserInfo);</span><br><span class="line">  checkSession = promisify(wx.checkSession);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> weixinWrapper = <span class="keyword">new</span> WeixinWrapper();</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> weixinWrapper;</span><br></pre></td></tr></table></figure>
+<p>这样就可以使用 Promise 来处理了，方便很多。</p>
+<h3 id="request-实现"><a href="#request-实现" class="headerlink" title="request 实现"></a>request 实现</h3><p>对于后端请求的统一入口 <code>request</code>，按照流程图进行实现，这里登录逻辑里的三个方法 A/B/C 返回的都是 Promise</p>
+<ul>
+<li>A - 检查微信登录态：<code>checkWxSession</code></li>
+<li>B - 检查第三方 Session 态：<code>checkThirdSession</code></li>
+<li>C - 登录逻辑：<code>doLogin</code></li>
+</ul>
+<p>检查都通过后，将 store 中的 token 放到每个 request 的 Header 中即可实现业务请求带上自定义登录态的需求了。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> request = <span class="function">(<span class="params">method, url, data, header = &#123;&#125;</span>) =&gt;</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="keyword">async</span> (resolve, reject) =&gt; &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> thirdSessionChecked = <span class="keyword">await</span> checkThirdSession();</span><br><span class="line">    <span class="keyword">const</span> wxSessionChecked = <span class="keyword">await</span> checkWxSession();</span><br><span class="line">    <span class="keyword">if</span> (!(wxSessionChecked &amp;&amp; thirdSessionChecked)) &#123;</span><br><span class="line">      <span class="keyword">await</span> doLogin();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> customHeader = header;</span><br><span class="line">    <span class="keyword">if</span> (store.state.token) &#123;</span><br><span class="line">      customHeader.Authorization = <span class="string">`Bearer <span class="subst">$&#123;store.state.token&#125;</span>`</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> res = <span class="keyword">await</span> wxWrapper.request(&#123;</span><br><span class="line">      method,</span><br><span class="line">      url: url.startsWith(<span class="string">'http'</span>) ? url : apiPrefix + url,</span><br><span class="line">      data,</span><br><span class="line">      header: customHeader</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (res.statusCode &gt;= <span class="number">200</span> &amp;&amp; res.statusCode &lt; <span class="number">300</span>) &#123;</span><br><span class="line">      resolve(res.data);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      reject(res);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    reject(err);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="三个方法"><a href="#三个方法" class="headerlink" title="三个方法"></a>三个方法</h3><p>登录逻辑中三个方法的实现就直接根据逻辑来实现就好了，注意都返回 Promise 就行了，这里就不贴出全部代码了，大致看下 <code>doLogin</code> 的结构。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> doLogin = <span class="function">(<span class="params">globalUserInfo = &#123;&#125;</span>) =&gt;</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">let</span> customOpenId;</span><br><span class="line">  <span class="keyword">let</span> headImg;</span><br><span class="line">  <span class="keyword">let</span> fullUserInfo;</span><br><span class="line"></span><br><span class="line">  wxWrapper.login()                           <span class="comment">// 1. 获取微信登录态</span></span><br><span class="line">    .then(<span class="function">(<span class="params">&#123; code &#125;</span>) =&gt;</span> wxWrapper.request(&#123;   <span class="comment">// 2. 换取 openid</span></span><br><span class="line">      url: <span class="string">`<span class="subst">$&#123;wxApiPrefix&#125;</span>/v1/openId/<span class="subst">$&#123;code&#125;</span>`</span>,</span><br><span class="line">      method: <span class="string">'GET'</span>,</span><br><span class="line">      data: &#123;</span><br><span class="line">        type: <span class="string">'xcx'</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;))</span><br><span class="line">    .then(<span class="function">(<span class="params">&#123; data: &#123; code: openCode, data: openid &#125;, statusCode: openidCode &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">      customOpenId = openid;</span><br><span class="line">      <span class="keyword">if</span> (openidCode === <span class="number">200</span> &amp;&amp; openCode === <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> wxWrapper.getSetting();        <span class="comment">// 3. 检查是否授权</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>();</span><br><span class="line">    &#125;)</span><br><span class="line">    .then(<span class="function">(<span class="params">&#123; authSetting &#125;</span>) =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (authSetting[<span class="string">'scope.userInfo'</span>]) &#123;</span><br><span class="line">        <span class="keyword">return</span> wxWrapper.getUserInfo(&#123;        <span class="comment">// 4. 获取个人信息</span></span><br><span class="line">          withCredentials: <span class="literal">true</span>,</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>();</span><br><span class="line">    &#125;)</span><br><span class="line">    .then(<span class="function">(<span class="params">userInfo</span>) =&gt;</span> &#123;</span><br><span class="line">      fullUserInfo = userInfo;</span><br><span class="line">      headImg = fullUserInfo.userInfo.avatarUrl;</span><br><span class="line">      headImg = <span class="string">`<span class="subst">$&#123;headImg.substr(<span class="number">0</span>, headImg.lastIndexOf(<span class="string">'/'</span>))&#125;</span>/46`</span>;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> wxWrapper.request(&#123;              <span class="comment">// 5. 第三方登录</span></span><br><span class="line">        url: <span class="string">`<span class="subst">$&#123;apiPrefix&#125;</span>/auth/wx`</span>,</span><br><span class="line">        method: <span class="string">'POST'</span>,</span><br><span class="line">        data: &#123;</span><br><span class="line">          clientType: <span class="string">'xcx'</span>,</span><br><span class="line">          headImg,</span><br><span class="line">          nickname: fullUserInfo.userInfo.nickName,</span><br><span class="line">          sex: fullUserInfo.userInfo.gender,</span><br><span class="line">          xcxOpenid: <span class="string">`<span class="subst">$&#123;customOpenId&#125;</span>`</span>,</span><br><span class="line">          realname: globalUserInfo.realname</span><br><span class="line">        &#125;,</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;)</span><br><span class="line">    .then((&#123;</span><br><span class="line">             data: &#123; <span class="attr">code</span>: authCode, <span class="attr">data</span>: token &#125;,</span><br><span class="line">             statusCode: tokenCode</span><br><span class="line">           &#125;) =&gt; &#123;</span><br><span class="line">      <span class="keyword">if</span> (tokenCode === <span class="number">200</span> &amp;&amp; authCode === <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> now = <span class="built_in">Date</span>.now();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">const</span> user = &#123;</span><br><span class="line">          openid: customOpenId,</span><br><span class="line">          nickname: fullUserInfo.userInfo.nickName,</span><br><span class="line">          headImg,</span><br><span class="line">          realname: globalUserInfo.realname</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">        store.commit(<span class="string">'setToken'</span>, token);</span><br><span class="line">        store.commit(<span class="string">'setTokenGenTime'</span>, now);</span><br><span class="line">        store.commit(<span class="string">'setUser'</span>, user);</span><br><span class="line"></span><br><span class="line">        wx.setStorageSync(<span class="string">'token'</span>, token);</span><br><span class="line">        wx.setStorageSync(<span class="string">'token_gen_time'</span>, now);</span><br><span class="line">        wx.setStorageSync(<span class="string">'user'</span>, user);</span><br><span class="line"></span><br><span class="line">        resolve();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>();</span><br><span class="line">    &#125;)</span><br><span class="line">    .catch(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      reject();</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h1 id="新的问题：并发业务接口导致多次进入登录逻辑"><a href="#新的问题：并发业务接口导致多次进入登录逻辑" class="headerlink" title="新的问题：并发业务接口导致多次进入登录逻辑"></a>新的问题：并发业务接口导致多次进入登录逻辑</h1><p>通过一个统一的 <code>request</code> 方法，把所有到后端业务的接口路由在一起并处理登录态很好的解决了之前提到的执行时序的问题。但会导致两个新的问题：</p>
+<ol>
+<li><p>当页面中并发两个 <code>request</code> 时，由于登录逻辑是异步的，就会有可能出现两个 request 都进入了登录逻辑。不仅浪费了网络资源，而且还有可能导致个人敏感信息的解密出错。</p>
+<p><img src="concurrent-login-request.png" alt="并发请求"></p>
+</li>
+<li><p>执行过登录逻辑后的状态没有保存起来，上文的 <code>request</code> 实现是<strong>无状态</strong>的，那意味着以后每次调用 <code>request</code> 都会调用 <code>wx.checkSession</code> 进行微信登录态的检查，而这不是我们希望看到的，检查过以后在当前小程序的生命周期里就不应该再去检查了。</p>
+</li>
+</ol>
+<p>因此我们需要一个类似锁的东西，让代码在登录逻辑中<strong>只执行一次</strong>，如果执行过了立即返回，没执行过就马上执行，执行中则等待。</p>
+<h2 id="Promise-race"><a href="#Promise-race" class="headerlink" title="Promise.race"></a>Promise.race</h2><p>没错！只需要用 <code>Promise.race</code> - <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Promise/race" target="_blank" rel="noopener">MDN</a> 就能快速地解决掉上面的问题！</p>
+<p>什么是 Promise.race 直白地解释下，就是传入一个 Promise 数组，返回一个新的 Promise，当且仅当数组中有一个 Promise resolve 了，新的 Promise 才会 resolve.</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// MDN 上的例子：简单明了</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p1 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123; </span><br><span class="line">    setTimeout(resolve, <span class="number">500</span>, <span class="string">"one"</span>); </span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">var</span> p2 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123; </span><br><span class="line">    setTimeout(resolve, <span class="number">100</span>, <span class="string">"two"</span>); </span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.race([p1, p2]).then(<span class="function"><span class="keyword">function</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(value); <span class="comment">// "two"</span></span><br><span class="line">  <span class="comment">// 两个都完成，但 p2 更快</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p3 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123; </span><br><span class="line">    setTimeout(resolve, <span class="number">100</span>, <span class="string">"three"</span>);</span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">var</span> p4 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123; </span><br><span class="line">    setTimeout(reject, <span class="number">500</span>, <span class="string">"four"</span>); </span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.race([p3, p4]).then(<span class="function"><span class="keyword">function</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(value); <span class="comment">// "three"</span></span><br><span class="line">  <span class="comment">// p3 更快，所以它完成了              </span></span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">reason</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 未被调用</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> p5 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123; </span><br><span class="line">    setTimeout(resolve, <span class="number">500</span>, <span class="string">"five"</span>); </span><br><span class="line">&#125;);</span><br><span class="line"><span class="keyword">var</span> p6 = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject</span>) </span>&#123; </span><br><span class="line">    setTimeout(reject, <span class="number">100</span>, <span class="string">"six"</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="built_in">Promise</span>.race([p5, p6]).then(<span class="function"><span class="keyword">function</span>(<span class="params">value</span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 未被调用             </span></span><br><span class="line">&#125;, <span class="function"><span class="keyword">function</span>(<span class="params">reason</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(reason); <span class="comment">// "six"</span></span><br><span class="line">  <span class="comment">// p6 更快，所以它失败了</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h2 id="改造登录逻辑"><a href="#改造登录逻辑" class="headerlink" title="改造登录逻辑"></a>改造登录逻辑</h2><p>由于第三方 Session 状态检查相对较轻，也可以允许并发重入，因此就不需要改造。而调用 <code>wx.checkSession</code> 检查小程序登录态则可以使用 <code>Promise.race</code> 改造一下。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> checkWxSession = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (checkWxSessionPromise) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Promise</span>.race([checkWxSessionPromise]);</span><br><span class="line">  &#125;</span><br><span class="line">  checkWxSessionPromise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve</span>) =&gt;</span> &#123;</span><br><span class="line">    wxWrapper.checkSession().then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      resolve(<span class="literal">true</span>);</span><br><span class="line">    &#125;).catch(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      resolve(<span class="literal">false</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">return</span> checkWxSessionPromise;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>同理，实际的登录逻辑 <code>doLogin</code> 也可以通过这样「缓存」起 Promise 来实现<strong>只执行一次</strong>，但需要注意的是，由于当 Promise 生成后就不再进入实际的登录逻辑了，当登录成功或失败时，需要重置缓存的 Promise 对象。另外检查微信登录态的缓存也需要更新。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> doLogin = <span class="function">(<span class="params">globalUserInfo = &#123;&#125;</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (loginPromise) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">Promise</span>.race([loginPromise]);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  loginPromise = <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="comment">// ... 省略具体的业务代码</span></span><br><span class="line">    wxWrapper.login().then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// 允许以后重入 doLogin</span></span><br><span class="line">      loginPromise = <span class="literal">null</span>;</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 缓存起小程序登录态，登陆成功就默认返回 true</span></span><br><span class="line">      checkWxSessionPromise = <span class="built_in">Promise</span>.resolve(<span class="literal">true</span>);</span><br><span class="line">      resolve();  </span><br><span class="line">    &#125;).catch(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="comment">// 允许以后重入 doLogin</span></span><br><span class="line">      loginPromise = <span class="literal">null</span>;</span><br><span class="line">      reject();</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;);</span><br><span class="line">  <span class="keyword">return</span> loginPromise;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>微信小程序的开发中需要处理微信本身的登录态与第三方的登录态，因此整个状态的保持与维护逻辑都相对较为复杂，这里还没有涉及到只刷新第三方登录态的情况（微信登录态未过期第三方登录态过期），而是统一为无论谁过期了统一两个状态一起刷新。这样的处理在效率和复杂度来说应该是可以接受的。</p>
+<p>另外如果小程序中不需要接入微信，比如是一个需要账号密码登录的应用，那就可以完全不使用 <code>wx.login</code> 这种接口来维护微信的登录态了，自己维护即可。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="https://github.com/ryancui-/ryancui-blog/issues/11" target="_blank" rel="noopener">Github 上的讨论</a></li>
+<li><a href="https://developers.weixin.qq.com/miniprogram/dev/api/api-login.html" target="_blank" rel="noopener">小程序 - 官方文档 wx.login</a></li>
+<li><a href="https://github.com/IvinWu/weRequest" target="_blank" rel="noopener">weRequest</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-06-20T03:13:59.594Z" itemprop="dateUpdated">2018-06-20 11:13:59</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/小程序/">小程序</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/&title=《再谈微信小程序登录态维护》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/&title=《再谈微信小程序登录态维护》 — Random Notes&source=在之前的文章小程序 Page 获取登录态，异步满天飞？中，曾经讨论了一番微信小程序中登录态的获取维护与具体页面的业务数据接口调用之间的关系，由于无法保证登..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《再谈微信小程序登录态维护》 — Random Notes&url=https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/10/18/chrome-extension-dev/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Chrome 插件开发小结</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/04/26/wechat-mpvue-log/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">使用 mpvue 开发微信小程序记录</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/&title=《再谈微信小程序登录态维护》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/&title=《再谈微信小程序登录态维护》 — Random Notes&source=在之前的文章小程序 Page 获取登录态，异步满天飞？中，曾经讨论了一番微信小程序中登录态的获取维护与具体页面的业务数据接口调用之间的关系，由于无法保证登..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《再谈微信小程序登录态维护》 — Random Notes&url=https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/06/15/wechat-miniprogram-login-state/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACsklEQVR42u3awW7bMBAEUP//T6dATy1cOzO7ouICT6dCSSg+HrjsLB+P+Pn6/Ty/+fN5fv/qzfOYzz99/5WLHzw8PLzR1F8973kzwPvFev8mnzMeHh7ead77YpAPnU89LzDJcr98j4eHh/ejvPxgnR/NZ4UHDw8P73/htRt9uzTJyHh4eHifw0s+0354FnO0YfFlWQseHh5ezGsbYJ/w74P9PTw8PLxFV73ddttIdxZAFPPEw8PDO8B7Hxa0pSL/5IlLBlF5wMPDw1vzZi38ZGnykDcPlPO//avu4eHh4V3Ka4/Cbfg7u0bQtruGKTUeHh7eiLe5NJC3ytrDcd54G64fHh4e3oKXs5PjbBvOtqO1sS8eHh7eCV5izZteeWNs9pv1T/Hw8PAO8DYhaduy2sQfyZiPzeri4eHhxbxZcyuf9L4wtGw8PDy8n+Xlrak2zG0j3XzJ/vE/Bjw8PLwDvHxrbg/Wm+nOLoTh4eHh3cmblYf86NxeL5iVn5cNMDw8PLyLeJuhZ1cBNlHIqhWHh4eHdyNvtrm3lxLydtows8XDw8O7lJdv63n0MNvK8zkUM8HDw8M7wJs1+GeH42Rym0J1wTUCPDw8vDUv3+7b8jCLIfJDNh4eHt49vDZ43Vwm2AQT31wawMPDw7uFl1P3Ye6mhMxGxsPDw7uHlyDb7X52JevaVhkeHh7enpcfnZPDdLs0+RfbozkeHh7eaV7exMrrTDvm7PIWHh4e3p28r/JpL07NAtn2EP/yr/Dw8PAO8Db1JC8MeeSxWbghDA8PD2/EyyOAdoPeXxqYlRA8PDy8e3j5h5PwdzbOJoD4pjDg4eHhfRhv08rKx2yLGR4eHt4n8DafnIWwm3gXDw8P7zRvc9UpD173V7jyEBkPDw/vHK9tgOXlIX9z7cEaDw8P7xjvF+nZiL0JV7c0AAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

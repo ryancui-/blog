@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>你确定要用 Angular 双向绑定吗？ | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Angular">
+    <meta name="description" content="源起…在写一个文件上传组件的时候，在上层把文件列表 files: UploadFile[] 传给组件，打算用双向绑定。例如这样：">
+<meta name="keywords" content="Angular">
+<meta property="og:type" content="article">
+<meta property="og:title" content="你确定要用 Angular 双向绑定吗？">
+<meta property="og:url" content="https://blog.imtouch.info/2017/11/07/angular-double-binding-rusure/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="源起…在写一个文件上传组件的时候，在上层把文件列表 files: UploadFile[] 传给组件，打算用双向绑定。例如这样：">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-04T15:02:38.628Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="你确定要用 Angular 双向绑定吗？">
+<meta name="twitter:description" content="源起…在写一个文件上传组件的时候，在上层把文件列表 files: UploadFile[] 传给组件，打算用双向绑定。例如这样：">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">你确定要用 Angular 双向绑定吗？</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">你确定要用 Angular 双向绑定吗？</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-07T03:35:42.000Z" itemprop="datePublished" class="page-time">
+  2017-11-07
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#源起…"><span class="post-toc-number">1.</span> <span class="post-toc-text">源起…</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#智障…"><span class="post-toc-number">2.</span> <span class="post-toc-text">智障…</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#感悟…"><span class="post-toc-number">3.</span> <span class="post-toc-text">感悟…</span></a></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-angular-double-binding-rusure"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">你确定要用 Angular 双向绑定吗？</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-07 11:35:42" datetime="2017-11-07T03:35:42.000Z"  itemprop="datePublished">2017-11-07</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="源起…"><a href="#源起…" class="headerlink" title="源起…"></a>源起…</h2><p>在写一个文件上传组件的时候，在上层把文件列表 <code>files: UploadFile[]</code> 传给组件，打算用双向绑定。例如这样：</p>
+<a id="more"></a>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line">_files: UploadFile[] = [];</span><br><span class="line"></span><br><span class="line"><span class="meta">@Output</span>() filesChange = <span class="keyword">new</span> EventEmitter();</span><br><span class="line"></span><br><span class="line"><span class="meta">@Input</span>()</span><br><span class="line"><span class="keyword">get</span> files() &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>._files;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">set</span> files(v) &#123;</span><br><span class="line">  <span class="keyword">this</span>._files = v;</span><br><span class="line">  <span class="keyword">this</span>.filesChange.emit(v);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在写到某个删除文件方法的时候，突然发现，貌似这个 setter 根本没有进去啊</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">this</span>.files.splice(i, <span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<p><code>files</code> 本身就是一个数组，引用没变就没有进 setter，那上层的变量不就没变了吗？赶紧去父组件看一看，却发现数组还真的删掉了一个文件。</p>
+<p><strong>WHAT THE FUCK???</strong></p>
+<h2 id="智障…"><a href="#智障…" class="headerlink" title="智障…"></a>智障…</h2><p>这个问题困扰了我二十分钟，期间我不停地 Google <code>Angular double binding object/array</code>，发现没人遇到和我一样的问题啊，网上的例子都是用的 Primitive value, 没人用数组做例子的吗？为什么没进 setter 都能变啊，好难啊！</p>
+<p>最后突然灵光一闪，特么我改的就是同一个数组啊，为什么要 emit 这个 change 呢？mdzz</p>
+<h2 id="感悟…"><a href="#感悟…" class="headerlink" title="感悟…"></a>感悟…</h2><ul>
+<li>所以一个 Reference value 为什么要双向绑定呢？你会在组件内部 reset 掉这个地址吗？直接用就好了</li>
+<li>用 Reference value 传递数据会导致数据既能在子组件内部被改，父组件也能改，到底谁负责任？说好的单向数据流呢？</li>
+<li>但看了一下 NG-ZORRO 的 Table 组件实现，的确它的 <code>data[i].checked</code> 就是两边都能改的</li>
+<li>如果用 <code>ChangeDetectionStrategy.OnPush</code>，Reference value 还会导致组件 view 无法被 rerender</li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-04T15:02:38.628Z" itemprop="dateUpdated">2018-04-04 23:02:38</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Angular/">Angular</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2017/11/07/angular-double-binding-rusure/&title=《你确定要用 Angular 双向绑定吗？》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2017/11/07/angular-double-binding-rusure/&title=《你确定要用 Angular 双向绑定吗？》 — Random Notes&source=源起…在写一个文件上传组件的时候，在上层把文件列表 files: UploadFile[] 传给组件，打算用双向绑定。例如这样：" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2017/11/07/angular-double-binding-rusure/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《你确定要用 Angular 双向绑定吗？》 — Random Notes&url=https://blog.imtouch.info/2017/11/07/angular-double-binding-rusure/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2017/11/07/angular-double-binding-rusure/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/11/09/implement-a-replay-subject/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">实现一个超简单的 ReplaySubject</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/08/30/say-sth-about-arrow-function/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">再聊箭头函数 Arrow Function</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2017/11/07/angular-double-binding-rusure/&title=《你确定要用 Angular 双向绑定吗？》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2017/11/07/angular-double-binding-rusure/&title=《你确定要用 Angular 双向绑定吗？》 — Random Notes&source=源起…在写一个文件上传组件的时候，在上层把文件列表 files: UploadFile[] 传给组件，打算用双向绑定。例如这样：" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2017/11/07/angular-double-binding-rusure/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《你确定要用 Angular 双向绑定吗？》 — Random Notes&url=https://blog.imtouch.info/2017/11/07/angular-double-binding-rusure/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2017/11/07/angular-double-binding-rusure/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACtklEQVR42u3aS47CQAwFQO5/6RlpVkhDwvOnBYvKCkUJdPWibWw/HvH183c9f36+8//Jq2euvie//zhx4eHh4bWWfnUly7rHV5eVr+f+GTw8PLzTvEkwyN+qBpjqluHh4eF9G6960PfS7ska8PDw8L6NlyfW+Ub0Dn08PDy8b+D1/vwnx3e17Nsr9S7UWvDw8PBiXq8B9tnPx/t7eHh4eK1W09axfp/ybgWDF2/h4eHhHeDli5g8eV+qyDe0OaCAh4eHt8qrFhSS5fYy27y8W9gIPDw8vGO8XsMpL/5WxwW2NhEPDw/vHC8PAL3GWG/soBquXtzHw8PDO8CrMpJF58d6L7EuN8Pw8PDwVnm91leeFk/GT6uDApdlXDw8PLxVXrVl1SwKDH4xDzBvVo6Hh4e3yus17KsNrWTjegl0NHSFh4eHt8SbpMVJSywPBtXyR/QreHh4eAd482Jugp8XNfLBr+VaNR4eHl4xha0usVd6uN/EXvsNDw8P7xyvlzrnS6y+m7ffqoEKDw8Pb4tX1heT7wl4oQiCh4eHd4A3OcQnUShP0CdlXzw8PLxzvOoB3RsOyMsWSRDqNcbw8PDwtni9P/y9Iarek9WiLR4eHt45XrXRtTU0UO1PNdeDh4eHd4w3aUrdH/TJ54V5scm0Ah4eHt6AVy0N5EMG+ebOyxaXowN4eHh4S7xeeKjit9paeekWDw8P7xyvN+qUp8K9b+6FmTdlXDw8PLxjvF5I6G1Kr3nWnCbDw8PDW+JtVUSrRdvq0MC5EIKHh4fX41WrF7tHfC9lLyTueHh4eMd4vcGC/K1klGoS0y6fxMPDw/soL29K5WXcvJxRLSvj4eHhfRuvGjby8DC58+I78fDw8I7x8tGoSTCYlCTyJhweHh7eaV7vr/5koCpJhathZrm/h4eHh/f6+gVgw5KXM8j3WQAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

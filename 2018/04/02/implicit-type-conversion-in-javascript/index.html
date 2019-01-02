@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>JavaScript 中的隐式类型转换的规范 | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="ECMAScript,JavaScript,规范,类型转换">
+    <meta name="description" content="本文从 ECMAScript 规范的角度尝试征服 JavaScript 的真值表！全文都是规范，不要方，正面刚！">
+<meta name="keywords" content="ECMAScript,JavaScript,规范,类型转换">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript 中的隐式类型转换的规范">
+<meta property="og:url" content="https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="本文从 ECMAScript 规范的角度尝试征服 JavaScript 的真值表！全文都是规范，不要方，正面刚！">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/javascript-tf-table.jpg">
+<meta property="og:image" content="https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/to-primitive.png">
+<meta property="og:image" content="https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/ordinary-to-primitive.png">
+<meta property="og:image" content="https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/to-boolean.png">
+<meta property="og:image" content="https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/to-number.png">
+<meta property="og:image" content="https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/logical-not-operator.png">
+<meta property="og:image" content="https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/evaluation.png">
+<meta property="og:image" content="https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/abstract-equality-comparison.png">
+<meta property="og:image" content="https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/strict-equality-comparison.png">
+<meta property="og:image" content="https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/same-value-non-number.png">
+<meta property="og:image" content="https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/abstract-relational-comparison.png">
+<meta property="og:updated_time" content="2018-04-04T15:08:10.981Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript 中的隐式类型转换的规范">
+<meta name="twitter:description" content="本文从 ECMAScript 规范的角度尝试征服 JavaScript 的真值表！全文都是规范，不要方，正面刚！">
+<meta name="twitter:image" content="https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/javascript-tf-table.jpg">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">JavaScript 中的隐式类型转换的规范</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">JavaScript 中的隐式类型转换的规范</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-04-02T02:29:09.000Z" itemprop="datePublished" class="page-time">
+  2018-04-02
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#小试牛刀"><span class="post-toc-number">1.</span> <span class="post-toc-text">小试牛刀</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#深入规范"><span class="post-toc-number">2.</span> <span class="post-toc-text">深入规范</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Type-Conversion"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">Type Conversion</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Built-in-Types"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">Built-in Types</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#ToPrimitive"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">ToPrimitive</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#ToBoolean"><span class="post-toc-number">2.1.3.</span> <span class="post-toc-text">ToBoolean</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#ToNumber"><span class="post-toc-number">2.1.4.</span> <span class="post-toc-text">ToNumber</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Logical-NOT-Operator"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">Logical NOT Operator</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Comparison-Operations"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">Comparison Operations</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Evaluation"><span class="post-toc-number">2.3.1.</span> <span class="post-toc-text">Evaluation</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Abstract-Equality-Comparison"><span class="post-toc-number">2.3.2.</span> <span class="post-toc-text">Abstract Equality Comparison</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Strict-Equality-Comparison"><span class="post-toc-number">2.3.3.</span> <span class="post-toc-text">Strict Equality Comparison</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Relational-Operators"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">Relational Operators</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#指导意义"><span class="post-toc-number">3.</span> <span class="post-toc-text">指导意义</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考</span></a></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-implicit-type-conversion-in-javascript"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">JavaScript 中的隐式类型转换的规范</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-04-02 10:29:09" datetime="2018-04-02T02:29:09.000Z"  itemprop="datePublished">2018-04-02</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>本文从 ECMAScript 规范的角度尝试征服 JavaScript 的真值表！全文都是规范，不要方，正面刚！</p>
+<a id="more"></a>
+<h2 id="小试牛刀"><a href="#小试牛刀" class="headerlink" title="小试牛刀"></a>小试牛刀</h2><p>如果你能把下面的所有题目都答对并解释清楚来龙去脉，恭喜你，你已经是大神级别了！答案就请自行找个 Console 实际敲敲，Believe me，你会大吃一斤的。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 每个表达式是 true 还是 false 呢？为啥呢？</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 初阶</span></span><br><span class="line">!&#123;&#125;</span><br><span class="line"><span class="number">12</span> == <span class="string">'12'</span></span><br><span class="line"><span class="string">'false'</span> == <span class="literal">false</span></span><br><span class="line"><span class="literal">null</span> == <span class="literal">undefined</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 高阶</span></span><br><span class="line">[] == []</span><br><span class="line">[] == <span class="literal">false</span></span><br><span class="line">[] === <span class="literal">false</span></span><br><span class="line">[<span class="number">45</span>] == <span class="number">45</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 终阶</span></span><br><span class="line">[<span class="number">45</span>] &lt; [<span class="number">46</span>]</span><br><span class="line">[<span class="number">10</span>] &lt; [<span class="number">9</span>]</span><br><span class="line">&#123;&#125; == !&#123;&#125;</span><br><span class="line">&#123;&#125; != &#123;&#125;</span><br><span class="line"><span class="number">-0</span> === +<span class="number">0</span></span><br><span class="line"><span class="literal">NaN</span> === <span class="literal">NaN</span></span><br><span class="line"><span class="literal">NaN</span> != <span class="literal">NaN</span></span><br></pre></td></tr></table></figure>
+<h2 id="深入规范"><a href="#深入规范" class="headerlink" title="深入规范"></a>深入规范</h2><p>江湖传闻 JavaScript 有张让人闻风丧胆的<strong>真值表</strong>，我觉得吧只要把每种类型是怎么判断的弄清楚，其实是不需要去记忆这样的表的。因此我们需要了解规范里是怎么处理这些表达式的。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="javascript-tf-table.jpg" alt="JavaScript 真值表" title="">
+                </div>
+                <div class="image-caption">JavaScript 真值表</div>
+            </figure>
+<p>规范中关于上面那堆表达式是怎样求值的有好几处地方的说明，包括</p>
+<ul>
+<li><a href="http://www.ecma-international.org/ecma-262/8.0/index.html#sec-type-conversion" target="_blank" rel="noopener">7.1 Type Conversion</a></li>
+<li><a href="http://www.ecma-international.org/ecma-262/8.0/index.html#sec-testing-and-comparison-operations" target="_blank" rel="noopener">7.2 Testing and Comparison Operations</a></li>
+<li><a href="http://www.ecma-international.org/ecma-262/8.0/index.html#sec-logical-not-operator" target="_blank" rel="noopener">12.5.9 Logical NOT Operator ( <code>!</code> )</a></li>
+<li><a href="http://www.ecma-international.org/ecma-262/8.0/index.html#sec-relational-operators" target="_blank" rel="noopener">12.10 Relational Operators</a> </li>
+</ul>
+<h3 id="Type-Conversion"><a href="#Type-Conversion" class="headerlink" title="Type Conversion"></a>Type Conversion</h3><h4 id="Built-in-Types"><a href="#Built-in-Types" class="headerlink" title="Built-in Types"></a>Built-in Types</h4><p>这部分规定了不同 Type 之间转换时，应该如何进行转换。在此之前需要了解 ECMAScript 到底定义了多少种 Type？</p>
+<p>ECMAScript 一共定义了七种 built-in types，因此在节 <a href="http://www.ecma-international.org/ecma-262/8.0/index.html#sec-ecmascript-language-types" target="_blank" rel="noopener">6.1 ECMAScript Language Types</a> 共有七个小节，分别详细解释七种类型。 其中六种类型为 <strong>Primitive Value</strong>.（余文所有加粗的类型均表示 ECMAScript Language Type，没有加粗表示 JavaScript 中的类型）</p>
+<blockquote>
+<p>A primitive value is a member of one of the following built-in types: <strong>Undefined</strong>, <strong>Null</strong>, <strong>Boolean</strong>, <strong>Number</strong>, <strong>String</strong>, and <strong>Symbol;</strong> an object is a member of the built-in type <strong>Object</strong>; and a function is a callable object.</p>
+</blockquote>
+<p>想去了解详情的可以去看看规范，里面关于 Number 类型的解释会让人豁然开朗的。这里只需要知道 <code>null</code> 这个值是属于 <strong>Null</strong> 类型，而 <code>undefined</code> 是属于 <strong>Undefined</strong> 类型的。</p>
+<p>另外这里的 <strong>Object</strong> built-in type 跟我们平常理解的 JavaScript 里的 <code>Object</code> 并不一样，总的来说只要不属于 Primitive Value 的值，就属于 <strong>Object</strong> 类型。比如开发中常见的数组、对象、<code>Date</code>、<code>RegExp</code> 等在 ECMAScript 中均属于 <strong>Object</strong> 类型。</p>
+<h4 id="ToPrimitive"><a href="#ToPrimitive" class="headerlink" title="ToPrimitive"></a>ToPrimitive</h4><p><strong>ToPrimitive</strong> 用于将 <strong>Object</strong> 转为 <strong>Primitive Value</strong></p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="to-primitive.png" alt="ToPrimitive" title="">
+                </div>
+                <div class="image-caption">ToPrimitive</div>
+            </figure>
+<p>先忽略那堆 <code>preferredType</code> 的东西，对于平常遇到的对象（Object）来说，基本上都是 Ordinary 的，所以其实就是默认了 <code>hint = number</code> 再去调用 <code>OrdinaryToPrimitive</code>。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="ordinary-to-primitive.png" alt="OrdinaryToPrimitive" title="">
+                </div>
+                <div class="image-caption">OrdinaryToPrimitive</div>
+            </figure>
+<p>由于进来的 <code>hint</code> 是 <code>number</code> 所以这个转换就是：</p>
+<ul>
+<li>调用 <code>Object.valueOf</code>，如果结果是 <strong>Primitive Value</strong>，则返回</li>
+<li>调用 <code>Object.toString</code>，如果结果是 <strong>Primitive Value</strong>，则返回</li>
+<li>都不是，返回 TypeError</li>
+</ul>
+<p>如果看过红宝书的话，里面其实也讲到这部分内容，这里可以从规范的角度再一次说明。</p>
+<p>然后来看看普通对象和数组的这两个方法返回的是什么。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = [<span class="number">12</span>]</span><br><span class="line"><span class="keyword">var</span> b = &#123;<span class="attr">a</span>: <span class="number">123</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// [12]</span></span><br><span class="line">a.valueOf()</span><br><span class="line"></span><br><span class="line"><span class="comment">// '12'</span></span><br><span class="line">a.toString()</span><br><span class="line"></span><br><span class="line"><span class="comment">// &#123;a: 123&#125;</span></span><br><span class="line">b.valueOf()</span><br><span class="line"></span><br><span class="line"><span class="comment">// '[object Object]'</span></span><br><span class="line">b.toString()</span><br></pre></td></tr></table></figure>
+<p>可以看到两者的 <code>valueOf</code> 返回的<strong>都不是 Primitive Value</strong>（返回了自身，还是属于 <strong>Object</strong> 类型），根据规范两者调用 <strong>ToPrimitive</strong> 返回的将是一个<strong>字符串</strong>，这一点非常重要。</p>
+<h4 id="ToBoolean"><a href="#ToBoolean" class="headerlink" title="ToBoolean"></a>ToBoolean</h4><p>这个方法用于将不是 <strong>Boolean</strong> 类型的值转换为 <strong>Boolean</strong> 类型。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="to-boolean.png" alt="ToBoolean" title="">
+                </div>
+                <div class="image-caption">ToBoolean</div>
+            </figure>
+<p>注意几点就可以了：</p>
+<ul>
+<li>所有 <strong>Object</strong> 类型都会被转换为 true</li>
+<li><strong>Number</strong> 类型中的 0、NaN 会被转换为 false，其他都是 true</li>
+<li>只有空串才为 false，其他都是 true（<code>&#39;false&#39;</code>/<code>&#39;0&#39;</code> 之类的不要搞错）</li>
+</ul>
+<h4 id="ToNumber"><a href="#ToNumber" class="headerlink" title="ToNumber"></a>ToNumber</h4><p>同理，其他类型转换为 <strong>Number</strong> 类型。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="to-number.png" alt="ToNumber" title="">
+                </div>
+                <div class="image-caption">ToNumber</div>
+            </figure>
+<p>有比较诡异的几点：</p>
+<ul>
+<li><code>undefined</code> 会被转为 NaN；而 <code>null</code> 是转为 +0</li>
+<li><code>true</code> 转为 1；<code>false</code> 转为 +0（这个很重要）</li>
+<li><strong>String</strong> 的转换策略不是本文的重点，可以先理解为满足数字语义（即规范下文的 <em>StringNumericLiteral</em>）的就转换成数字，不符合就是 NaN</li>
+<li><strong>Object</strong> 类型的转换，看到了我们的老朋友 <strong>ToPrimitive</strong> 了没？先转成 <strong>Primitive Value</strong>，再递归调用自身 <strong>ToNumber</strong> 来做转换的</li>
+</ul>
+<p>到了这一步，看看是否理解了？</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// '56' ==&gt; 56</span></span><br><span class="line"><span class="built_in">Number</span>([<span class="number">56</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment">// ',56' ==&gt; NaN</span></span><br><span class="line"><span class="built_in">Number</span>([,<span class="number">56</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment">// '55,56' ==&gt; NaN</span></span><br><span class="line"><span class="built_in">Number</span>([<span class="number">55</span>, <span class="number">56</span>])</span><br></pre></td></tr></table></figure>
+<p>这里的转换是分两步的，<strong>先</strong>转换成字符串，<strong>再</strong>转换成数字，这个很重要。</p>
+<h3 id="Logical-NOT-Operator"><a href="#Logical-NOT-Operator" class="headerlink" title="Logical NOT Operator"></a>Logical NOT Operator</h3><p>了解完上面几个转换后就可以来看那一堆表达式了！首先是简单点的单目逻辑非，规范是这样的：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="logical-not-operator.png" alt="Logical NOT Operator" title="">
+                </div>
+                <div class="image-caption">Logical NOT Operator</div>
+            </figure>
+<p>哇哦，就是直接调用了 <strong>ToBoolean</strong>，然后取反返回。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// [] ==&gt; true; false</span></span><br><span class="line">![] </span><br><span class="line"></span><br><span class="line"><span class="comment">// &#123;&#125; ==&gt; true; false</span></span><br><span class="line">!&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// NaN ==&gt; false; true</span></span><br><span class="line">!<span class="literal">NaN</span></span><br></pre></td></tr></table></figure>
+<p>嗯，应该没什么大问题。</p>
+<h3 id="Comparison-Operations"><a href="#Comparison-Operations" class="headerlink" title="Comparison Operations"></a>Comparison Operations</h3><p>大 boss 来了，有不少文章都有介绍 <code>==</code> 和 <code>===</code> 的异同，直接看规范依然是最好的。</p>
+<h4 id="Evaluation"><a href="#Evaluation" class="headerlink" title="Evaluation"></a>Evaluation</h4><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="evaluation.png" alt="Evaluation" title="">
+                </div>
+                <div class="image-caption">Evaluation</div>
+            </figure>
+<p><code>GetValue</code> 就是计算一下表达式的值，<code>==</code> 和 <code>===</code> 的结果重点在 <strong>Abstract Equality Comparison</strong> 和 <strong>Strict Equality Comparison</strong> 这两个操作里。</p>
+<p>另外 <code>!=</code> 和 <code>!==</code> 则是指出了 <code>A != B</code> 与 <code>!(A == B)</code> 是<strong>完全等价</strong>的。在判断 <code>!=</code>/<code>!==</code> 时，其实就是在判断 <code>==</code>/<code>===</code>.</p>
+<h4 id="Abstract-Equality-Comparison"><a href="#Abstract-Equality-Comparison" class="headerlink" title="Abstract Equality Comparison"></a>Abstract Equality Comparison</h4><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="abstract-equality-comparison.png" alt="Abstract Equality Comparison" title="">
+                </div>
+                <div class="image-caption">Abstract Equality Comparison</div>
+            </figure>
+<p>好长啊，不要慌，中文翻译一下：</p>
+<ul>
+<li>如果 <strong>Type</strong> 相同，等价为 <code>A === B</code></li>
+<li>特别地，<code>undefined == null</code></li>
+<li><strong>String</strong> == <strong>Number</strong>，则把 <strong>String</strong> 转换成 <strong>Number</strong></li>
+<li>有 <strong>Boolean</strong> 值的，将 <strong>Boolean</strong> 转换成 <strong>Number</strong></li>
+<li><strong>Object</strong> == <strong>String/Number/Symbol</strong>，将 <strong>Object</strong> 转换成 <strong>Primitive Value</strong></li>
+<li>否则，返回 false</li>
+</ul>
+<p>结合小试牛刀的例子来说明</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// '12' ==&gt; 12; </span></span><br><span class="line"><span class="comment">// 返回 true</span></span><br><span class="line"><span class="number">12</span> == <span class="string">'12'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 转 boolean: [] == 0</span></span><br><span class="line"><span class="comment">// 转 object: '' == 0</span></span><br><span class="line"><span class="comment">// 转 string: 0 == 0</span></span><br><span class="line"><span class="comment">// 返回 true</span></span><br><span class="line">[] == <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 转 object: '45' == 45</span></span><br><span class="line"><span class="comment">// 转 string: 45 == 45</span></span><br><span class="line"><span class="comment">// 返回 true</span></span><br><span class="line">[<span class="number">45</span>] == <span class="number">45</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 单目: &#123;&#125; == false</span></span><br><span class="line"><span class="comment">// 转 boolean: &#123;&#125; == 0</span></span><br><span class="line"><span class="comment">// 转 object: '[object Object]' == 0</span></span><br><span class="line"><span class="comment">// 转 string: NaN == 0</span></span><br><span class="line"><span class="comment">// 返回 false</span></span><br><span class="line">&#123;&#125; == !&#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>可能有部分同学对于 <code>[] == false</code> 的转换过程中居然会出现 <code>&#39;&#39; == 0</code> 这一步感到诧异，啊！空数组不是直接就转成数字 0 的吗，然后跟 0 比较的吗？</p>
+<p>同样使人困惑的还有 <code>0 == {}</code> 这个转换过程中会出现的 <code>&#39;[object Object]&#39;</code> ，原因是，最后将 <strong>Object</strong> 转换为 <strong>Primitive Value</strong> 调用的 <strong>ToPrimitive</strong>，在前文已经提到，对于数组和普通对象而言，转换出来的是 String，而不是 Number。为了证明这一点，我们尝试改写 Object 或 Array 上的 valueOf 方法和 toString 方法。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log([] == <span class="literal">false</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">Array</span>.prototype.toString = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'1'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log([] == <span class="literal">false</span>)</span><br><span class="line"><span class="built_in">console</span>.log([] == <span class="number">1</span>)</span><br></pre></td></tr></table></figure>
+<p>可以看到两次的输出是不一样的，覆盖了默认的 <code>toString</code> 方法后，<code>[] == 1</code> 输出了 <code>true</code>，因为此时数组的 <strong>ToPrimitive</strong> 方法返回的是字符串 <code>&#39;1&#39;</code>，同理 Object 的情况也是如此。（顺便可以验证 <code>valueOf</code> 确实是优先于 <code>toString</code> 方法的）</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'[object Object]'</span> == &#123;&#125;)</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.prototype.toString = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'1'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">Object</span>.prototype.valueOf = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">'2'</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'[object Object]'</span> == &#123;&#125;)</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">1</span> == &#123;&#125;)</span><br><span class="line"><span class="built_in">console</span>.log(<span class="number">2</span> == &#123;&#125;)</span><br></pre></td></tr></table></figure>
+<h4 id="Strict-Equality-Comparison"><a href="#Strict-Equality-Comparison" class="headerlink" title="Strict Equality Comparison"></a>Strict Equality Comparison</h4><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="strict-equality-comparison.png" alt="Strict Equality Comparison" title="">
+                </div>
+                <div class="image-caption">Strict Equality Comparison</div>
+            </figure>
+<ul>
+<li>类型不同，直接返回 false</li>
+<li><strong>Number</strong> 类型判断：有 NaN 就 false；+0 === -0；</li>
+<li>最后调用 <strong>SameValueNonNumber</strong></li>
+</ul>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="same-value-non-number.png" alt="SameValueNonNumber" title="">
+                </div>
+                <div class="image-caption">SameValueNonNumber</div>
+            </figure>
+<p>总的来说，严格相等没有非严格相等这么多情况跟转换（毕竟就是同一类型了），记住了 NaN 的 corner case 和对象引用本身相等才是 true 就 ok 了。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 类型相同，等价于 [] === []</span></span><br><span class="line"><span class="comment">// 返回 false</span></span><br><span class="line">[] == []</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等价于 !(&#123;&#125; == &#123;&#125;)</span></span><br><span class="line"><span class="comment">// 等价于 !(&#123;&#125; === &#123;&#125;)</span></span><br><span class="line"><span class="comment">// 返回 true</span></span><br><span class="line">&#123;&#125; != &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 等价于 !(NaN == NaN)</span></span><br><span class="line"><span class="comment">// 等价于 !(NaN === NaN)</span></span><br><span class="line"><span class="comment">// 返回 true</span></span><br><span class="line"><span class="literal">NaN</span> != <span class="literal">NaN</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 类型不同，返回 false</span></span><br><span class="line">[] === <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<h3 id="Relational-Operators"><a href="#Relational-Operators" class="headerlink" title="Relational Operators"></a>Relational Operators</h3><p>搞掂了相等，不等怎么办？不等关系是由 <strong>Abstract Relational Comparison</strong> 定义的。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="abstract-relational-comparison.png" alt="Abstract Relational Comparison" title="">
+                </div>
+                <div class="image-caption">Abstract Relational Comparison</div>
+            </figure>
+<p>这个是真的长，其实注意两点就可以了</p>
+<ul>
+<li>两边操作数调用 <strong>ToPrimitive</strong> 转换为 <strong>Primitive Value</strong></li>
+<li>由于 <strong>Primitive Value</strong> 出来有 <strong>String</strong> 和 <strong>Number</strong> 两种结果，分别有不同的比较规则；String 按 code unit 比较，Number 需要处理 +0/-0/NaN/Infinity 等情况</li>
+</ul>
+<p>解释下上面的题目</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 注意转换后为 '45' &lt; '46'</span></span><br><span class="line"><span class="comment">// 按字符串规则比较，返回 true</span></span><br><span class="line">[<span class="number">45</span>] &lt; [<span class="number">46</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// 同理 '10' &lt; '9'，则是返回 false</span></span><br><span class="line">[<span class="number">10</span>] &lt; [<span class="number">9</span>]</span><br></pre></td></tr></table></figure>
+<h2 id="指导意义"><a href="#指导意义" class="headerlink" title="指导意义"></a>指导意义</h2><p>了解这些对实际开发工作有什么现实意义吗？额，很可能是没有的，大多都是各种面试题（笑。</p>
+<p>但了解背后的原理对于一些关于类型转换带来的 Bug 的定位和如何去做实际编码中的最佳实践能提供很大的帮助。举两个🌰</p>
+<p>初始化订单吧。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (!$scope.orders) &#123;</span><br><span class="line">  $http.post(<span class="string">'/api/orders'</span>, $scope.params).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    $scope.orders = res.data</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然而有人很有责任感地进行了数据初始化：<code>$scope.orders = []</code>，GG！</p>
+<p>用户没有选择状态就弹出提示。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (!<span class="keyword">this</span>.editForm.status) &#123;</span><br><span class="line">  <span class="keyword">this</span>.warning(<span class="string">'请选择状态'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这不会是个数组了吧，很不幸，后端同学定义的 <code>status</code> 里有个 0…有个 0..有个 0.</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="http://www.ecma-international.org/ecma-262/8.0/index.html" target="_blank" rel="noopener">ECMAScript® 2017 Language Specification (ECMA-262, 8th edition, June 2017)</a></li>
+<li><a href="https://ppt.baomitu.com/d/e6515023#/" target="_blank" rel="noopener">聊聊类型转换</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-04T15:08:10.981Z" itemprop="dateUpdated">2018-04-04 23:08:10</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ECMAScript/">ECMAScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/类型转换/">类型转换</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/规范/">规范</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/&title=《JavaScript 中的隐式类型转换的规范》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/&title=《JavaScript 中的隐式类型转换的规范》 — Random Notes&source=本文从 ECMAScript 规范的角度尝试征服 JavaScript 的真值表！全文都是规范，不要方，正面刚！" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《JavaScript 中的隐式类型转换的规范》 — Random Notes&url=https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/04/11/leetcode-idea-1/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">LeetCode 题解一</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/12/leaflet-moving-marker/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Leaflet MovingMarker 轨迹回放功能</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/&title=《JavaScript 中的隐式类型转换的规范》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/&title=《JavaScript 中的隐式类型转换的规范》 — Random Notes&source=本文从 ECMAScript 规范的角度尝试征服 JavaScript 的真值表！全文都是规范，不要方，正面刚！" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《JavaScript 中的隐式类型转换的规范》 — Random Notes&url=https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/04/02/implicit-type-conversion-in-javascript/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACuklEQVR42u3a0W4iMQwFUP7/p1mpT5W6M1zbMVTVydOIwpATpEl67ccjHs+v8fP6/q/Pb+Pqnj/H/XseGwMPDw+vNfX7L3sGI5nQPbV6nSwQHh4e3h6vuhncv55MqHeH8nzw8PDwPsrrYaqPeDw8PLy/yssnlAQK1QM6Hh4e3m/gJRFDkpTmmepkDitZCx4eHl7MmxTAPnX9pvoeHh4eXrGq3jsQ51tCL4AozBMPDw9vgdcLVfMpJq1a1eN1Hhbj4eHhvYd3KlStxgpJIJtvIXh4eHh7vOTwmgcBp8LfapvC5et4eHh4C7zqY32yJZw6ZOdpLR4eHt4er7cx5NtA9bNJvJt/Cg8PD+8sr3fTXjDRa9I6HEbg4eHhjXn5pPMC2Lzza374xsPDw9vmVQtdk3J+3sJV3UIulwMPDw/vKK93tK0+1qvBa7KI0bEeDw8Pb4HXi1zzw3e5zB8fl5s/DB4eHt6Y12urSq7nDanJVhH9r4CHh4e3xqsejvM95xmPycL95254eHh4a7yzBad5w1bvu15kLXh4eHhrvI2mq16UkIcRl/PHw8PDW+Dlk+5FwElrQjUa7v0YeHh4eKd41Zap6iv5fcqP+GRx8fDw8JZ5kzh1UsSqfm9hG8PDw8Nb41XLV71Wrfw91Rj3ctHx8PDwFniHk4yknB93Q1VbGV7cGQ8PD+8QrxqnjlqgFhax0HSFh4eHd4hXPbA+imMj7OhtaXh4eHineM/iKK9ZsXWg9+gv95Th4eHhDXi9wnwSyE5Ch/zIjoeHh/cpXl7Oz0OEyUpPAo4XYS4eHh7eUV5eyjrVZJBPtxfp4uHh4f0eXhI6VJsMJg0Ezc4yPDw8vLfw3lMwm7wSVfbw8PDwDvGqYUR0nI1j37ycltzzQNaCh4eHNy6DVYteyRLksW9+0D9Q38PDw8O74/0D9HTFOnmFzpkAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

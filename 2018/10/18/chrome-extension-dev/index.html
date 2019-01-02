@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Chrome 插件开发小结 | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="前端,Chrome">
+    <meta name="description" content="最近都在做 Chrome 插件的开发，虽然一开始整个插件的框不是我搭起来的，但在过程中遇到的一些问题和解决方法，也值得总结一下。">
+<meta name="keywords" content="前端,Chrome">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Chrome 插件开发小结">
+<meta property="og:url" content="https://blog.imtouch.info/2018/10/18/chrome-extension-dev/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="最近都在做 Chrome 插件的开发，虽然一开始整个插件的框不是我搭起来的，但在过程中遇到的一些问题和解决方法，也值得总结一下。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://blog.imtouch.info/2018/10/18/chrome-extension-dev/structures.png">
+<meta property="og:updated_time" content="2018-10-19T02:36:57.496Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chrome 插件开发小结">
+<meta name="twitter:description" content="最近都在做 Chrome 插件的开发，虽然一开始整个插件的框不是我搭起来的，但在过程中遇到的一些问题和解决方法，也值得总结一下。">
+<meta name="twitter:image" content="https://blog.imtouch.info/2018/10/18/chrome-extension-dev/structures.png">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Chrome 插件开发小结</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Chrome 插件开发小结</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-10-18T03:32:42.000Z" itemprop="datePublished" class="page-time">
+  2018-10-18
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#使用-Vue-js-开发-Chrome-插件"><span class="post-toc-number">1.</span> <span class="post-toc-text">使用 Vue.js 开发 Chrome 插件</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#三个区域-Background-Content-Frame-的通信"><span class="post-toc-number">2.</span> <span class="post-toc-text">三个区域 Background/Content/Frame 的通信</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#发布"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">发布</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#订阅"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">订阅</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#规划事件"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">规划事件</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Ajax-请求"><span class="post-toc-number">3.</span> <span class="post-toc-text">Ajax 请求</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#日常开发配置"><span class="post-toc-number">4.</span> <span class="post-toc-text">日常开发配置</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#参考资料"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考资料</span></a></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-chrome-extension-dev"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Chrome 插件开发小结</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-10-18 11:32:42" datetime="2018-10-18T03:32:42.000Z"  itemprop="datePublished">2018-10-18</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>最近都在做 Chrome 插件的开发，虽然一开始整个插件的框不是我搭起来的，但在过程中遇到的一些问题和解决方法，也值得总结一下。</p>
+<a id="more"></a>
+<h1 id="使用-Vue-js-开发-Chrome-插件"><a href="#使用-Vue-js-开发-Chrome-插件" class="headerlink" title="使用 Vue.js 开发 Chrome 插件"></a>使用 Vue.js 开发 Chrome 插件</h1><p>这个插件在打开的时候会弹出一个操作页面与用户进行交互，这个操作页面可以用 Vue.js 来开发，本质上与开发一个普通的 Vue Web 应用差不多。</p>
+<p>那么怎么把这个页面放进需要展示的 Tab 中呢，我们使用了 iframe：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> frame_id = <span class="keyword">this</span>.frame_id</span><br><span class="line"><span class="keyword">this</span>.frame = $(<span class="string">`#<span class="subst">$&#123;frame_id&#125;</span>`</span>)</span><br><span class="line"><span class="keyword">if</span> (!<span class="keyword">this</span>.frame.length) &#123; <span class="comment">// 未渲染</span></span><br><span class="line">  <span class="keyword">let</span> indexURL = chrome.runtime.getURL(<span class="string">'index.html'</span>)</span><br><span class="line">  <span class="keyword">this</span>.frame = $(<span class="string">`&lt;iframe src="<span class="subst">$&#123;indexURL&#125;</span>" id="<span class="subst">$&#123;frame_id&#125;</span>"&gt;&lt;/iframe&gt;`</span>)</span><br><span class="line">  $(<span class="built_in">document</span>.body).append(<span class="keyword">this</span>.frame)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打包好 Vue 的应用后，通过 <code>chrome.runtime.getURL</code> 获取 <code>index.html</code> 的路径，往页面添加一个 iframe 显示。</p>
+<p>需要注意的是，这个 iframe 的构造和插入是在 Chrome 插件的 content script 中，其实本质上与插件自带的 popup html 选项是一致的，iframe 中加载的 js 也属于插件的 content script.</p>
+<p>其他页面的开发方式、Vuex 的使用等与平常使用基本相同。</p>
+<h1 id="三个区域-Background-Content-Frame-的通信"><a href="#三个区域-Background-Content-Frame-的通信" class="headerlink" title="三个区域 Background/Content/Frame 的通信"></a>三个区域 Background/Content/Frame 的通信</h1><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="structures.png" alt="页面架构" title="">
+                </div>
+                <div class="image-caption">页面架构</div>
+            </figure>
+<p>采用插入 iframe 的方式，整个应用被划分成了三块：</p>
+<ul>
+<li>Background：常驻在浏览器的 JavaScript 脚本</li>
+<li>Content：打开的网页本来的 JavaScript 脚本（环境）</li>
+<li>Frame：从插件 content script 中调用 js 插入的一个 iframe 的 JavaScript 脚本（环境）</li>
+</ul>
+<p>虽然 Content 与 Frame 两部分在 Chrome 插件上均属于 content script 的范畴，但由于 Chrome 插件的限制，这两块的 JavaScript 执行环境并不一致，因此这两部分也需要额外的通信。</p>
+<p>通信的方式其实非常原始，简单的发布订阅模式，利用 Chrome 插件提供的 API，分别在每个地方 set up 自己的 listener，并处理相应的事件即可。</p>
+<h2 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h2><p>向 Background 发送消息时可以使用 <code>chrome.runtime.sendMessage</code>，而向 Content 或 Frame 发送消息时，由于需要指定对应的 Tab（标签页），需要使用 <code>chrome.tabs.sendMessage</code></p>
+<h2 id="订阅"><a href="#订阅" class="headerlink" title="订阅"></a>订阅</h2><p>三个部分的 listener 都可以使用 <code>chrome.runtime.onMessage</code> 来完成事件监听。有一个需要注意的是，<code>sendMessage</code> 和 <code>onMessage</code> 有一个回调的功能，能使消息发送方接收订阅方的回调（类似于回执一样），看下<a href="https://crxdoc-zh.appspot.com/extensions/messaging" target="_blank" rel="noopener">例子</a>：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 在 Content 发送消息</span></span><br><span class="line">chrome.runtime.sendMessage(&#123;<span class="attr">greeting</span>: <span class="string">"您好"</span>&#125;, response =&gt; &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(response.farewell);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 在 Background 订阅消息</span></span><br><span class="line">chrome.runtime.onMessage.addListener(<span class="function">(<span class="params">request, sender, sendResponse</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(sender.tab</span><br><span class="line">              ? <span class="string">"来自内容脚本："</span> + sender.tab.url </span><br><span class="line">              : <span class="string">"来自扩展程序"</span>);</span><br><span class="line">  <span class="keyword">if</span> (request.greeting == <span class="string">"您好"</span>) &#123;</span><br><span class="line">    sendResponse(&#123;<span class="attr">farewell</span>: <span class="string">"再见"</span>&#125;); </span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>可以看到订阅方是可以通过一个 <code>sendResponse</code> 的回调把数据回送给发送方，而由于我们在三个地方都监听了事件（调用了 <code>chrome.runtime.onMessage.addListener</code>），而文档上有说明</p>
+<blockquote>
+<p><strong>注意：</strong> 如果多个页面都监听 onMessage 事件，对于某一次事件只有第一次调用 sendResponse() 能成功发出回应，所有其他回应将被忽略。</p>
+</blockquote>
+<p>因此需要合理的规划事件，保证同一类型的事件只会被某一个 listener 所处理，这样才能正确地调用 <code>sendResponse</code> 获取回送的数据。</p>
+<h2 id="规划事件"><a href="#规划事件" class="headerlink" title="规划事件"></a>规划事件</h2><p>为了使所有的事件能更好地分门别类，发送事件时使用了这样的数据格式：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  direction: <span class="string">'content_to_background'</span>,</span><br><span class="line">  area: <span class="string">'frame'</span>,</span><br><span class="line">  operate: <span class="string">'decrease_active_tabs'</span>,</span><br><span class="line">  options: &#123;</span><br><span class="line">    task_id: <span class="string">'c10103'</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><code>direction</code> - 说明当前事件的流动方向，用于在 listener 处进行筛选事件进行处理</li>
+<li><code>area</code> - 表明当前事件的处理器（或者模块）</li>
+<li><code>operate</code> - 事件类型</li>
+<li><code>options</code> - 自定义参数</li>
+</ul>
+<p>通过 <code>direction</code> 可以是三部分的 listener 定义复用到一个文件中：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">chrome.runtime.onMessage.addListener(<span class="function">(<span class="params">message, sender, callback</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * area 表示操作的区域</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">  <span class="keyword">const</span> &#123; direction &#125; = message</span><br><span class="line">  <span class="keyword">switch</span> (direction) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'background_to_content'</span>:</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'frame_to_content'</span>:</span><br><span class="line">      <span class="keyword">this</span>.contentListening(message, callback)</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">'content_to_background'</span>:</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'frame_to_background'</span>:</span><br><span class="line">      <span class="keyword">this</span>.backgroundListening(message, callback)</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">'content_to_frame'</span>:</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'background_to_frame'</span>:</span><br><span class="line">      <span class="keyword">this</span>.frameListening(message, callback)</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="string">'who cares ?'</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span> <span class="comment">// 只有当return true的时候，callback才会将信息返回</span></span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<p>再根据 <code>area</code> 分别调用不同的 handler</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">contentListening(message, callback) &#123;</span><br><span class="line">  <span class="keyword">const</span> &#123; area &#125; = message</span><br><span class="line">  <span class="keyword">switch</span> (area) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="string">'frame'</span>:</span><br><span class="line">      frame.handle(message, callback)</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">'selector'</span>:</span><br><span class="line">      selector.handle(message, callback)</span><br><span class="line">      <span class="keyword">break</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后在具体处理的 handler 中根据事件类型 <code>operate</code> 分配处理的函数</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 处理 Frame 相关操作的 Handler</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Frame</span> </span>&#123;</span><br><span class="line">  <span class="keyword">constructor</span>(frame_id) &#123;</span><br><span class="line">    <span class="keyword">this</span>.frame_id = frame_id</span><br><span class="line">    <span class="keyword">this</span>.frame = <span class="literal">null</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  handle(message, callback) &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; operate, options &#125; = message</span><br><span class="line">    <span class="keyword">switch</span> (operate) &#123;</span><br><span class="line">      <span class="keyword">case</span> <span class="string">'move'</span>:</span><br><span class="line">        <span class="keyword">this</span>.move(options.position)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      <span class="keyword">case</span> <span class="string">'change_width'</span>:</span><br><span class="line">        <span class="keyword">this</span>.changeWidth(options.type)</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      <span class="keyword">case</span> <span class="string">'toggle_width'</span>:</span><br><span class="line">        <span class="keyword">this</span>.toggleWidth()</span><br><span class="line">        <span class="keyword">break</span></span><br><span class="line">      <span class="comment">// 更多的事件类型</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 省略具体的处理...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Ajax-请求"><a href="#Ajax-请求" class="headerlink" title="Ajax 请求"></a>Ajax 请求</h1><p>可以在 content script 或 background 中发对应的 ajax 请求，两者都能带上对应的 cookies，也没有受到同源策略的影响。但在实践中发现，对于在一些 HTTPS 站点中打开的插件，如果使用 content script 请求 HTTP 的后端接口，会报错。</p>
+<blockquote>
+<p>Mixed Content: The page at ‘…’ was loaded over HTTPS, but requested an insecure resource ‘’. This request has been blocked; the content must be served over HTTPS.</p>
+</blockquote>
+<p>因此还是把 ajax 请求放到了 background 的 js 环境中作请求，在 Vue 中封装了一个 <code>$ajax</code> 方法：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">Vue.prototype.$toBackground = <span class="function"><span class="keyword">function</span> (<span class="params">message</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">    chrome.runtime.sendMessage(&#123;</span><br><span class="line">      ...message,</span><br><span class="line">      direction: <span class="string">'frame_to_background'</span></span><br><span class="line">    &#125;, res =&gt; &#123;</span><br><span class="line">      resolve(res)</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Vue.prototype.$ajax = <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> (<span class="params">options</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> result = <span class="keyword">await</span> <span class="keyword">this</span>.$toBackground(&#123;</span><br><span class="line">      area: <span class="string">'ajax'</span>,</span><br><span class="line">      operate: <span class="string">'request'</span>,</span><br><span class="line">      options</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>同时在 background 的 listener 中配置好 area 为 ajax 的 handler，这样就可以通过通信在 background 环境请求后端接口了。</p>
+<h1 id="日常开发配置"><a href="#日常开发配置" class="headerlink" title="日常开发配置"></a>日常开发配置</h1><p>在开发 Chrome 插件的时候，其实大部分时间都是在开发页面（Vue.js 部分），因此每次都 build 到本地，到 Chrome 扩展商店刷新，大大降低了效率。因此可以通过检查当前环境是否为插件环境，来禁止调用一部分插件环境才支持的 API，从而达到在普通 Web Server 中开发 Vue.js 页面的需求。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 判断当前的环境是否是插件环境</span></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> is_extension_env = <span class="built_in">window</span>.location.protocol === <span class="string">'chrome-extension:'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 对所有使用了插件 API 的地方进行配置</span></span><br><span class="line">Vue.prototype.$toBackground = <span class="function"><span class="keyword">function</span> (<span class="params">message</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (is_extension_env) &#123;</span><br><span class="line">      chrome.runtime.sendMessage(&#123;</span><br><span class="line">        ...message,</span><br><span class="line">        direction: <span class="string">'frame_to_background'</span></span><br><span class="line">      &#125;, res =&gt; &#123;</span><br><span class="line">        resolve(res)</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      resolve(&#123;&#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如果是普通环境，直接调用 ajax 请求不需要通过消息</span></span><br><span class="line">Vue.prototype.$ajax = <span class="keyword">async</span> <span class="function"><span class="keyword">function</span> (<span class="params">options</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> result</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (!is_extension_env) &#123;</span><br><span class="line">    result = <span class="keyword">await</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function"><span class="params">resolve</span> =&gt;</span> request.handle(&#123; options &#125;, resolve))</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    result = <span class="keyword">await</span> <span class="keyword">this</span>.$toBackground(&#123;</span><br><span class="line">      area: <span class="string">'ajax'</span>,</span><br><span class="line">      operate: <span class="string">'request'</span>,</span><br><span class="line">      options: options</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样就可以直接使用 <code>npm run dev</code> 打开网页进行普通的 Web 网页开发调试了。当然一些需要用到 chrome.* API 的功能还是需要进行 build 后实际调试。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="https://crxdoc-zh.appspot.com/extensions/getstarted" target="_blank" rel="noopener">入门：建立 Chrome 扩展程序</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-10-19T02:36:57.496Z" itemprop="dateUpdated">2018-10-19 10:36:57</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Chrome/">Chrome</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/10/18/chrome-extension-dev/&title=《Chrome 插件开发小结》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/10/18/chrome-extension-dev/&title=《Chrome 插件开发小结》 — Random Notes&source=最近都在做 Chrome 插件的开发，虽然一开始整个插件的框不是我搭起来的，但在过程中遇到的一些问题和解决方法，也值得总结一下。" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/10/18/chrome-extension-dev/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Chrome 插件开发小结》 — Random Notes&url=https://blog.imtouch.info/2018/10/18/chrome-extension-dev/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/10/18/chrome-extension-dev/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/06/15/wechat-miniprogram-login-state/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">再谈微信小程序登录态维护</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/10/18/chrome-extension-dev/&title=《Chrome 插件开发小结》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/10/18/chrome-extension-dev/&title=《Chrome 插件开发小结》 — Random Notes&source=最近都在做 Chrome 插件的开发，虽然一开始整个插件的框不是我搭起来的，但在过程中遇到的一些问题和解决方法，也值得总结一下。" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/10/18/chrome-extension-dev/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Chrome 插件开发小结》 — Random Notes&url=https://blog.imtouch.info/2018/10/18/chrome-extension-dev/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/10/18/chrome-extension-dev/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACO0lEQVR42u3aQW7DIBAF0Nz/0qnUXdWG/A+kkvFjFSWOzWMxZoZ5POLx/B7jb37/Or7m933yf00ODAyMyzKew5E8rP11vDSv7vZqbhgYGPdhrITCZAnG34+fm7wAMDAwMJKQmm/pkkXBwMDA2Btw50JwvmQYGBgYeRLbbvjGaWee6G7OxTEwMC7IaA8G/vPzB883MDAwLsJ4liNPSvPy3IZZYWBgHM1oGynGm7x8O7hSyHu5oBgYGEcz8jLZXHBM/tUu6xsMBgbGQYy5VrC8fLZyTRH0MTAwjma0rRV5UT45sExCeV2Yw8DAOJqRPz6fXJustok0BgbGHRht4EsAcyWztgz34xoMDIyjGUmD1+Z6XvAGaBcOAwPjDoy23J+H3c+V2DAwMO7DyA8RdxXO8iJdkQZjYGAczZirz7UNFnlyu7RwGBgYt2G0j0zKanONYnWjBgYGxqGMpHEham4omyTagF6HWgwMjIMYK80Wu9LafNNZpMcYGBjHMdpifX7rOVIefB8r08XAwLgIY65wNn5AG1Lzt8GbHS4GBsbRjDzJLKL4pjtEeAwMjKMZ7cHAStqZp6ZJJW3pCBMDA+NSjGc5Vg4D2m1lsenEwMA4mtGGuTyKtw0WbQKMgYFxN0abZO4Nr5Mpa5sxY2BgHMFo61dtua1u7Qrm+UfAxcDAuD1jPUS2RwjF3hYDAwOj/NyG7DwlfnM8gIGBcTQjD3l5ilufpi4U+DAwMM5mtAlkPtG5Y4C2hIeBgXE04wv6SmqYiDXKsgAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

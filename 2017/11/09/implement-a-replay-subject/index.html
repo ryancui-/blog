@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>实现一个超简单的 ReplaySubject | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Observable,EventBus">
+    <meta name="description" content="需要一个 EventBus在前一篇文章中提到，通过 EventBus 可以使登录逻辑与业务接口同步起来，当然这也是小程序页面间通信的一种方式，因此需要一个 EventBus.">
+<meta name="keywords" content="Observable,EventBus">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实现一个超简单的 ReplaySubject">
+<meta property="og:url" content="https://blog.imtouch.info/2017/11/09/implement-a-replay-subject/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="需要一个 EventBus在前一篇文章中提到，通过 EventBus 可以使登录逻辑与业务接口同步起来，当然这也是小程序页面间通信的一种方式，因此需要一个 EventBus.">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-04T15:07:51.773Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="实现一个超简单的 ReplaySubject">
+<meta name="twitter:description" content="需要一个 EventBus在前一篇文章中提到，通过 EventBus 可以使登录逻辑与业务接口同步起来，当然这也是小程序页面间通信的一种方式，因此需要一个 EventBus.">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">实现一个超简单的 ReplaySubject</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">实现一个超简单的 ReplaySubject</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-09T02:55:40.000Z" itemprop="datePublished" class="page-time">
+  2017-11-09
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#需要一个-EventBus"><span class="post-toc-number">1.</span> <span class="post-toc-text">需要一个 EventBus</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#需要怎样的-EventBus"><span class="post-toc-number">2.</span> <span class="post-toc-text">需要怎样的 EventBus</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总体思路"><span class="post-toc-number">3.</span> <span class="post-toc-text">总体思路</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Subscription"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">Subscription</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#只处理-payload"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">只处理 payload</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#加入-Replay"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">加入 Replay</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-implement-a-replay-subject"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">实现一个超简单的 ReplaySubject</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-09 10:55:40" datetime="2017-11-09T02:55:40.000Z"  itemprop="datePublished">2017-11-09</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="需要一个-EventBus"><a href="#需要一个-EventBus" class="headerlink" title="需要一个 EventBus"></a>需要一个 EventBus</h2><p>在前一篇文章中提到，通过 EventBus 可以使登录逻辑与业务接口同步起来，当然这也是小程序页面间通信的一种方式，因此需要一个 EventBus.</p>
+<a id="more"></a>
+<p>无非就是自己造轮子或者直接用别人的，由于一直在写 Angular，因此第一想法就是能不能把 RxJS 扔进去，那 <code>Observable</code>/<code>ReplaySubject</code> 不就随便用了吗。但其实需要用到的功能没这么多，其实就是一个简单的 <code>publish/subscribe</code> 就完了，于是就决定自己写一个（Google 抄一个）吧。</p>
+<h2 id="需要怎样的-EventBus"><a href="#需要怎样的-EventBus" class="headerlink" title="需要怎样的 EventBus"></a>需要怎样的 EventBus</h2><p>于是找到了<a href="https://aotu.io/notes/2017/01/19/wxapp-event/index.html" target="_blank" rel="noopener">微信小程序跨页面通信解决思路</a>，里面有一个简单的实现，抄过来后我发现有几个问题可以改进：</p>
+<ul>
+<li>不需要处理 <code>args</code>，需要传什么数据麻烦你自行包成一个 <code>Object</code>，只给你传 <code>payload</code> 谢谢</li>
+<li>销毁订阅还要把这个回调函数也传进去也太不科学了，RxJS 不是都是返回一个值，调一下 <code>.unsubscribe()</code> 就可以了吗</li>
+<li>无法实现 Replay，必须先订阅再广播，不满足需求啊</li>
+</ul>
+<p>那就改一改吧。</p>
+<h2 id="总体思路"><a href="#总体思路" class="headerlink" title="总体思路"></a>总体思路</h2><p>思路非常相似，用一个 <code>stores</code> 把所有事件的回调存起来，暴露 <code>on</code> 用于订阅事件，<code>emit</code> 用于广播。跟原来的设计有变化的有：</p>
+<ul>
+<li>新建一个 <code>Subscription</code> 类，用于 <code>on()</code> 的返回值，以后我们可以调用 <code>Subscription.off()</code> 来直接销毁订阅</li>
+<li>不再处理更多的广播数据，只处理 <code>payload</code></li>
+<li>使用 <code>cache</code> 来缓存所有 emit 过的值，并在新订阅者到来时重放这些值</li>
+</ul>
+<h3 id="Subscription"><a href="#Subscription" class="headerlink" title="Subscription"></a>Subscription</h3><p>销毁订阅的实质是去 <code>stores</code> 里把对应的事件回调函数删掉就可以了，文章原来的方法之所以要传入回调就是去定位这个函数，后来改成了把 Page Context 传进去了。</p>
+<p>为了定位可以简单直接一点啊，用一个自增 id 来定位就好了。因此需要一个 ID 生成器，一个简单闭包：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">this</span>.getAutoIncrese = (<span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">let</span> seq = <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">return</span> <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    ++seq;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure>
+<p>定位解决了，下一步就是删掉，只需要拿到这个 <code>stores</code> 变量就 ok 了。那就在 <code>Subscription</code> 里保留一份 <code>EventBus</code> 的实例就好了。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Subscription</span> </span>&#123;</span><br><span class="line">  eventBus;</span><br><span class="line">  eventName;</span><br><span class="line">  cbId;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span>(eventBus, eventName, cbId) &#123;</span><br><span class="line">    <span class="keyword">this</span>.eventBus = eventBus;</span><br><span class="line">    <span class="keyword">this</span>.eventName = eventName;</span><br><span class="line">    <span class="keyword">this</span>.cbId = cbId;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 销毁订阅事件</span></span><br><span class="line">  off() &#123;</span><br><span class="line">    <span class="keyword">this</span>.eventBus.off(<span class="keyword">this</span>.eventName, <span class="keyword">this</span>.cbId);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>整个 <code>Subscripton</code> 就基本完成了，这里的 <code>off()</code> 是直接调用 <code>EventBus</code> 的方法销毁。在 <code>EventBus</code> 的 on 方法中返回一个 <code>Subscription</code> 示例。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="keyword">new</span> Subscription(<span class="keyword">this</span>, eventName, cbId);</span><br></pre></td></tr></table></figure>
+<h3 id="只处理-payload"><a href="#只处理-payload" class="headerlink" title="只处理 payload"></a>只处理 payload</h3><p>当然能够允许多个参数的确更方便，但有时候约定带来的简化是明显的。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">emit(eventName, payload) &#123;</span><br><span class="line">  <span class="keyword">const</span> eventArray = <span class="keyword">this</span>.stores[eventName];</span><br><span class="line">  <span class="keyword">if</span> (eventArray) &#123;</span><br><span class="line">    eventArray.forEach(<span class="function"><span class="params">e</span> =&gt;</span> &#123;</span><br><span class="line">      e.fn.apply(<span class="literal">null</span>, payload);</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不用关心 <code>arguments</code> 究竟是不是一个数据，调用 <code>Array.from</code> 还是 <code>Array.prototype.slice</code> 好，这些细节会让人抓狂。</p>
+<h3 id="加入-Replay"><a href="#加入-Replay" class="headerlink" title="加入 Replay"></a>加入 Replay</h3><p>重放的逻辑也很简单，emit 的时候存起来，判断一下有没有超长，超长去掉最旧那个；on 的时候把存起来的值在新的回调上重放。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// define cache and cacheMax</span></span><br><span class="line"><span class="keyword">constructor</span>(cacheMax) &#123;</span><br><span class="line">  <span class="keyword">this</span>.cache = &#123;&#125;;</span><br><span class="line">  <span class="keyword">this</span>.cacheMax = cacheMax || <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// on segment: replay the emit value on new fn</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.cache[eventName]) &#123;</span><br><span class="line">  <span class="keyword">this</span>.cache[eventName].forEach(<span class="function"><span class="params">payload</span> =&gt;</span> &#123;</span><br><span class="line">    fn.apply(<span class="literal">null</span>, payload);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// emit segment: reserve the emit value</span></span><br><span class="line"><span class="keyword">if</span> (!<span class="keyword">this</span>.cache[eventName]) &#123;</span><br><span class="line">  <span class="keyword">this</span>.cache[eventName] = [];</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">this</span>.cache[eventName].length === <span class="keyword">this</span>.cacheMax) &#123;</span><br><span class="line">  <span class="keyword">this</span>.cache[eventName].shift();</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">this</span>.cache[eventName].push(payload);</span><br></pre></td></tr></table></figure>
+<p>这样一个超简单的 <code>ReplaySubject</code> 就搞定了。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-04T15:07:51.773Z" itemprop="dateUpdated">2018-04-04 23:07:51</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/EventBus/">EventBus</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Observable/">Observable</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2017/11/09/implement-a-replay-subject/&title=《实现一个超简单的 ReplaySubject》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2017/11/09/implement-a-replay-subject/&title=《实现一个超简单的 ReplaySubject》 — Random Notes&source=需要一个 EventBus在前一篇文章中提到，通过 EventBus 可以使登录逻辑与业务接口同步起来，当然这也是小程序页面间通信的一种方式，因此需要一个..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2017/11/09/implement-a-replay-subject/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《实现一个超简单的 ReplaySubject》 — Random Notes&url=https://blog.imtouch.info/2017/11/09/implement-a-replay-subject/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2017/11/09/implement-a-replay-subject/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/11/09/wechat-mini-async-hell/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">小程序 Page 获取登录态，异步满天飞？</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/11/07/angular-double-binding-rusure/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">你确定要用 Angular 双向绑定吗？</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2017/11/09/implement-a-replay-subject/&title=《实现一个超简单的 ReplaySubject》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2017/11/09/implement-a-replay-subject/&title=《实现一个超简单的 ReplaySubject》 — Random Notes&source=需要一个 EventBus在前一篇文章中提到，通过 EventBus 可以使登录逻辑与业务接口同步起来，当然这也是小程序页面间通信的一种方式，因此需要一个..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2017/11/09/implement-a-replay-subject/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《实现一个超简单的 ReplaySubject》 — Random Notes&url=https://blog.imtouch.info/2017/11/09/implement-a-replay-subject/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2017/11/09/implement-a-replay-subject/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACsklEQVR42u3aQW7DMAwEwPz/0ynQU4HAypKUnBQYn4LGjTU6mMKSj0d8PX+v189Xd/691v91df96DZsvPDw8vNbSr67Xe64etr4n36D819ZrxsPDwzvNS4pB9ZH5ont/iYoHHh4e3kd5+Qt6XnjyIoGHh4f3H3l7C8AkEMHDw8O7k5e8uPOFTsrJpCDh4eHh3cObNMA+9fmm/h4eHh5esaueBAfVVtY8xi2sFg8PD+8ArzcmtR4dSI7g+aJ7VWA0BYaHh4cX86pDA9WwoLc1BcbV7+Ph4eFt5fWOxXlTfzKeNR9iwMPDwzvH6/1EfnSuDijMiwQeHh7eOV7y+OTIWx0m6IW2+ZY9qrfi4eHhFXm9hlP+gPwAnUQY5W/x8PDwtvKqr91qeeiVhMnoFR4eHt6dvPIwU3GJ+ZjCfNPx8PDwzvF6r+xqC39eQnoBCh4eHt4JXi9O3TtotTeqeNPfw8PDwzvAS9r8+Z3Vw3fv4P4mjMDDw8M7wJsHr5PwIo8w8nYaHh4e3jlefnSuNqLysrGtDCQxLh4eHt6Yl0cAvUNzDzYJhfHw8PBO8ybtpc+Wk+oW4OHh4e3i5S/Z3is7/3Y+xICHh4d3D693eK1WnvXYQS+MKMS4eHh4eAd4yVhVrwU1H0Goxg2FlBoPDw+vxZs/pnpE7kUS1RKCh4eHdw+vevrOj8jJlQ8K5K04PDw8vBO8/KZqGegNqva2KSpseHh4eJt4z+J1cHeLza313y/rHh4eHt6YNznyrh82Hwvo/TIeHh7ePbxqMagOY1ULRhJ/bOjv4eHh4Y1588fnAwT5EnuhcDn9xcPDwzvGq46i9uLaHBYVKjw8PLwv4OXdpeqie2OpbyJmPDw8vGO8atOrF1XkJWTSfsPDw8M7zZs0wHpjW/nG5cHutsACDw8Pb8X7AU96DQGWUOQwAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

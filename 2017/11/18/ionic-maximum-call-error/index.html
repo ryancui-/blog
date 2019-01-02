@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Ionic 构建生产版本报错 Maximum call stack size | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Ionic,Bug">
+    <meta name="description" content="Ionic 构建失败使用 ionic-app-scripts build 构建一个应用的生产版本时，发现出现了以下的错误：">
+<meta name="keywords" content="Ionic,Bug">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ionic 构建生产版本报错 Maximum call stack size">
+<meta property="og:url" content="https://blog.imtouch.info/2017/11/18/ionic-maximum-call-error/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="Ionic 构建失败使用 ionic-app-scripts build 构建一个应用的生产版本时，发现出现了以下的错误：">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-04T15:08:58.664Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ionic 构建生产版本报错 Maximum call stack size">
+<meta name="twitter:description" content="Ionic 构建失败使用 ionic-app-scripts build 构建一个应用的生产版本时，发现出现了以下的错误：">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Ionic 构建生产版本报错 Maximum call stack size</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Ionic 构建生产版本报错 Maximum call stack size</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-11-18T02:30:03.000Z" itemprop="datePublished" class="page-time">
+  2017-11-18
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Ionic-构建失败"><span class="post-toc-number">1.</span> <span class="post-toc-text">Ionic 构建失败</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#怎么办"><span class="post-toc-number">2.</span> <span class="post-toc-text">怎么办</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#是谁的锅"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">是谁的锅</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#解决"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">解决</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-ionic-maximum-call-error"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Ionic 构建生产版本报错 Maximum call stack size</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-11-18 10:30:03" datetime="2017-11-18T02:30:03.000Z"  itemprop="datePublished">2017-11-18</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="Ionic-构建失败"><a href="#Ionic-构建失败" class="headerlink" title="Ionic 构建失败"></a>Ionic 构建失败</h2><p>使用 <code>ionic-app-scripts build</code> 构建一个应用的生产版本时，发现出现了以下的错误：</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[18:21:18]  ionic-app-script task: &quot;build&quot;</span><br><span class="line">[18:21:18]  Error: ./node_modules/sockjs-client/lib/main.js Module build failed: RangeError: Maximum call stack size</span><br><span class="line">            exceeded at narrowTypeByInstanceof</span><br><span class="line">            (/Users/ryancui/kit/zhangting-wx/node_modules/typescript/lib/typescript.js:36003:44) at</span><br><span class="line">            narrowTypeByBinaryExpression</span><br><span class="line">            (/Users/ryancui/kit/zhangting-wx/node_modules/typescript/lib/typescript.js:35911:32) at narrowType</span><br><span class="line">            (/Users/ryancui/kit/zhangting-wx/node_modules/typescript/lib/typescript.js:36124:32) at narrowType</span><br><span class="line">            (/Users/ryancui/kit/zhangting-wx/node_modules/typescript/lib/typescript.js:36122:32) at narrowType</span><br><span class="line">            (/Users/ryancui/kit/zhangting-wx/node_modules/typescript/lib/typescript.js:36127:36) at</span><br><span class="line">            getTypeAtFlowCondition (/Users/ryancui/kit/zhangting-wx/node_modules/typescript/lib/typescript.js:35723:36)</span><br><span class="line">            at getTypeAtFlowNode (/Users/ryancui/kit/zhangting-wx/node_modules/typescript/lib/typescript.js:35604:32) at</span><br><span class="line">            getFlowTypeOfReference (/Users/ryancui/kit/zhangting-wx/node_modules/typescript/lib/typescript.js:35560:51)</span><br><span class="line">            at checkIdentifier (/Users/ryancui/kit/zhangting-wx/node_modules/typescript/lib/typescript.js:36313:28) at</span><br><span class="line">            checkExpressionWorker (/Users/ryancui/kit/zhangting-wx/node_modules/typescript/lib/typescript.js:41277:28) @</span><br><span class="line">            ./node_modules/sockjs-client/lib/entry.js 3:17-34 @</span><br><span class="line">            ./src/pages/home/business-consultation/BusinessConsultationService.ts @ ./src/app/app.module.ngfactory.ts @</span><br></pre></td></tr></table></figure>
+<p>定位一下问题，发现是使用了 <code>sockjs-client</code> 的包导致的，注释掉下面一句的代码后，发现编译通过了！</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> sock = <span class="keyword">new</span> SockJS(WEBSOCKET_URL + <span class="string">'/consulting?token='</span> + <span class="keyword">this</span>.globalData.token);</span><br></pre></td></tr></table></figure>
+<p>另外，直接用 <code>npm run build</code> 打包并不会有什么问题，只有 <code>npm run build --prod</code> 才出现问题。由于使用了 <code>--prod</code> 打出的包体积比 <code>--dev</code> 会小很多，因此这个问题必须解决。</p>
+<h2 id="怎么办"><a href="#怎么办" class="headerlink" title="怎么办"></a>怎么办</h2><p>遇事不决找 Google，一番查找找到了一个一毛一样的问题，可惜三个月了并没有人鸟他。</p>
+<p><a href="https://stackoverflow.com/questions/45463022/ionic-production-build-fails-when-using-sockjs-client-with-maximum-call-stack-s" target="_blank" rel="noopener">ionic production build fails when using sockjs-client with “Maximum call stack size exceeded”</a></p>
+<p>实在太惨了，看来这个问题有点复杂啊。</p>
+<h3 id="是谁的锅"><a href="#是谁的锅" class="headerlink" title="是谁的锅"></a>是谁的锅</h3><p>先把锅分出去，涉及到这个 build 的有：</p>
+<ul>
+<li>Ionic Framework</li>
+<li>Webpack</li>
+<li>TypeScript</li>
+<li>sockjs-client</li>
+</ul>
+<p>因此，首先在用 <code>angular-cli</code> 初始的项目里打包一下这个 <code>sockjs</code>，发现并没有问题，加上 build 日志中的 <code>ngc</code> 编译没有报错，报错出现在 <code>webpack started</code> 后，因此 <code>TypeScript</code> 和 <code>sockjs-client</code> 都应该是清白的。</p>
+<p>那应该是 <code>ionic-app-scripts</code> 还有它依赖的 <code>webpack</code> 的问题了，去搜下 Issue，发现了这个：</p>
+<p><a href="https://github.com/ionic-team/ionic-app-scripts/issues/1247" target="_blank" rel="noopener">[3.0.0] JavaScript heap out of memory</a></p>
+<p>大意是把 <code>ionic-app-scripts</code> 从 2.1.4 升级到 3.1.2 后，使用 <code>--prod</code> 打包会出现 JavaScript 堆溢出。</p>
+<p>现在我们遇到的问题是调用栈满了，为什么调用栈会满了呢？一般来说 <code>sockjs-client</code> 这种使用这么广泛的库应该不会是代码的 bug, 联想一下其实跟这个遇到的问题是类似的。</p>
+<h3 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h3><p>Issue 说在 2.1.4 没问题，3.1.2 堆溢出了，但我们在用 2.1.4 啊，特么调用栈溢出了啊。Fine, Let’s try 3.1.2</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[11:57:08]  ionic-app-scripts 3.1.2</span><br><span class="line">[11:57:08]  build prod started ...</span><br><span class="line">[11:57:08]  clean started ...</span><br><span class="line">[11:57:08]  clean finished in 2 ms</span><br><span class="line">[11:57:08]  copy started ...</span><br><span class="line">[11:57:08]  copy finished in 94 ms</span><br><span class="line">[11:57:08]  deeplinks started ...</span><br><span class="line">[11:57:08]  deeplinks finished in 21 ms</span><br><span class="line">[11:57:08]  ngc started ...</span><br><span class="line">[11:57:16]  ngc finished in 7.87 s</span><br><span class="line">[11:57:16]  preprocess started ...</span><br><span class="line">[11:57:16]  preprocess finished in 1 ms</span><br><span class="line">[11:57:16]  webpack started ...</span><br><span class="line">[11:58:08]  webpack finished in 52.80 s</span><br><span class="line">[11:58:08]  uglify started ...</span><br><span class="line">[11:58:08]  sass started ...</span><br><span class="line">[11:58:10]  sass finished in 1.06 s</span><br><span class="line">[11:58:10]  cleancss started ...</span><br><span class="line">[11:58:11]  cleancss finished in 1.06 s</span><br><span class="line">[11:58:29]  uglify finished in 20.64 s</span><br><span class="line">[11:58:29]  postprocess started ...</span><br><span class="line">[11:58:29]  postprocess finished in 51 ms</span><br><span class="line">[11:58:29]  lint started ...</span><br><span class="line">[11:58:29]  build prod finished in 81.53 s</span><br><span class="line">[11:58:32]  lint finished in 2.48 s</span><br></pre></td></tr></table></figure>
+<p>可以了你敢信！</p>
+<p>然而注意到 webpack 打包居然用了近一分钟，会不会这次只是侥幸成功呢？</p>
+<p>多试几次应该是没有问题了。不过，3.1.2 的构建速度比 2.1.4 下降了不少，慢了快一倍。</p>
+<table>
+<thead>
+<tr>
+<th>Compile Type/Version</th>
+<th style="text-align:left">v2.1.4</th>
+<th>v3.1.2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>JIT</td>
+<td style="text-align:left">~8s</td>
+<td>~15s</td>
+</tr>
+<tr>
+<td>AOT</td>
+<td style="text-align:left">~50s</td>
+<td>~80s</td>
+</tr>
+</tbody>
+</table>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-04T15:08:58.664Z" itemprop="dateUpdated">2018-04-04 23:08:58</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Bug/">Bug</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ionic/">Ionic</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2017/11/18/ionic-maximum-call-error/&title=《Ionic 构建生产版本报错 Maximum call stack size》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2017/11/18/ionic-maximum-call-error/&title=《Ionic 构建生产版本报错 Maximum call stack size》 — Random Notes&source=Ionic 构建失败使用 ionic-app-scripts build 构建一个应用的生产版本时，发现出现了以下的错误：" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2017/11/18/ionic-maximum-call-error/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Ionic 构建生产版本报错 Maximum call stack size》 — Random Notes&url=https://blog.imtouch.info/2017/11/18/ionic-maximum-call-error/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2017/11/18/ionic-maximum-call-error/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/12/06/server-configurate/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">服务器由零配置</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/11/09/wechat-mini-async-hell/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">小程序 Page 获取登录态，异步满天飞？</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2017/11/18/ionic-maximum-call-error/&title=《Ionic 构建生产版本报错 Maximum call stack size》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2017/11/18/ionic-maximum-call-error/&title=《Ionic 构建生产版本报错 Maximum call stack size》 — Random Notes&source=Ionic 构建失败使用 ionic-app-scripts build 构建一个应用的生产版本时，发现出现了以下的错误：" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2017/11/18/ionic-maximum-call-error/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Ionic 构建生产版本报错 Maximum call stack size》 — Random Notes&url=https://blog.imtouch.info/2017/11/18/ionic-maximum-call-error/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2017/11/18/ionic-maximum-call-error/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACLUlEQVR42u3aQZKDMAwFUe5/aeYAU5j+kpkp2+1VKkXAj4UiS7ouvO5f6+kafv34V9cXS4YMGcsy7uEaPyD9htx5/DoeqTJkyDiAQUIhIdXCLiG97FmGDBky8ObSxJE/V4YMGTLS291gkfD6bwFXhgwZCzLIIbZWIKu9jg/P4jJkyFiQwavuf//5k/6GDBkylmLc4erw+onm465kyJCxNYMHuLSpmaaA5FD98hQZMmRszeDjFLwQRjY6a4BDhgwZpzEmhLxSIa/2El+6HDJkyNiIwdsAPDTzhJI8CzVBZciQsTUjLYqNA+LcAlycesqQIWNTBh9u4AF0VgmPD4rJkCFjV0Zt3IG3BDivc08ZMmScyRgnYTxpq/2Wj6bJkCHjTMasUBtsgpfSyLSIDBkytmPwQyw5ZPLBr37LoXgWlyFDxuKM2kgEGZVIrymGbBkyZGzKSAcmapuutScvsGTIkHEOoz9UwRO4TuL4eAcZMmRszSDNy/5BlLwUfqiORy5kyJCxHaNTyu/cYULBToYMGccwOqW32qAGD8fx/4YMGTK2Y/Bg98WwRVxi68dsGTJkLMK4w1VrW6alt+DgKkOGjAMY6XG01nrksDQ1jGEyZMhYlsGDbOfwmTLi9y1DhowDGLXAlzYm+2nfS54rQ4YMGcNEcFYKOC7JyZAhQwZ/TC1DS7cekGTIkHEAgzcD+klh2iSYXG6TIUPGgow0jPKN8pIcH85oNTVlyJCxHuMHq6N0chJc3bQAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

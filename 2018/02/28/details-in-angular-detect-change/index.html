@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Angular 变化检测中的细节 | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Angular,变化检测,源码">
+    <meta name="description" content="年前在公司举行了一场盛况空前（误）的前端分享会，我在会上大谈特谈了关于 Angular 的变化检测机制，就在即将迎来完美的收官之时，总是会有淘气鬼提出各种奇奇怪怪的问题，让人不胜其烦（大误）。由于当时无言以对、支支吾吾，便只好会后一番仔细研究后，发出文章以正视听。望日后能弓调马服再大谈特谈（逃">
+<meta name="keywords" content="Angular,变化检测,源码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Angular 变化检测中的细节">
+<meta property="og:url" content="https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="年前在公司举行了一场盛况空前（误）的前端分享会，我在会上大谈特谈了关于 Angular 的变化检测机制，就在即将迎来完美的收官之时，总是会有淘气鬼提出各种奇奇怪怪的问题，让人不胜其烦（大误）。由于当时无言以对、支支吾吾，便只好会后一番仔细研究后，发出文章以正视听。望日后能弓调马服再大谈特谈（逃">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/component-tree.png">
+<meta property="og:image" content="https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/component-tree-complex.png">
+<meta property="og:image" content="https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/result.png">
+<meta property="og:updated_time" content="2018-04-04T15:07:23.032Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Angular 变化检测中的细节">
+<meta name="twitter:description" content="年前在公司举行了一场盛况空前（误）的前端分享会，我在会上大谈特谈了关于 Angular 的变化检测机制，就在即将迎来完美的收官之时，总是会有淘气鬼提出各种奇奇怪怪的问题，让人不胜其烦（大误）。由于当时无言以对、支支吾吾，便只好会后一番仔细研究后，发出文章以正视听。望日后能弓调马服再大谈特谈（逃">
+<meta name="twitter:image" content="https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/component-tree.png">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Angular 变化检测中的细节</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Angular 变化检测中的细节</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-02-28T06:04:34.000Z" itemprop="datePublished" class="page-time">
+  2018-02-28
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#onPush-也会触发-View-更新？"><span class="post-toc-number">1.</span> <span class="post-toc-text">onPush 也会触发 View 更新？</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Question"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">Question</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#更诡异的情况"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">更诡异的情况</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#调用绑定事件会自动-markForCheck"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">调用绑定事件会自动 markForCheck</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#OnPush-会更新-View-的情况"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">OnPush 会更新 View 的情况</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Input-属性改变"><span class="post-toc-number">1.4.1.</span> <span class="post-toc-text">@Input 属性改变</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#组件内触发绑定事件"><span class="post-toc-number">1.4.2.</span> <span class="post-toc-text">组件内触发绑定事件</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#手动调用-markForCheck"><span class="post-toc-number">1.4.3.</span> <span class="post-toc-text">手动调用 markForCheck</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Async-pipe"><span class="post-toc-number">1.4.4.</span> <span class="post-toc-text">Async pipe</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ViewCheck-的执行顺序"><span class="post-toc-number">2.</span> <span class="post-toc-text">ViewCheck 的执行顺序</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Question-1"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">Question</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#到底是谁-Check-谁？"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">到底是谁 Check 谁？</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#详细描述"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">详细描述</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#无奖问答"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">无奖问答</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ContentCheck"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">ContentCheck</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#总结"><span class="post-toc-number">3.</span> <span class="post-toc-text">总结</span></a></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-details-in-angular-detect-change"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Angular 变化检测中的细节</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-02-28 14:04:34" datetime="2018-02-28T06:04:34.000Z"  itemprop="datePublished">2018-02-28</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>年前在公司举行了一场盛况空前（误）的前端分享会，我在会上大谈特谈了关于 Angular 的变化检测机制，就在即将迎来完美的收官之时，总是会有淘气鬼提出各种奇奇怪怪的问题，让人不胜其烦（大误）。由于当时无言以对、支支吾吾，便只好会后一番仔细研究后，发出文章以正视听。望日后能弓调马服再大谈特谈（逃</p>
+<a id="more"></a>
+<blockquote>
+<p>文中提及的 Angular 源码均基于 <a href="https://github.com/angular/angular/tree/4.4.6" target="_blank" rel="noopener">Angular 官方仓库 tag 4.4.6</a></p>
+</blockquote>
+<h2 id="onPush-也会触发-View-更新？"><a href="#onPush-也会触发-View-更新？" class="headerlink" title="onPush 也会触发 View 更新？"></a>onPush 也会触发 View 更新？</h2><h3 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h3><p>淘气鬼的第一个问题是关于 onPush 策略下 View 的更新问题。</p>
+<p>首先是一段网上举例再多不过的关于使用 Observable + onPush 来减少组件变化检测的代码：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  selector: <span class="string">'app'</span>,</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;button (click)="emit()"&gt;&lt;/button&gt;</span></span><br><span class="line"><span class="string">    &lt;sub-a [observable]="subject"&gt;&lt;/sub-a&gt;</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> AppComponent &#123;</span><br><span class="line">  subject = <span class="keyword">new</span> Subject();</span><br><span class="line">  </span><br><span class="line">  emit() &#123;</span><br><span class="line">    <span class="keyword">this</span>.subject.next(<span class="built_in">Math</span>.random());</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  selector: <span class="string">'sub-a'</span>,</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;p&gt;&#123;&#123;local&#125;&#125;&lt;/p&gt;</span></span><br><span class="line"><span class="string">  `</span>,</span><br><span class="line">  changeDetection: ChangeDetectionStrategy.OnPush</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> SubAComponent <span class="keyword">implements</span> OnInit &#123;</span><br><span class="line"></span><br><span class="line">  local;</span><br><span class="line">  </span><br><span class="line">  <span class="meta">@Input</span>() observable;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> changeDetector: ChangeDetectorRef</span>) &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ngOnInit() &#123;</span><br><span class="line">    <span class="keyword">this</span>.observable.subscribe(<span class="function"><span class="params">value</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.local = value;</span><br><span class="line">      <span class="comment">// this.changeDetector.markForCheck();</span></span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>毫无疑问地，了解过 <code>ChangeDetectionStrategy.OnPush</code> 的同学都明白，此时 sub-a 组件的 <code>local</code> 值虽然被改变了，但由于没有调用 <code>markForCheck</code> 方法，且所有 <code>@Input</code> 属性没有发生改变，Angular 会跳过该组件（及其子组件）的所有变化检测，因此页面并不会更新。去掉这个 <code>markForCheck</code> 方法的注释，页面就能够得到更新了。具体可以去查阅其他关于 <code>OnPush</code> 策略的文章。</p>
+<p>好了，这时候淘气鬼说，那如果我们不是改变一个 <code>@Input</code> 的变量，而是一个内部变量呢？View 会更新吗？即：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  selector: <span class="string">'app'</span>,</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;sub-a&gt;&lt;/sub-a&gt;</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> AppComponent &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  selector: <span class="string">'sub-a'</span>,</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;button (click)="change()"&gt;&lt;/button&gt;</span></span><br><span class="line"><span class="string">    &lt;p&gt;&#123;&#123;local&#125;&#125;&lt;/p&gt;</span></span><br><span class="line"><span class="string">  `</span>,</span><br><span class="line">  changeDetection: ChangeDetectionStrategy.OnPush</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> SubAComponent <span class="keyword">implements</span> OnInit &#123;</span><br><span class="line"></span><br><span class="line">  local;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> changeDetector: ChangeDetectorRef</span>) &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ngOnInit() &#123;</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  change() &#123;</span><br><span class="line">    <span class="keyword">this</span>.local = <span class="built_in">Math</span>.random();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里直接把父子组件间的变量传递去掉了，方便理解。我一开始是认为<strong>View 不会更新</strong>，原因是既然输入属性没有发生改变，那这个 <code>SubA</code> 组件的变化检测就应该被 skip 掉。然而：</p>
+<p><strong>他变了。</strong></p>
+<p>简直击碎了我的世界观。</p>
+<h3 id="更诡异的情况"><a href="#更诡异的情况" class="headerlink" title="更诡异的情况"></a>更诡异的情况</h3><p>在我阅读众多资料对 <code>OnPush</code> 策略与 Angular 变化检测的理解中，点击按钮后所发生的应该是：</p>
+<p>click event =&gt; ngZone 捕获，开始一次从根的变化检测 =&gt; 到 OnPush 策略的组件，跳过 =&gt; 页面不会更新</p>
+<p>是哪里出了问题呢？抱着疑问在 Google 的帮助下四海为家（误），期间也咨询了不少人，但也得不到满意的答复，直到在<a href="https://angular.io/api/core/ChangeDetectorRef" target="_blank" rel="noopener">官网</a>的 API 上看到这样一个例子：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  selector: <span class="string">'cmp'</span>,</span><br><span class="line">  changeDetection: ChangeDetectionStrategy.OnPush,</span><br><span class="line">  template: <span class="string">`Number of ticks: &#123;&#123;numberOfTicks&#125;&#125;`</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">class</span> Cmp &#123;</span><br><span class="line">  numberOfTicks = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> ref: ChangeDetectorRef</span>) &#123;</span><br><span class="line">    setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.numberOfTicks++;</span><br><span class="line">      <span class="comment">// the following is required, otherwise the view will not be updated</span></span><br><span class="line">      <span class="keyword">this</span>.ref.markForCheck();</span><br><span class="line">    &#125;, <span class="number">1000</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  selector: <span class="string">'app'</span>,</span><br><span class="line">  changeDetection: ChangeDetectionStrategy.OnPush,</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;cmp&gt;&lt;cmp&gt;</span></span><br><span class="line"><span class="string">  `</span>,</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">class</span> App &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个例子跟淘气鬼的例子很像，区别只在于官网使用了 <code>setInterval</code> 来触发 ViewModel 的更新，而淘气鬼就搞了个按钮。</p>
+<p>但是，这个 <code>setInterval</code> 居然是<strong>不会</strong>更新 View，而点击按钮却是<strong>会</strong>更新 View，纳尼？这两个对 zone 来说不是都是异步吗？都是触发一轮变化检测吗？</p>
+<p>把淘气鬼的例子改了下，发现的确如此，调用同一个函数 <code>change</code>，每一秒的定时任务 View 不会更新，点击按钮界面就能更新！WHY？如此看来那应该是 <code>ngZone</code> 对这两种异步事件的处理有区别。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  selector: <span class="string">'app'</span>,</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">	&lt;sub-a&gt;&lt;/sub-a&gt;</span></span><br><span class="line"><span class="string">  `</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> AppComponent &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span>(&#123;</span><br><span class="line">  selector: <span class="string">'sub-a'</span>,</span><br><span class="line">  template: <span class="string">`</span></span><br><span class="line"><span class="string">    &lt;button (click)="change()"&gt;&lt;/button&gt;</span></span><br><span class="line"><span class="string">    &lt;p&gt;&#123;&#123;local&#125;&#125;&lt;/p&gt;</span></span><br><span class="line"><span class="string">  `</span>,</span><br><span class="line">  changeDetection: ChangeDetectionStrategy.OnPush</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> SubAComponent <span class="keyword">implements</span> OnInit &#123;</span><br><span class="line"></span><br><span class="line">  local;</span><br><span class="line">  </span><br><span class="line">  <span class="keyword">constructor</span>(<span class="params"><span class="keyword">private</span> changeDetector: ChangeDetectorRef</span>) &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  ngOnInit() &#123;</span><br><span class="line">    setInterval(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.change();</span><br><span class="line">    &#125;, <span class="number">1000</span>);</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  change() &#123;</span><br><span class="line">    <span class="keyword">this</span>.local = <span class="built_in">Math</span>.random();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="调用绑定事件会自动-markForCheck"><a href="#调用绑定事件会自动-markForCheck" class="headerlink" title="调用绑定事件会自动 markForCheck"></a>调用绑定事件会自动 markForCheck</h3><p>在 StackOvewflow 上搜索一番，果然还是皇天不负有心人啊</p>
+<p><a href="https://stackoverflow.com/questions/45287556/angular-onpush-component-when-trigger-event-in-view-angular-force-markforcheck" target="_blank" rel="noopener">Angular OnPush Component, when trigger event in view angular force markForCheck automatically?</a></p>
+<p>原来原因是，对于 DOM 中绑定的事件，会在内部自动把 <code>markForCheck</code> 帮你调用了。来我们看看源码：</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// packages/core/src/view/provider.ts - L134</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">createDirectiveInstance</span>(<span class="params">view: ViewData, def: NodeDef</span>): <span class="title">any</span> </span>&#123;</span><br><span class="line">  <span class="comment">// Omit...</span></span><br><span class="line">  </span><br><span class="line">  <span class="keyword">if</span> (def.outputs.length) &#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i &lt; def.outputs.length; i++) &#123;</span><br><span class="line">      <span class="keyword">const</span> output = def.outputs[i];</span><br><span class="line">      <span class="keyword">const</span> subscription = instance[output.propName !].subscribe(</span><br><span class="line">          eventHandlerClosure(view, def.parent !.nodeIndex, output.eventName));</span><br><span class="line">      view.disposables ![def.outputIndex + i] = subscription.unsubscribe.bind(subscription);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> instance;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">eventHandlerClosure</span>(<span class="params">view: ViewData, index: <span class="built_in">number</span>, eventName: <span class="built_in">string</span></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="function">(<span class="params">event: <span class="built_in">any</span></span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> dispatchEvent(view, index, eventName, event);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (e) &#123;</span><br><span class="line">      <span class="comment">// Attention: Don't rethrow, as it would cancel Observable subscriptions!</span></span><br><span class="line">      view.root.errorHandler.handleError(e);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里只需要看到绑定事件的处理函数是 <code>eventHandlerClosure</code>，而这个处理函数则是调用了 <code>dispatchEvent</code>。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// packages/core/src/view/util.ts - L128</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">dispatchEvent</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    view: ViewData, nodeIndex: <span class="built_in">number</span>, eventName: <span class="built_in">string</span>, event: <span class="built_in">any</span></span>): <span class="title">boolean</span> </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> nodeDef = view.def.nodes[nodeIndex];</span><br><span class="line">  <span class="keyword">const</span> startView =</span><br><span class="line">      nodeDef.flags &amp; NodeFlags.ComponentView ? asElementData(view, nodeIndex).componentView : view;</span><br><span class="line">  markParentViewsForCheck(startView);</span><br><span class="line">  <span class="keyword">return</span> Services.handleEvent(view, nodeIndex, eventName, event);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>而 <code>dispatchEvent</code> 则是调用了 <code>markParentViewsForCheck</code>。没错就是这个通知了 Angular 触发 View 更新，我们来看看 <code>ChangeDetectorRef.markForCheck</code> 的源码。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// packages/core/src/view/refs.ts - L248</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">class</span> ViewRef_ <span class="keyword">implements</span> EmbeddedViewRef&lt;<span class="built_in">any</span>&gt;, InternalViewRef &#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Omit...</span></span><br><span class="line">  </span><br><span class="line">  markForCheck(): <span class="built_in">void</span> &#123; markParentViewsForCheck(<span class="keyword">this</span>._view); &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// Omit...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>没错，<code>markForCheck</code> 的内部就是通过 <code>markParentViewsForCheck</code> 实现的。</p>
+<p>总结下来，其实我的理解是没错的，使用了 <code>OnPush</code> 策略，无论如何改变变量，只要没有 <code>markForCheck</code>，View 的确是不会更新的。</p>
+<h3 id="OnPush-会更新-View-的情况"><a href="#OnPush-会更新-View-的情况" class="headerlink" title="OnPush 会更新 View 的情况"></a>OnPush 会更新 View 的情况</h3><p>那篇 StackOverflow 有个介绍 <code>OnPush</code> 策略下什么情况会更新 View 的总结，顺带也搬运一下。</p>
+<p><a href="https://stackoverflow.com/questions/42312075/change-detection-issue-why-is-this-changing-when-its-the-same-object-referen" target="_blank" rel="noopener">Change Detection issue — Why is this changing when it’s the same object reference with On Push</a></p>
+<h4 id="Input-属性改变"><a href="#Input-属性改变" class="headerlink" title="@Input 属性改变"></a><code>@Input</code> 属性改变</h4><p>这是最通常的理解了。内部通过将 <code>ViewState</code> 置为 <code>ChecksEnabled</code> 使组件重新加入变化检测。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// packages/core/src/view/provider.ts - L424</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">updateProp</span>(<span class="params"></span></span></span><br><span class="line"><span class="function"><span class="params">    view: ViewData, providerData: ProviderData, def: NodeDef, bindingIdx: <span class="built_in">number</span>, value: <span class="built_in">any</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">    changes: SimpleChanges</span>): <span class="title">SimpleChanges</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (def.flags &amp; NodeFlags.Component) &#123;</span><br><span class="line">    <span class="keyword">const</span> compView = asElementData(view, def.parent !.nodeIndex).componentView;</span><br><span class="line">    <span class="keyword">if</span> (compView.def.flags &amp; ViewFlags.OnPush) &#123;</span><br><span class="line">      compView.state |= ViewState.ChecksEnabled;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="组件内触发绑定事件"><a href="#组件内触发绑定事件" class="headerlink" title="组件内触发绑定事件"></a>组件内触发绑定事件</h4><p>也就是上文分析的情况。</p>
+<h4 id="手动调用-markForCheck"><a href="#手动调用-markForCheck" class="headerlink" title="手动调用 markForCheck"></a>手动调用 markForCheck</h4><p>这个也没有问题，手动把该组件重新设置为可 Check。</p>
+<h4 id="Async-pipe"><a href="#Async-pipe" class="headerlink" title="Async pipe"></a>Async pipe</h4><p>这个我也真没想到，async pipe 内部也自动调用了 <code>markForCheck</code>，不过考虑到它连销毁都自带了，这也可以理解。</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// packages/common/src/pipes/async_pipe.ts - L139</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> _updateLatestValue(<span class="keyword">async</span>: <span class="built_in">any</span>, value: <span class="built_in">Object</span>): <span class="built_in">void</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (<span class="keyword">async</span> === <span class="keyword">this</span>._obj) &#123;</span><br><span class="line">    <span class="keyword">this</span>._latestValue = value;</span><br><span class="line">    <span class="keyword">this</span>._ref.markForCheck();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="ViewCheck-的执行顺序"><a href="#ViewCheck-的执行顺序" class="headerlink" title="ViewCheck 的执行顺序"></a>ViewCheck 的执行顺序</h2><h3 id="Question-1"><a href="#Question-1" class="headerlink" title="Question"></a>Question</h3><p>这是淘气鬼的第二个问题，在展示组件生命周期钩子调用顺序的时候，有如下的组件树（丑）结构：</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="component-tree.png" alt="组件树" title="">
+                </div>
+                <div class="image-caption">组件树</div>
+            </figure>
+<p>请问他的 <code>ngAfterViewChecked</code> 钩子的执行顺序是啥呢？</p>
+<p>我一开始以为会是 BDCA，没错就是一个树的后序遍历。但现实却是 DBCA！这是什么鬼！</p>
+<h3 id="到底是谁-Check-谁？"><a href="#到底是谁-Check-谁？" class="headerlink" title="到底是谁 Check 谁？"></a>到底是谁 Check 谁？</h3><p>这个其实怪我一时没有明白 Change Detection 的步骤，这里强烈推荐我认为全网写得最好的关于 Angular 变化检测的文章：</p>
+<p><a href="https://blog.angularindepth.com/everything-you-need-to-know-about-change-detection-in-angular-8006c51d206f" target="_blank" rel="noopener">Everything you need to know about change detection in Angular</a></p>
+<p>里面总结了对于每个组件一轮变化检测要执行的步骤，重点关注 10) 和 12) 步：</p>
+<blockquote>
+<p>10) runs change detection for a child view (repeats the steps in this list)</p>
+<p>12) call <code>AfterViewInit</code> and <code>AfterViewChecked</code> lifecycle hooks on <strong>child component</strong> instance (<code>AfterViewInit</code> is called only during first check)</p>
+</blockquote>
+<p>整个步骤看下来，我们发现了这样两件事。</p>
+<p>第一，子组件的递归变化检测是在调用 <code>ViewCheck</code> 钩子<strong>前</strong>进行的。</p>
+<p>第二，比如，当组件 A 执行完一轮变化检测后，<code>A.ngAfterViewChecked</code> <strong>并没有</strong>被调用。仔细查看每一个步骤，对组件 A 的变化检测中，确实没有调用 A 的 <code>ViewCheck</code> 钩子这样的步骤。那这个钩子是在什么时候调用的呢？</p>
+<p>回到上面提到的 12) 步，对于每个组件的一轮变化检测，需要去调用<strong>子组件</strong>的 <code>ViewCheck</code> 钩子。因此，比如，A 组件的 <code>ViewCheck</code> 钩子是谁调用的呢？就是 A 组件的父组件调用的，而不是 A 自身，是 A 的父组件去确认 A 已经 Check 了。</p>
+<p>理解了这两个以后，上面那个组件树的 <code>ViewCheck</code> 调用顺序就非常清晰了。</p>
+<h3 id="详细描述"><a href="#详细描述" class="headerlink" title="详细描述"></a>详细描述</h3><p>针对上图的组件树，只 focus 递归变化检测和 ViewCheck 下的具体调用情况如下：</p>
+<ol>
+<li>A Begin Change detection</li>
+<li>A 组件有两个子组件 B/C</li>
+<li>B Begin Change detection</li>
+<li>B 调用所有子组件的 ViewCheck 钩子（无输出）</li>
+<li>B End Change detection</li>
+<li>C Begin Change detection</li>
+<li>C 组件有子组件 D</li>
+<li>D Begin Change detection</li>
+<li>D 调用所有子组件的 ViewCheck 钩子（无输出）</li>
+<li>D End Change detection</li>
+<li>C 调用所有子组件的 ViewCheck 钩子（输出 D）</li>
+<li>C End Change detection</li>
+<li>A 调用所有子组件的 ViewCheck 钩子（输出 B C）</li>
+<li>A End Change detection</li>
+</ol>
+<p>这样下来，DBCA 的输出就非常显而易见了。</p>
+<h3 id="无奖问答"><a href="#无奖问答" class="headerlink" title="无奖问答"></a>无奖问答</h3><p>看看你掌握了吗？下面这个组件树的 <code>ViewCheck</code> 钩子顺序是啥呢？</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="component-tree-complex.png" alt="搞事的组件树" title="">
+                </div>
+                <div class="image-caption">搞事的组件树</div>
+            </figure>
+<p>答案看后文的图片。</p>
+<h3 id="ContentCheck"><a href="#ContentCheck" class="headerlink" title="ContentCheck"></a>ContentCheck</h3><p>值得注意的是，<code>ContentCheck</code> 的顺序跟 <code>ViewCheck</code> 十分类似，也是父组件的变化检测中调用<strong>子组件</strong>的钩子，只不过这是在递归之前进行的调用。</p>
+<p>上文的两个组件树的 <code>ContentCheck</code> 顺序分别为：ABCD 和 ABDCEF，看看能不能明白？</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="result.png" alt="结果" title="">
+                </div>
+                <div class="image-caption">结果</div>
+            </figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>总的来说，淘气鬼的问题基本上都解决了，算是可喜可贺，普天同庆了。Angular 果真是博大精深，看源码都要看晕了，不过也多亏了淘气鬼，让我对 Angular 变化检测的理解又上了一个台阶。另外也可以看出像 Angular 这样的大框架要是没有 TypeScript 来支持，真的是鬼才看得懂它的代码咯。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-04T15:07:23.032Z" itemprop="dateUpdated">2018-04-04 23:07:23</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Angular/">Angular</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/变化检测/">变化检测</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/源码/">源码</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/&title=《Angular 变化检测中的细节》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/&title=《Angular 变化检测中的细节》 — Random Notes&source=年前在公司举行了一场盛况空前（误）的前端分享会，我在会上大谈特谈了关于 Angular 的变化检测机制，就在即将迎来完美的收官之时，总是会有淘气鬼提出各种..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Angular 变化检测中的细节》 — Random Notes&url=https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/03/07/date-and-timezone-in-javascript/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Date Format in JavaScript</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/02/06/angular-ie-support/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Angular 兼容 IE 过程遇到的问题</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/&title=《Angular 变化检测中的细节》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/&title=《Angular 变化检测中的细节》 — Random Notes&source=年前在公司举行了一场盛况空前（误）的前端分享会，我在会上大谈特谈了关于 Angular 的变化检测机制，就在即将迎来完美的收官之时，总是会有淘气鬼提出各种..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Angular 变化检测中的细节》 — Random Notes&url=https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/02/28/details-in-angular-detect-change/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACq0lEQVR42u3aQZLiMAwFUO5/6ZltTw0J+pKVZvGyoiAkfqHKFl9+vcrHn4vj6pz6FX6ef/XO/68PH3h4eHiHhl6/8f0106HfP6D6mPHw8PC2eZXLXV26N5TKHF4ZzwcLHh4e3hfwKu9Uyu57ajoePDw8vG/m9Urt9Gq9YAIPDw/vSV566d6ycWroK1kLHh4eXpk3KWd/6/VKfw8PDw9v3FWfTOJx4VuOcYPR4uHh4S3w6hPupGBNH1kdXBonHh4e3lHeJH6tRwy9UKO+geDyHDw8PLw1Xrodah4TVB5EfVmK82k8PDy86afBX/202E1L4Xp5nf48eHh4eGd5aSlcH3rl0951gqUIDw8Pb5l3P+1OAojJ1J8uDG9Sajw8PLxHeJWSN53W6+HspM0Wrz94eHh4LV69xdXbcDAJL+ql+Zvz8fDw8JZ5zxTB6aJSX0g+LAx4eHh4R3kpst7cqi8wky1clz8YHh4e3gIvbef3ot70u5N2XZBe4OHh4YW8esAalLBh7Duf7j+0vvDw8PCO8prbmAaT9UYYEbfB8PDw8Aa8XoCbTvTpoCebvf55jYeHh7fMmywMkweRFu5BwY2Hh4e3zEvZB3LiVmTczFrw8PDwFnjp9tPtIDgNNd58ioeHh7fAS0+dbBSYRxv15hkeHh7eM7yNdlS6mSAtrINtqXh4eHgLvPuJuxdJVB7cfKkYRRJ4eHh4Y17a3KpHt/VC+fCBh4eHtwCrH+l300eT3vHDp3h4eHgLvN4cWw8U9qKHs9vF8PDw8FJeOrnXF4/eEjJZGPDw8PCe5PU6R/Xm1kZEUrojHh4e3tfw0nN6xXR63zfn4+Hh4X0B71QB3etSpQU9Hh4e3h4vjQkmUWyKrF/zcmHAw8PDO8o78Ie/3DCbLDC9qAIPDw/vKO8vB2PuA1F0qfwAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

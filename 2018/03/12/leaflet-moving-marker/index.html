@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Leaflet MovingMarker 轨迹回放功能 | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Leaflet,动画,MVC,声明式">
+    <meta name="description" content="最近有一个关于地图轨迹回放的功能，使用了 Leaflet 的 MovingMarker 插件后仍有不少问题需要解决，本文介绍了实现这个需求的过程与方案。">
+<meta name="keywords" content="Leaflet,动画,MVC,声明式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Leaflet MovingMarker 轨迹回放功能">
+<meta property="og:url" content="https://blog.imtouch.info/2018/03/12/leaflet-moving-marker/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="最近有一个关于地图轨迹回放的功能，使用了 Leaflet 的 MovingMarker 插件后仍有不少问题需要解决，本文介绍了实现这个需求的过程与方案。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://blog.imtouch.info/2018/03/12/leaflet-moving-marker/ios-sample.gif">
+<meta property="og:updated_time" content="2018-04-04T15:09:57.079Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Leaflet MovingMarker 轨迹回放功能">
+<meta name="twitter:description" content="最近有一个关于地图轨迹回放的功能，使用了 Leaflet 的 MovingMarker 插件后仍有不少问题需要解决，本文介绍了实现这个需求的过程与方案。">
+<meta name="twitter:image" content="https://blog.imtouch.info/2018/03/12/leaflet-moving-marker/ios-sample.gif">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Leaflet MovingMarker 轨迹回放功能</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Leaflet MovingMarker 轨迹回放功能</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-12T03:42:33.000Z" itemprop="datePublished" class="page-time">
+  2018-03-12
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#来自产品的需求"><span class="post-toc-number">1.</span> <span class="post-toc-text">来自产品的需求</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#方案1：直接动画"><span class="post-toc-number">2.</span> <span class="post-toc-text">方案1：直接动画</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#方案2：分段动画"><span class="post-toc-number">3.</span> <span class="post-toc-text">方案2：分段动画</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#拖动指示器的困境"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">拖动指示器的困境</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#方案3：声明式"><span class="post-toc-number">4.</span> <span class="post-toc-text">方案3：声明式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#换种思路"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">换种思路</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#model-的逻辑"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">model 的逻辑</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-leaflet-moving-marker"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Leaflet MovingMarker 轨迹回放功能</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-12 11:42:33" datetime="2018-03-12T03:42:33.000Z"  itemprop="datePublished">2018-03-12</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>最近有一个关于地图轨迹回放的功能，使用了 Leaflet 的 MovingMarker 插件后仍有不少问题需要解决，本文介绍了实现这个需求的过程与方案。</p>
+<a id="more"></a>
+<h2 id="来自产品的需求"><a href="#来自产品的需求" class="headerlink" title="来自产品的需求"></a>来自产品的需求</h2><p>轨迹回放往大了讲其实有点像视频播放器，有一个可拖动的指示器，地图上就是一个移动的 marker.（这里有张 10M 的动图…）</p>
+<div style="text-align: center;"><img src="ios-sample.gif" style="width: 40%;"></div>
+
+<p>有几点需要注意的：</p>
+<ul>
+<li>播放过程中可以暂停，暂停后可以从当前位置继续播放</li>
+<li>播放过程中可以拖动指示器，地图上的点也需要相应地出现在对应的位置，但动画会继续播放，就像拖动播放器的进度条一样</li>
+<li>同上，暂停过程中也可以拖动指示器，但此时动画不再播放</li>
+</ul>
+<h2 id="方案1：直接动画"><a href="#方案1：直接动画" class="headerlink" title="方案1：直接动画"></a>方案1：直接动画</h2><p>轨迹其实就是对一个 Marker 做一个动画，用作展示，目前 Leaflet 已经有对应的移动点插件 <a href="https://github.com/ewoken/Leaflet.MovingMarker" target="_blank" rel="noopener">MovingMarker</a>，使用上也非常简单，传入一堆点坐标和持续时间，调用一下 <code>start()</code> 方法就马上有动画出来了。官网上的例子：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> myMovingMarker = L.Marker.movingMarker([[<span class="number">48.8567</span>, <span class="number">2.3508</span>],[<span class="number">50.45</span>, <span class="number">30.523333</span>]],</span><br><span class="line">						[<span class="number">20000</span>]).addTo(map);</span><br><span class="line"></span><br><span class="line">myMovingMarker.start();</span><br></pre></td></tr></table></figure>
+<p>这样就能实现地图上的一个可以移动的点。</p>
+<p>但我们不光需要地图上的坐标点能够运动，还需要底下的指示器能根据地图点的移动作出相应的变化，比如移动到第二个点的时候，指示器也要同时显示为第二个点。</p>
+<p>第一个想法就是通过事件来解决，在动画的过程中监听「移动到某个点」的事件，改变一下指示器的当前值就 ok 了。然而很不幸的是，MovingMarker 没有提供这样的事件，实际上 API 上有这样的一个事件：</p>
+<blockquote>
+<p><code>end</code>: fired when the marker stops</p>
+</blockquote>
+<p>但这个事件是在整段动画结束后才触发的，只会触发一次。举个栗子，如果有一段五个点的轨迹播放，只有当动画播放到最后一个点的时候才会触发这个 <code>end</code> 事件，在中途路过三个点的时候，啥事都没发生。</p>
+<h2 id="方案2：分段动画"><a href="#方案2：分段动画" class="headerlink" title="方案2：分段动画"></a>方案2：分段动画</h2><p>既然这个 <code>end</code> 事件会在动画结束时才触发，那马上想到的就是把整个轨迹的动画分解成每一段线段的动画，再按顺序播放就行了。在 <code>end</code> 事件触发的时候改一下指示器的 model 值，简直 nice，看了下还果真有这样的 API</p>
+<blockquote>
+<p><code>moveTo(latlng, duration)</code>: stops current animation and make the marker move to <code>latlng</code> in <code>duration</code> ms.</p>
+</blockquote>
+<p>那思路就很清晰了，初始化 marker 为第一个点，然后调用 <code>moveTo</code>，开始到下一个点的动画，然后监听 <code>end</code> 事件，在事件处理函数中继续调用 <code>moveTo</code> 到下一个点，直到最后。顺便在 <code>end</code> 事件中，改变一下指示器的当前状态。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 坐标点数组</span></span><br><span class="line"><span class="keyword">const</span> points = [];</span><br><span class="line"><span class="comment">// 当前所在点索引</span></span><br><span class="line"><span class="keyword">const</span> cur = <span class="number">0</span>;</span><br><span class="line"><span class="comment">// 指示器当前值</span></span><br><span class="line"><span class="keyword">let</span> indicator = <span class="number">1</span>;</span><br><span class="line"><span class="keyword">const</span> MOVE_TIME = <span class="number">1000</span>;</span><br><span class="line"></span><br><span class="line">marker.setLatLng(points[cur]);</span><br><span class="line">marker.moveTo(points[++cur], MOVE_TIME);</span><br><span class="line"></span><br><span class="line">marker.on(<span class="string">'end'</span>, () =&gt; &#123;</span><br><span class="line">  indicator = cur;</span><br><span class="line">  <span class="keyword">if</span> (cur &lt; points.length - <span class="number">1</span>) &#123;</span><br><span class="line">    marker.moveTo(points[++cur], MOVE_TIME);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>逻辑上看没啥大问题，但实际出来的效果却是出现了丢帧的现象，中间有几段的动画不见了，点直接就跳过去了。经过一番摸索后，发现在 <code>end</code> 的事件处理中加上 <code>setTimeout</code> 后丢帧就解决了。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">marker.on(<span class="string">'end'</span>, () =&gt; &#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    indicator = cur;</span><br><span class="line">    <span class="keyword">if</span> (cur &lt; points.length - <span class="number">1</span>) &#123;</span><br><span class="line">      marker.moveTo(points[++cur], MOVE_TIME);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, <span class="number">0</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>分别调用 <code>.start()</code> 和 <code>.moveTo</code> 的例子，在 <code>moveTo</code> 下勾选了 setTimeout 后，丢帧消失了</p>
+<iframe id="cp_embed_VXLQba" src="//codepen.io/ryancui/embed/VXLQba?height=400&theme-id=light&slug-hash=VXLQba&default-tab=result" scrolling="no" frameborder="no" height="400" allowtransparency="true" allowfullscreen="true" class="cp_embed_iframe" style="width: 100%; overflow: hidden;"></iframe>
+<h3 id="拖动指示器的困境"><a href="#拖动指示器的困境" class="headerlink" title="拖动指示器的困境"></a>拖动指示器的困境</h3><p>回顾需求，我们发现其实我们只是把播放（暂停可通过 <code>pause</code>/<code>resume</code> 很好地实现）搞定了，在继续思考另外的需求怎么实现的时候，遇到了一个困境。</p>
+<p>描述这个困境前，我们先把前面 marker 移动与指示器联动的具体细节说清楚。前面提到，指示器的当前状态指示一个变量 <code>indicator</code>，我们简单地在每次动画结束时做一个赋值 <code>indicator = cur</code> 就能完成这种联动了。假设我们使用的 MVVM 框架是 Angular 的话，这个指示器的 HTML 应该是类似这样的</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">indicator</span> [<span class="attr">ngModel</span>]=<span class="string">"indicator"</span>&gt;</span><span class="tag">&lt;/<span class="name">indicator</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>绑定一个变量到组件里，嗯。</p>
+<p>好，现在我们要实现拖动指示器的时候，marker 也能有所变化，那自然而然，给这个组件绑定个 change 事件吧，事件处理里改一下 marker 就好了！</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">indicator</span> [<span class="attr">ngModel</span>]=<span class="string">"indicator"</span> (<span class="attr">ngModelChange</span>)=<span class="string">"onIndicatorChange()"</span>&gt;</span><span class="tag">&lt;/<span class="name">indicator</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在 Angular 里，<code>ngModel</code> 绑定的属性默认会有一个 <code>ngModelChange</code> 事件，在 model 改变的时候调用。写好所有逻辑后打开页面测试，连原来的连贯动画都出问题了！为啥呢！</p>
+<p><strong>如何区分 model 的改变是因为拖动改变还是代码调用改变的呢？</strong></p>
+<p>对于这个 indicator 组件来说，它只知道 indicator 是它的 model，只要 model 变化了就调用回调，因此它无法区分这个 model 的改变是什么引起的。无法区分就意味着这个需求实现不了啊。</p>
+<h2 id="方案3：声明式"><a href="#方案3：声明式" class="headerlink" title="方案3：声明式"></a>方案3：声明式</h2><h3 id="换种思路"><a href="#换种思路" class="headerlink" title="换种思路"></a>换种思路</h3><p>既然区分不了，那干脆就不区分了？仔细想想实现分段动画的方式，其实那是一种<strong>命令式</strong>的实现方式：</p>
+<p><strong>到第一个点 =&gt; 动画移动到第二个点 =&gt; 动画移动到第三个点 =&gt; …</strong></p>
+<p>使用命令式的方式来组织代码，往往以后逻辑复杂的时候会非常难以维护，那能不能以一种<strong>声明式</strong>的思路来组织呢？整个应用的 model 其实只有一个，就是当前所在的点，也就是说，一个 <code>index</code>，这个轨迹移动的过程应该是</p>
+<p><strong><code>index = 0</code> =&gt; <code>index = 1</code> =&gt; <code>index = 2</code> =&gt; …</strong></p>
+<p>至于页面上的元素如何变化（marker 需要移动、指示器需要变化），应该由一个关系来描述，那么当 model 变化时，相应的页面元素也能自动更新了。</p>
+<p>使用 JavaScript 的 getter/setter 能很好地做到</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">_cur = <span class="number">0</span>;</span><br><span class="line">get cur() &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">this</span>._cur;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">set cur(value) &#123;</span><br><span class="line">  <span class="comment">// 绑定对应的关系</span></span><br><span class="line">  <span class="keyword">this</span>._cur = value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这样实现后，<code>end</code> 事件就变得非常简单了，就是一个简单的索引自增，注意 <code>setTimeout</code> 还是需要的</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">marker.on(<span class="string">'end'</span>, () =&gt; &#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (cur &lt; points.length - <span class="number">1</span>) &#123;</span><br><span class="line">      cur++;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;, <span class="number">0</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="model-的逻辑"><a href="#model-的逻辑" class="headerlink" title="model 的逻辑"></a>model 的逻辑</h3><p>在写里面的逻辑时，由于涉及到动画，那么当设置 <code>index</code> 的时候，会有两种动画策略：</p>
+<ol>
+<li>执行从点 index 到点 index+1 的动画</li>
+<li>执行从点 index -1 到点 index 的动画</li>
+</ol>
+<p>其实两种实现方式都可以，但出于与指示器的 model 一致的考虑，这里我选择了第一种</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">set cur(value) &#123;</span><br><span class="line">  <span class="comment">// 绑定对应的关系</span></span><br><span class="line">  <span class="keyword">this</span>._cur = value;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 先把 marker 设置为当前点</span></span><br><span class="line">  <span class="keyword">this</span>.marker.setLatLng(<span class="keyword">this</span>.points[value]);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 执行移动到下一个点的动画</span></span><br><span class="line">  <span class="keyword">if</span> (value &lt; <span class="keyword">this</span>.points.length - <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="keyword">this</span>.marker.moveTo(<span class="keyword">this</span>.points[value + <span class="number">1</span>], MOVE_TIME);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里只是一个简单地示例，在实际场景还需要处理如播放、暂停等情况，还需要加上不同的 state 控制逻辑。这样把 <code>cur</code> 的逻辑写好后，指示器的 HTML 就可以直接写成</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">indicator</span> [(<span class="attr">ngModel</span>)]=<span class="string">"cur"</span>&gt;</span><span class="tag">&lt;/<span class="name">indicator</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>直接做一个双向绑定就完了！所有的逻辑都放在了 setter 里，对于页面组件来说他们不再需要关心逻辑的细节，他们只需要知道 model 就可以了，这样的解耦使功能的实现和维护都更加的简单、清晰。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-04T15:09:57.079Z" itemprop="dateUpdated">2018-04-04 23:09:57</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Leaflet/">Leaflet</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/MVC/">MVC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/动画/">动画</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/声明式/">声明式</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/03/12/leaflet-moving-marker/&title=《Leaflet MovingMarker 轨迹回放功能》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/03/12/leaflet-moving-marker/&title=《Leaflet MovingMarker 轨迹回放功能》 — Random Notes&source=最近有一个关于地图轨迹回放的功能，使用了 Leaflet 的 MovingMarker 插件后仍有不少问题需要解决，本文介绍了实现这个需求的过程与方案。" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/03/12/leaflet-moving-marker/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Leaflet MovingMarker 轨迹回放功能》 — Random Notes&url=https://blog.imtouch.info/2018/03/12/leaflet-moving-marker/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/03/12/leaflet-moving-marker/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/04/02/implicit-type-conversion-in-javascript/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">JavaScript 中的隐式类型转换的规范</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/03/07/date-and-timezone-in-javascript/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Date Format in JavaScript</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/03/12/leaflet-moving-marker/&title=《Leaflet MovingMarker 轨迹回放功能》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/03/12/leaflet-moving-marker/&title=《Leaflet MovingMarker 轨迹回放功能》 — Random Notes&source=最近有一个关于地图轨迹回放的功能，使用了 Leaflet 的 MovingMarker 插件后仍有不少问题需要解决，本文介绍了实现这个需求的过程与方案。" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/03/12/leaflet-moving-marker/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Leaflet MovingMarker 轨迹回放功能》 — Random Notes&url=https://blog.imtouch.info/2018/03/12/leaflet-moving-marker/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/03/12/leaflet-moving-marker/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACLElEQVR42u3aS27DMAwFwNz/0uk2RRrlkbILSBqtjMCRPV4Q4ufxiNfzbb3+/un69Zfxnvm/phYGBsayjOdw9e5J9n+/Z/w5xjtgYGCcwPgUwcb3jPf58uA4BCfPwsDAwEhC5FUHRwwMDIw7GPOJMQYGBkbCSBLUvFg2v8+NuTgGBsaCjDw4/v/1Lf0NDAyMpRjP4srLakmKO/Mmv3bDwMDYmlEt+vdGKJJyW68JgYGBcQ5j5vF52pl/lN4vGBgYezNmBryS8n1152oZDgMD42RGXsqvBt/qf5sdUQwMjC0YeWnsqiNjL7x+CfoYGBhbM/JjX94qyK9zTKEYh4GBcQyjN8LVLOW3jpvlohsGBsayjPmWZO9YOdOW+ON+DAyMAxh5uHzEqzc6ljyxOS2CgYGxLGP+SFdNiXPqzEfEwMDYj1E9zPXKbdUCXLkVgYGBcRgjP9JVE9rk2Nf7lBgYGHszquMUyeqF1GoSi4GBcQ4jH3eotjmrCfBUswEDA+NIRl4O66WpvXf4GJQxMDAOYFRD7XxjoBrQC6OrGBgYmzKS0Fku1rfubLZUMTAwNmX0imjVMH1j4oqBgXEAYybM9QJo8lr5GEcZhoGBsSyj14xMGgO9wYte2oyBgXECoxock8Znr6zWe1sMDAyMPLDmr1Vtl17WGMDAwDiMEXUeWkG5enjFwMA4gZEc3cqjWvHQxviJF5fbMDAwFmT0Usf5Qa4k0F/c1MTAwFiP8QO4YQPxjKbWJAAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

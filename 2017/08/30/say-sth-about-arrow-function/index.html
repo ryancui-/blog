@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>再聊箭头函数 Arrow Function | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="JavaScript">
+    <meta name="description" content="昨天面试的时候问了一个关于箭头函数的问题，回来发现好像自己说错了（装逼失败），于是便重新认识一下这个 ES6 用得最多的东西。">
+<meta name="keywords" content="JavaScript">
+<meta property="og:type" content="article">
+<meta property="og:title" content="再聊箭头函数 Arrow Function">
+<meta property="og:url" content="https://blog.imtouch.info/2017/08/30/say-sth-about-arrow-function/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="昨天面试的时候问了一个关于箭头函数的问题，回来发现好像自己说错了（装逼失败），于是便重新认识一下这个 ES6 用得最多的东西。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-04T15:10:56.691Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="再聊箭头函数 Arrow Function">
+<meta name="twitter:description" content="昨天面试的时候问了一个关于箭头函数的问题，回来发现好像自己说错了（装逼失败），于是便重新认识一下这个 ES6 用得最多的东西。">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">再聊箭头函数 Arrow Function</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">再聊箭头函数 Arrow Function</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-08-30T05:14:40.000Z" itemprop="datePublished" class="page-time">
+  2017-08-30
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#闭包与词法作用域"><span class="post-toc-number">1.</span> <span class="post-toc-text">闭包与词法作用域</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Function-的-this"><span class="post-toc-number">2.</span> <span class="post-toc-text">Function 的 this</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Arrow-Function-的-this"><span class="post-toc-number">3.</span> <span class="post-toc-text">Arrow Function 的 this</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Arrow-Function-到底是啥"><span class="post-toc-number">4.</span> <span class="post-toc-text">Arrow Function 到底是啥</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#看看规范"><span class="post-toc-number">5.</span> <span class="post-toc-text">看看规范</span></a></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-say-sth-about-arrow-function"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">再聊箭头函数 Arrow Function</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-08-30 13:14:40" datetime="2017-08-30T05:14:40.000Z"  itemprop="datePublished">2017-08-30</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>昨天面试的时候问了一个关于箭头函数的问题，回来发现好像自己说错了（装逼失败），于是便重新认识一下这个 ES6 用得最多的东西。</p>
+<a id="more"></a>
+<p>这段时间面试了很多人，当问到箭头函数带来的好处时，大部分人都只说到了写得少（？？？）<br>，不需要用 <code>that</code>、<code>self</code> 之类的变量，可以直接使用 <code>this</code>。但当细问下去，其实很多人不了解箭头函数的 <code>this</code> 就是是啥回事（或者包括我自己</p>
+<p>先说说在此之前我对箭头函数的理解吧：箭头函数里的 <code>this</code> 是「继承」的，本身不存在自己的 <code>this</code>，当调用到 <code>this</code> 时用的其实是上一层作用域的 <code>this</code>。现在看来这个理解还是有一定偏差。</p>
+<h2 id="闭包与词法作用域"><a href="#闭包与词法作用域" class="headerlink" title="闭包与词法作用域"></a>闭包与词法作用域</h2><p>摘录一段犀牛书的代码，就能很好说明闭包和词法作用域的问题了：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> scope = <span class="string">'global scope'</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkscope</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> scope = <span class="string">'local scope'</span>;</span><br><span class="line">  <span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params"></span>) </span>&#123; </span><br><span class="line">    <span class="keyword">return</span> scope; </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> f;</span><br><span class="line">&#125;</span><br><span class="line">checkscope()();</span><br></pre></td></tr></table></figure>
+<p>这里返回的是 <code>&#39;local scope&#39;</code>，是因为在函数 f 函数体内访问 <code>scope</code> 变量时，会沿着从 f <strong>开始</strong>的作用域链往上查找，因此第一个查找到的变量是在 <code>checkscope</code> 作用域内定义的 <code>scope</code>。</p>
+<p>注意无论 f 在何时何地调用，返回的 <code>scope</code> 总是 <code>&#39;local scope&#39;</code>，这是由于作用域查找<strong>总是</strong>从 f 开始，因此 <code>scope</code> 的值通过<strong>词法作用域</strong>确定了。</p>
+<h2 id="Function-的-this"><a href="#Function-的-this" class="headerlink" title="Function 的 this"></a>Function 的 this</h2><p>在 ES5 中，函数中的 <code>this</code> 是动态变化的，会根据调用方式的不同产生不同的绑定，只有在被调用时才能确定 <code>this</code> 的值：</p>
+<ul>
+<li>普通函数调用时，全局对象（浏览器下非严格模式 <code>window</code>）</li>
+<li>作为对象方法调用时，为该对象</li>
+<li>作为构造函数调用时，为新对象的引用</li>
+<li>使用 <code>call</code>、<code>apply</code> 调用，为绑定的值（第一个参数）</li>
+</ul>
+<p>用代码说明一下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">change</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (change) &#123;</span><br><span class="line">    <span class="keyword">this</span>.a = <span class="number">300</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> a = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">var</span> obj = &#123;</span><br><span class="line">  a: <span class="number">200</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 普通调用，输出 100</span></span><br><span class="line">f();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 方法调用，输出 200</span></span><br><span class="line">obj.f = f;</span><br><span class="line">obj.f();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构造函数调用，改变的是新对象的 a，输出 300, 100, 300</span></span><br><span class="line"><span class="keyword">var</span> newObj = <span class="keyword">new</span> f(<span class="literal">true</span>);</span><br><span class="line"><span class="built_in">console</span>.log(a);</span><br><span class="line"><span class="built_in">console</span>.log(newObj.a);</span><br></pre></td></tr></table></figure>
+<h2 id="Arrow-Function-的-this"><a href="#Arrow-Function-的-this" class="headerlink" title="Arrow Function 的 this"></a>Arrow Function 的 this</h2><p>先看 MDN 的说明：<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Functions/Arrow_functions" target="_blank" rel="noopener">MDN - 箭头函数</a>，其实写得很清楚了。关键在于箭头函数的 <code>this</code> 是词法作用域绑定这个概念。这意味着箭头函数的 <code>this</code> 类似于一个变量，在定义的时候就已经确定了指向的上下文，而非动态获取。看个例子：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="number">100</span>;</span><br><span class="line"><span class="keyword">var</span> obj1 = &#123;</span><br><span class="line">  a: <span class="number">200</span>,</span><br><span class="line">  b: <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line">obj1.b();</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> obj2 = &#123;</span><br><span class="line">  a: <span class="number">200</span>,</span><br><span class="line">  b: <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> f = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">      <span class="built_in">console</span>.log(<span class="keyword">this</span>.a);</span><br><span class="line">    &#125;</span><br><span class="line">    f();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line">obj2.b();</span><br><span class="line"><span class="keyword">var</span> ff = obj2.b;</span><br><span class="line">ff();</span><br></pre></td></tr></table></figure>
+<p>在箭头函数中，<code>this</code> 可以看成是一个变量，而非关键字，箭头函数本身作用域里并没有 <code>this</code> 的定义，当引用 <code>this</code> 时，会沿着作用域链往上查找（跟闭包那个 <code>scope</code> 好像哦）。</p>
+<p>因此例子中的 <code>obj1.b()</code> 跟 <code>obj2.b()</code> 输出分别为 100 和 200，由于 <code>obj1.b</code> 在查找 <code>this</code> 时会一直查找到<strong>全局作用域</strong>，因此 <code>this.a = 100</code>；而 <code>obj2.b</code> 在 <code>function</code> 作用域就找到了 <code>this</code><strong>（注意使用了 <code>function</code> 定义了函数）</strong>，而这时的 <code>this</code> 为方法调用的对象 <code>obj2</code>，因此 <code>this.a = 200</code>。</p>
+<p>进一步说明这种作用域查找规则的是下面两行，输出是 100. 由于此时 <code>obj2.b</code> 的调用是一个普通函数调用，因此 <code>this</code> 的值是全局对象，所以输出的是 <code>window.a</code> 了。</p>
+<h2 id="Arrow-Function-到底是啥"><a href="#Arrow-Function-到底是啥" class="headerlink" title="Arrow Function 到底是啥"></a>Arrow Function 到底是啥</h2><p>在了解到箭头函数内部的 <code>this</code> 其实是一个词法绑定的变量时，我不禁怀疑这个箭头函数究竟是个啥，甚至于它是不是一个函数，有没有自己的作用域？</p>
+<p>以前很多对箭头函数的简单解释是「JavaScript 函数的语法糖」，根据前文所述的 <code>this</code> 获取值的不同，已经知道箭头函数与普通函数其实有很大的不同，于是尝试一下：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> f = <span class="function"><span class="params">()</span> =&gt;</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 'function'</span></span><br><span class="line"><span class="keyword">typeof</span> f;</span><br><span class="line"></span><br><span class="line"><span class="comment">// true</span></span><br><span class="line">f <span class="keyword">instanceof</span> <span class="built_in">Function</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// true</span></span><br><span class="line">f.__proto__ === <span class="built_in">Function</span>.prototype;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 根据 MDN，箭头函数没有原型：undefined</span></span><br><span class="line">f.prototype</span><br></pre></td></tr></table></figure>
+<p>各种证据表明这个箭头函数的确是一个「函数」，只是没有原型对象，因此也就无法作为构造函数调用（<code>new f()</code>）。另外 MDN 提到，箭头函数内除了 <code>this</code>，还有其他普通函数中常用的变量如 <code>arguments</code> 也是词法绑定的，这些变量在箭头函数调用时是沿着作用域链向上查找的。</p>
+<h2 id="看看规范"><a href="#看看规范" class="headerlink" title="看看规范"></a>看看规范</h2><p><a href="http://www.ecma-international.org/ecma-262/8.0/index.html#sec-arrow-function-definitions-runtime-semantics-evaluation" target="_blank" rel="noopener">14.2.16 Runtime Semantics: Evaluation</a></p>
+<p>里面的 Note 提到箭头函数没有对 <code>this</code> 进行 local binding（本地绑定），这些变量的绑定是在 lexically enclosing environment 中进行的，实际上就是包含箭头函数定义的函数执行环境中定义的，这与我们上文的结论一致。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-04T15:10:56.691Z" itemprop="dateUpdated">2018-04-04 23:10:56</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2017/08/30/say-sth-about-arrow-function/&title=《再聊箭头函数 Arrow Function》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2017/08/30/say-sth-about-arrow-function/&title=《再聊箭头函数 Arrow Function》 — Random Notes&source=昨天面试的时候问了一个关于箭头函数的问题，回来发现好像自己说错了（装逼失败），于是便重新认识一下这个 ES6 用得最多的东西。" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2017/08/30/say-sth-about-arrow-function/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《再聊箭头函数 Arrow Function》 — Random Notes&url=https://blog.imtouch.info/2017/08/30/say-sth-about-arrow-function/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2017/08/30/say-sth-about-arrow-function/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/11/07/angular-double-binding-rusure/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">你确定要用 Angular 双向绑定吗？</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/1970/01/02/README/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">博客 Github 仓库 README</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2017/08/30/say-sth-about-arrow-function/&title=《再聊箭头函数 Arrow Function》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2017/08/30/say-sth-about-arrow-function/&title=《再聊箭头函数 Arrow Function》 — Random Notes&source=昨天面试的时候问了一个关于箭头函数的问题，回来发现好像自己说错了（装逼失败），于是便重新认识一下这个 ES6 用得最多的东西。" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2017/08/30/say-sth-about-arrow-function/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《再聊箭头函数 Arrow Function》 — Random Notes&url=https://blog.imtouch.info/2017/08/30/say-sth-about-arrow-function/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2017/08/30/say-sth-about-arrow-function/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACvUlEQVR42u3aQU7DQAwF0N7/0kVihQRNv+0xzeJlhWjpzAtSPP324xFfz+/r58+/r+Sdrz6zusrhCw8PD6+19WTTVUxCerWTZN3oFuDh4eGt8ZJikLyafNr1zU1eLayCh4eH91He9QN68ohfvIl4eHh4N+DlxSN59Oe3CQ8PD+9uvDyc7UW0yVp52VjJWvDw8PBiXq8B9tmf1/t7eHh4eK2uem9EoLpW9VYW9omHh4e3wNsYk6rGGXl4kf+mnEbj4eHhxbz5AbcXOuTjVvnNXfkegIeHhxcPQm0gk7+thshvihMeHh7eAq96jO4diAtt/kGM+yaMwMPDw1vgJQ/0PCaYPPon5SGaKcPDw8Mb8HqP7x6yECLE2QIeHh7eHXiTua2o23b5/mqkG8W4eHh4eEd5eRSbxAe98ayk8PT2gIeHh7fBewZXEhb0SsKpNtjLd+Lh4eEt8HqN+Woo0IuDJ8WjnGHg4eHhDXKG/GCdD1pN3nN4uAEPDw9vzDvVwq82zPLt5vHumzACDw8P7xCvemjuxQHVFldvBCEKI/Dw8PAO8eZx6qlQoxd5FBIXPDw8vDEvLwCnNlE9NE9Wx8PDw9vm5YUhLwPJwTpZKw9B/sha8PDw8I7yeu2oXjs/33o+1BV9Y8DDw8M7ypuPT1WD2l6okRcDPDw8vG1edfSqukB1+bzNNolR8PDw8Ca83ghUHjTMG135vwEPDw/vf3jJH0yaW0nZ6EW6zWKGh4eHN+Y9i1e5+RRHwMmnlQNiPDw8vAVeflUD3CSorR64zxYSPDw8vAmv2qqfPNzzoYRjhQEPDw9vjZeHpPnCvfi1F0Pg4eHh3ZmXHHx7wW6+q8KreHh4eB/l9UKBPMbtRcBRGIGHh4e3wKuGEb0GWH4orx7cX76Kh4eHt8CbTGzlR+rqsbs3+HWgv4eHh4d3xfsCUsgiFpRjalgAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

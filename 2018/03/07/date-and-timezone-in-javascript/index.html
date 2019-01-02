@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>Date Format in JavaScript | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="ECMAScript,JavaScript,Date">
+    <meta name="description" content="俗话说得好，代码重构火葬场。最近接手了一个微信商城的项目，代码量不是很大，但其中还是有不少的坑可以深陷其中，包括一个关于 JavaScript 的 Date Format 问题。另外网上的很多文章在 Date Format 上的理解略有偏颇，因此结合着 ECMAScript 规范把这部分的知识整理一下。">
+<meta name="keywords" content="ECMAScript,JavaScript,Date">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Date Format in JavaScript">
+<meta property="og:url" content="https://blog.imtouch.info/2018/03/07/date-and-timezone-in-javascript/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="俗话说得好，代码重构火葬场。最近接手了一个微信商城的项目，代码量不是很大，但其中还是有不少的坑可以深陷其中，包括一个关于 JavaScript 的 Date Format 问题。另外网上的很多文章在 Date Format 上的理解略有偏颇，因此结合着 ECMAScript 规范把这部分的知识整理一下。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-04T15:06:38.396Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Date Format in JavaScript">
+<meta name="twitter:description" content="俗话说得好，代码重构火葬场。最近接手了一个微信商城的项目，代码量不是很大，但其中还是有不少的坑可以深陷其中，包括一个关于 JavaScript 的 Date Format 问题。另外网上的很多文章在 Date Format 上的理解略有偏颇，因此结合着 ECMAScript 规范把这部分的知识整理一下。">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Date Format in JavaScript</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Date Format in JavaScript</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-03-07T02:30:40.000Z" itemprop="datePublished" class="page-time">
+  2018-03-07
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#时间与时区"><span class="post-toc-number">1.</span> <span class="post-toc-text">时间与时区</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#怎样-Format-一个-Date"><span class="post-toc-number">2.</span> <span class="post-toc-text">怎样 Format 一个 Date</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ISO-8601-amp-Date-Time-String-Format"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">ISO 8601 &amp; Date Time String Format</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Date-parse-干了啥"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">Date.parse 干了啥</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#浏览器是爸爸"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">浏览器是爸爸</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#万事小心"><span class="post-toc-number">3.</span> <span class="post-toc-text">万事小心</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考资料"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考资料</span></a></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-date-and-timezone-in-javascript"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Date Format in JavaScript</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-03-07 10:30:40" datetime="2018-03-07T02:30:40.000Z"  itemprop="datePublished">2018-03-07</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>俗话说得好，代码重构火葬场。最近接手了一个微信商城的项目，代码量不是很大，但其中还是有不少的坑可以深陷其中，包括一个关于 JavaScript 的 Date Format 问题。另外网上的很多文章在 Date Format 上的理解略有偏颇，因此结合着 ECMAScript 规范把这部分的知识整理一下。</p>
+<a id="more"></a>
+<h2 id="时间与时区"><a href="#时间与时区" class="headerlink" title="时间与时区"></a>时间与时区</h2><p>时区嘛，简单点讲就是地球上不同地方的时间是不一样的，其中存在一个标准时区的时间，我们叫 UTC 时间。中国位于东八区嘛，所以 CST（中国标准时间）就会比 UTC <strong>快八小时</strong>。举个栗子：</p>
+<p>如果标准时间是 2018-01-01 00:00:00，那么在中国的时间就应该是 2018-01-01 08:00:00，因为我们比较快嘛。相反，如果在中国的时间是 2018-01-01 00:00:00，那么标准时间就应该是 2017-12-31 16:00:00， 还没倒数新年呢。这个呢应该比较好理解。</p>
+<h2 id="怎样-Format-一个-Date"><a href="#怎样-Format-一个-Date" class="headerlink" title="怎样 Format 一个 Date"></a>怎样 Format 一个 Date</h2><h3 id="ISO-8601-amp-Date-Time-String-Format"><a href="#ISO-8601-amp-Date-Time-String-Format" class="headerlink" title="ISO 8601 &amp; Date Time String Format"></a>ISO 8601 &amp; Date Time String Format</h3><p>首先是 <a href="https://zh.wikipedia.org/wiki/ISO_8601#%E6%97%A5%E6%9C%9F%E6%97%B6%E9%97%B4%E8%A1%A8%E7%A4%BA%E6%B3%95" target="_blank" rel="noopener">ISO 8601</a> 其实是有非常非常多的日期时间定义方式的，而 ECMASCript 只用了一个 Simplified 版本的定义，看 <a href="http://www.ecma-international.org/ecma-262/8.0/index.html#sec-date-time-string-format" target="_blank" rel="noopener">20.3.1.16 Date Time String Format</a> 的定义，可以总结出以下几点：</p>
+<ul>
+<li>完整的日期时间定义格式为 <code>YYYY-MM-DDTHH:mm:ss.sssZ</code></li>
+<li><code>T</code> 只是作为日期与时间的<strong>分隔符</strong>，没有<strong>实际意义</strong></li>
+<li><code>Z</code> 代表时间为 UTC 时间，当该时间表示为时区时间时，<code>Z</code> 被替换为 <code>+HH:mm</code> 或 <code>-HH:mm</code> 代表对应的时区</li>
+<li>有两种类型，一种是 date-only，另一种是 date-time</li>
+</ul>
+<p>date-only 包括下面三种：</p>
+<ol>
+<li>YYYY</li>
+<li>YYYY-MM</li>
+<li>YYYY-MM-DD</li>
+</ol>
+<p>date-time 就是上面三种的<strong>任意一种</strong>后加上下面的一种：</p>
+<ol>
+<li>THH:mm</li>
+<li>THH:mm:ss</li>
+<li>THH:mm:ss.sss</li>
+</ol>
+<p>尤其注意到这句话，广为流传的 ECMAScript 5.1 版是没有的：</p>
+<blockquote>
+<p>When the time zone offset is absent, date-only forms are interpreted as a UTC time and date-time forms are interpreted as a local time.</p>
+</blockquote>
+<p>也就是说 <code>Z</code> 是可以省略的，省略后的字符串如果属于 date-only 类型时，会被解析成 UTC 时间；如果属于 date-time 类型时，会解析成本地时间。</p>
+<p>由此可知，ECMASCript 中定义的 Date Time String Format 是<strong>有限</strong>的，当给定一个 String 时，我们可以根据这些规则来判断这个 String 是否满足这里的 Date Time String Format。</p>
+<h3 id="Date-parse-干了啥"><a href="#Date-parse-干了啥" class="headerlink" title="Date.parse 干了啥"></a>Date.parse 干了啥</h3><p>实际上，大部分同学都知道 <code>new Date(string)</code> 实际上调用了 <code>Date.parse</code> 方法，<a href="http://www.ecma-international.org/ecma-262/8.0/index.html#sec-date-value" target="_blank" rel="noopener">20.3.2.2Date ( value )</a>。因此看 <a href="http://www.ecma-international.org/ecma-262/8.0/index.html#sec-date.parse" target="_blank" rel="noopener">20.3.3.2 Date.parse ( string )</a> 中如此说道：</p>
+<blockquote>
+<p>The function first attempts to parse the format of the String according to the rules (including extended years) called out in Date Time String Format (<a href="http://www.ecma-international.org/ecma-262/8.0/index.html#sec-date-time-string-format" target="_blank" rel="noopener">20.3.1.16</a>). If the String does not conform to that format the function may fall back to any implementation-specific heuristics or implementation-specific date formats.</p>
+</blockquote>
+<p>没错 <code>Date.parse</code> 就是先按上文提到的 Date Time String Format 来 format，不满足的话就是 <strong>implementation-specific date formats</strong>。是的，跟不同浏览器的<strong>不同实现</strong>有关，也就是<strong>未定义行为</strong>。</p>
+<h3 id="浏览器是爸爸"><a href="#浏览器是爸爸" class="headerlink" title="浏览器是爸爸"></a>浏览器是爸爸</h3><p>让我们具体来看看不同浏览器对一些典型日期时间串的 format。</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Date</span>(<span class="string">'2018-01-01'</span>)</span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Date</span>(<span class="string">'2018-1-1'</span>)</span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Date</span>(<span class="string">'2018-01-01T08:00:00'</span>)</span><br><span class="line"><span class="keyword">new</span> <span class="built_in">Date</span>(<span class="string">'2018-01-01 08:00:00'</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Chrome</span></span><br><span class="line">Mon Jan <span class="number">01</span> <span class="number">2018</span> <span class="number">08</span>:<span class="number">00</span>:<span class="number">00</span> GMT+<span class="number">0800</span> (CST) - UTC</span><br><span class="line">Mon Jan <span class="number">01</span> <span class="number">2018</span> <span class="number">00</span>:<span class="number">00</span>:<span class="number">00</span> GMT+<span class="number">0800</span> (CST) - 本地</span><br><span class="line">Mon Jan <span class="number">01</span> <span class="number">2018</span> <span class="number">08</span>:<span class="number">00</span>:<span class="number">00</span> GMT+<span class="number">0800</span> (CST) - 本地</span><br><span class="line">Mon Jan <span class="number">01</span> <span class="number">2018</span> <span class="number">08</span>:<span class="number">00</span>:<span class="number">00</span> GMT+<span class="number">0800</span> (CST) - 本地</span><br><span class="line"></span><br><span class="line"><span class="comment">// Firefox</span></span><br><span class="line"><span class="built_in">Date</span> <span class="number">2018</span><span class="number">-01</span><span class="number">-01</span>T00:<span class="number">00</span>:<span class="number">00.000</span>Z - UTC</span><br><span class="line"><span class="built_in">Date</span> <span class="number">2018</span><span class="number">-01</span><span class="number">-01</span>T00:<span class="number">00</span>:<span class="number">00.000</span>Z - UTC</span><br><span class="line"><span class="built_in">Date</span> <span class="number">2018</span><span class="number">-01</span><span class="number">-01</span>T00:<span class="number">00</span>:<span class="number">00.000</span>Z - 本地</span><br><span class="line"><span class="built_in">Date</span> <span class="number">2018</span><span class="number">-01</span><span class="number">-01</span>T00:<span class="number">00</span>:<span class="number">00.000</span>Z - 本地</span><br><span class="line"></span><br><span class="line"><span class="comment">// Safari</span></span><br><span class="line">Mon Jan <span class="number">01</span> <span class="number">2018</span> <span class="number">08</span>:<span class="number">00</span>:<span class="number">00</span> GMT+<span class="number">0800</span> (CST) - UTC</span><br><span class="line">Invalid <span class="built_in">Date</span></span><br><span class="line">Mon Jan <span class="number">01</span> <span class="number">2018</span> <span class="number">16</span>:<span class="number">00</span>:<span class="number">00</span> GMT+<span class="number">0800</span> (CST) - UTC</span><br><span class="line">Invalid <span class="built_in">Date</span></span><br></pre></td></tr></table></figure>
+<p>Surprice Mother Fxxker！</p>
+<p>这四个例子中，第一个和第三个是满足 ECMAScript 中 Date Time String Format 的，另外两个是一些我们常用的字符串表示日期时间的格式。</p>
+<p>首先不令人意外的是，正如前文所讲，对于不符合 Format 的字符串 format 结果，不同浏览器会有不同的实现，比如第四种带空格的格式，Safari 会直接报错。这也是我上一篇文章中，Angular 使用 date 管道导致 IE11 不兼容的原因。</p>
+<p>但更令人意外的是，对于第三种满足 Format 的字符串，居然得出了不一样的结果！Unbelievable！按照规范，<code>2018-01-01T08:00:00</code> 是省略了 time-zone 的 date-time 类型，应该按 local time 进行 format，Chrome 与 Firefox 做得很好，而 Safari 却没有遵循规范。</p>
+<h2 id="万事小心"><a href="#万事小心" class="headerlink" title="万事小心"></a>万事小心</h2><p>我们可以看到，即使是大厂浏览器，也没有完全按规范实现，更何况国内众多大大小小的浏览器。因此在处理 Date 的时候，需要保持警觉：</p>
+<ul>
+<li>后端传时间给前端，使用字符串时，尽量使用<strong>带时区</strong>的<strong>完整</strong> ISO 8601 日期时间字符串，即 <code>2018-01-01T08:00:00+08:00</code> 或使用 UTC 时间 <code>2018-01-01T00:00:00Z</code> ，否则前端如果使用 <code>new Date(string)</code> 进行转换，后果可能不堪设想</li>
+<li>前端传时间给后端，可以使用标准字符串，也可以直接使用毫秒数，重要的是保持一致</li>
+<li>正如 jQuery 之所以能够叱咤风云，直接使用 <code>moment</code> 等库处理日期时间也不失为一个不错的选择</li>
+</ul>
+<p>有部分意见认为日期时间在后端数据库可以统一用 Long 保存，这个数字实际上是一个 UTC 时间，需要显示时格式化为本地时区，需要更新时通过转为 UTC 时间保存。这也是一种不错的实践，但带来的问题是数据库查询中没法看到实际的时间。在 MySQL 下，TIMESTAMP 类型是一个不错的选择。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><a href="https://segmentfault.com/a/1190000004292140" target="_blank" rel="noopener">关于“时间”的一次探索</a></li>
+<li><a href="https://segmentfault.com/a/1190000007581722" target="_blank" rel="noopener">JavaScript 时间与日期处理实战:你肯定被坑过</a></li>
+<li><a href="https://www.liaoxuefeng.com/article/0014132675721847f569c3514034f099477472c73b5dee2000" target="_blank" rel="noopener">如何正确地处理时间 - 廖雪峰的官方网站</a></li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-04T15:06:38.396Z" itemprop="dateUpdated">2018-04-04 23:06:38</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Date/">Date</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/ECMAScript/">ECMAScript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JavaScript/">JavaScript</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/03/07/date-and-timezone-in-javascript/&title=《Date Format in JavaScript》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/03/07/date-and-timezone-in-javascript/&title=《Date Format in JavaScript》 — Random Notes&source=俗话说得好，代码重构火葬场。最近接手了一个微信商城的项目，代码量不是很大，但其中还是有不少的坑可以深陷其中，包括一个关于 JavaScript 的 Dat..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/03/07/date-and-timezone-in-javascript/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Date Format in JavaScript》 — Random Notes&url=https://blog.imtouch.info/2018/03/07/date-and-timezone-in-javascript/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/03/07/date-and-timezone-in-javascript/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/03/12/leaflet-moving-marker/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Leaflet MovingMarker 轨迹回放功能</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/02/28/details-in-angular-detect-change/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Angular 变化检测中的细节</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/03/07/date-and-timezone-in-javascript/&title=《Date Format in JavaScript》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/03/07/date-and-timezone-in-javascript/&title=《Date Format in JavaScript》 — Random Notes&source=俗话说得好，代码重构火葬场。最近接手了一个微信商城的项目，代码量不是很大，但其中还是有不少的坑可以深陷其中，包括一个关于 JavaScript 的 Dat..." data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/03/07/date-and-timezone-in-javascript/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Date Format in JavaScript》 — Random Notes&url=https://blog.imtouch.info/2018/03/07/date-and-timezone-in-javascript/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/03/07/date-and-timezone-in-javascript/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACqElEQVR42u3aQW7jQAwEwPz/01lgT3uR1E1q4ixQOhm2I08pgEg15+srPr7/Hv++zo/7syXvJ5+uDjw8PLzR0u8X12KSd+6XfnWGfM14eHh4p3mbYnD1nX3JSagPFjw8PLyP8vJyMisSya/g4eHh/b+8vFE+0Xbj4eHh/QZespQ2JtgEDcnrl7MWPDw8vG4mVUcGn319fL6Hh4eHN5qqt8OwzSaAvNUuVouHh4d3gDeLSpOYNY9r24Y+WUm0RDw8PLwFL190HuZuwtl82NaGvHh4eHh73myDVN3UjsZdswJw+cSAh4eH9xIvvx1v8Hmx2WzPuvwUDw8P70d4M9hsa1S7saD+B+Dh4eEd4LXt8ltjrQ27/RQPDw/vZ3ht5NoGEG3bfWTKh4eHh7eesL+16Wp2trwRz4MJPDw8vHO8drDUNsftlqy25DyA8fDw8A7wNhFDPgZrh2Ft04+Hh4d3mtfGBO3Qa18SZiUEDw8P7xwvb473wUQbguybdTw8PLwTvFm7nP/k7Fa+CXYv6x4eHh7eq7xkQe9GurOMJI828PDw8M7xikf6Rdlof2WTPePh4eGd5u3b1lkr3A7PhvEEHh4e3mFevl1gE8vutxQU68TDw8M7wJs96icN8blQo10nHh4e3ru8/Ma94eWA1Q6I+wEYHh4e3gFeHt2e3qia/1UURuDh4eG9ypsx2pt18v7pwRgeHh7eW7zv8ri/EPlovw0s2mj4oe7h4eHhLXjtQCu5le8jjPyy4uHh4X2KlxeD2TWbnbkdgF1ePjw8PLxjvFn7m28IyIvEqoLNdpbh4eHhHePl4NlAaxZtPBQVPDw8vF/A24+m7s8wa9NfaKnx8PDwSl4eGbQbrdqIoQ0+HgZpeHh4eAd4mwFYTp3FuHVoOzvw8PDwUt4fCZ4DJ2vY1XMAAAAASUVORK5CYII=" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

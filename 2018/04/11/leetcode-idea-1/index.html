@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>LeetCode 题解一 | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="LeetCode,算法">
+    <meta name="description" content="LeetCode 题解一。">
+<meta name="keywords" content="LeetCode,算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LeetCode 题解一">
+<meta property="og:url" content="https://blog.imtouch.info/2018/04/11/leetcode-idea-1/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="LeetCode 题解一。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-04-17T07:57:20.152Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="LeetCode 题解一">
+<meta name="twitter:description" content="LeetCode 题解一。">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">LeetCode 题解一</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">LeetCode 题解一</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-04-11T06:58:40.000Z" itemprop="datePublished" class="page-time">
+  2018-04-11
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>目录</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#621-Task-Scheduler"><span class="post-toc-number">1.</span> <span class="post-toc-text">621 Task Scheduler</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#623-Add-One-Row-to-Tree"><span class="post-toc-number">2.</span> <span class="post-toc-text">623 Add One Row to Tree</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#628-Maximum-Product-of-Three-Numbers"><span class="post-toc-number">3.</span> <span class="post-toc-text">628 Maximum Product of Three Numbers</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#结果三个数的情况"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">结果三个数的情况</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#0-的处理"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">0 的处理</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+    
+
+<article id="post-leetcode-idea-1"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">LeetCode 题解一</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-04-11 14:58:40" datetime="2018-04-11T06:58:40.000Z"  itemprop="datePublished">2018-04-11</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>LeetCode 题解一。</p>
+<a id="more"></a>
+<h2 id="621-Task-Scheduler"><a href="#621-Task-Scheduler" class="headerlink" title="621 Task Scheduler"></a>621 Task Scheduler</h2><p>题目大意：CPU 调度，给一串用 Char 表示的任务列表，一个周期运行一个，规定相同两个任务之间的运行间隔不能超过 n，求最少需要多少个周期能跑完。</p>
+<p>由于任务之间应该是互相独立的，所以就用贪心算法吧，每次从可以运行的任务中拿一个出来跑，并记下最近一次的运行时间（判断能否运行这个任务时用到），一直循环直到完成所有任务。</p>
+<p>需要两张 k-v 表，一张记录最近运行的时间 <code>last</code>，一张记录当前所有任务还剩多少次没完成 <code>remain</code>，每轮循环找可运行的任务：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">remain[task] &gt; <span class="number">0</span> &amp;&amp; last[task] + n &lt; current</span><br></pre></td></tr></table></figure>
+<p>这样会报 EA，想了一下贪心有点问题，对于一些高频任务应该高优先级执行，跟实际操作系统是类似的，因此在遍历 <code>remain</code> 表的时候应该按剩余次数从大到小遍历：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">let</span> entry <span class="keyword">of</span> <span class="built_in">Object</span>.entries(remain).sort(<span class="function">(<span class="params">p, n</span>) =&gt;</span> p[<span class="number">1</span>] &lt; n[<span class="number">1</span>])) &#123;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后判断任务是否做完可以直接查 <code>remain</code> 表看看是否各项都是 0，但可以再额外建一个变量表示实际任务运行的次数，这样每次判断就快多了。</p>
+<h2 id="623-Add-One-Row-to-Tree"><a href="#623-Add-One-Row-to-Tree" class="headerlink" title="623 Add One Row to Tree"></a>623 Add One Row to Tree</h2><p>题目大意：给一个二叉树，在第 d 层添加一行节点，每个节点的值为 v</p>
+<p>题目其实把算法都写清楚了，对所有在第 d-1 层的<strong>非空</strong>节点，都新建两个子节点，把原左子树作为新左孩子的左子树；原右子树作为新右孩子的右子树，即：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> newLeftNode, newRightNode;</span><br><span class="line"></span><br><span class="line">newLeftNode.left = node.left;</span><br><span class="line">newRightNode.right = node.right;</span><br><span class="line"></span><br><span class="line">node.left = newLeftNode;</span><br><span class="line">node.right = newRightNode;</span><br></pre></td></tr></table></figure>
+<p>因此思路就是用队列做层次遍历，到树高为 d-1 时处理一下，直接把原 root 返回，原地变换。</p>
+<p>再处理一下边界条件（d = 1 或树高+1）就可以了。</p>
+<h2 id="628-Maximum-Product-of-Three-Numbers"><a href="#628-Maximum-Product-of-Three-Numbers" class="headerlink" title="628 Maximum Product of Three Numbers"></a>628 Maximum Product of Three Numbers</h2><p>题目大意：给一个整数数组，找出三个数，乘积最大</p>
+<p>乍一看这不是有点简单吗，遍历一遍找出最大的三个数，乘一下就好了啊，然后就疯狂 WA…</p>
+<p>有各种 Corner Case 要处理..</p>
+<h3 id="结果三个数的情况"><a href="#结果三个数的情况" class="headerlink" title="结果三个数的情况"></a>结果三个数的情况</h3><p>最后选出的结果肯定是三个数，这三个数的符号只有 4 种情况：</p>
+<ol>
+<li>正正正：三个正数只要找最大的三个数相乘就行了</li>
+<li>正正负：这三个数乘积是负的，什么情况下会出现呢？考虑加入一个正数，此时数组里的情况是「正正负正」，那么三个正数的乘积必定比负数要大，不会选出「正正负」；考虑加入一个负数，此时数组里的情况是「正正负负」，那么可以通过选择「正负负」来使最终结果为正数，也不会选出「正正负」。因此选出这三种数的<strong>唯一</strong>情况是：只有三个数，这三个数的符号分别为「正正负」。</li>
+<li>正负负：乘积为正，找最大的正数和绝对值最大的两个负数就行了</li>
+<li>负负负：乘积为负，同样考虑什么情况出现。考虑加一个正数，此时「负负负正」，不会选出「负负负」；加一个负数，此时「负负负负」，负数需要找绝对值<strong>最小</strong>（也就是最大）的三个数乘积</li>
+</ol>
+<p>所以额外处理 2 和 4，其他情况结果就是 1、3 中的最大值。</p>
+<h3 id="0-的处理"><a href="#0-的处理" class="headerlink" title="0 的处理"></a>0 的处理</h3><p>这样下来还是不能 AC，对于 <code>[0, 0, 0, 4]</code> 没处理好，这里通过计算非 0 数字个数再来处理：</p>
+<ol>
+<li>3 个或以上非 0 数字，就是前面的情况</li>
+<li>3 个以下非 0 数字，结果必为 0，因为一定会选到 0</li>
+</ol>
+<p>这样就 ok 了。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-17T07:57:20.152Z" itemprop="dateUpdated">2018-04-17 15:57:20</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/LeetCode/">LeetCode</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/04/11/leetcode-idea-1/&title=《LeetCode 题解一》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/04/11/leetcode-idea-1/&title=《LeetCode 题解一》 — Random Notes&source=LeetCode 题解一。" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/04/11/leetcode-idea-1/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《LeetCode 题解一》 — Random Notes&url=https://blog.imtouch.info/2018/04/11/leetcode-idea-1/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/04/11/leetcode-idea-1/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/04/26/wechat-mpvue-log/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">使用 mpvue 开发微信小程序记录</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2018/04/02/implicit-type-conversion-in-javascript/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">JavaScript 中的隐式类型转换的规范</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/04/11/leetcode-idea-1/&title=《LeetCode 题解一》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/04/11/leetcode-idea-1/&title=《LeetCode 题解一》 — Random Notes&source=LeetCode 题解一。" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/04/11/leetcode-idea-1/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《LeetCode 题解一》 — Random Notes&url=https://blog.imtouch.info/2018/04/11/leetcode-idea-1/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/04/11/leetcode-idea-1/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMYAAADGCAAAAACs8KCBAAACNUlEQVR42u3aS3KEMAxFUfa/abIAgvs+KXTK4nqUIvxOD4Qk6zjwOi/r7pzr+eTO6VXFJUOGjG0Z53KtGeur+A9xvSd/NxkyZLyHQULh+qq7I2nwXT/39rgMGTJkgBC5Dsf94CtDhgwZKWN9vFYS/0PAlSFDxlYMUsTyq2r3+VItLkOGjA0ZPER+/+9H9jdkyJCxFaMWNPl9+ObB2VgyZMiYzeABjid86YvWAq4MGTLezOBN/PR4bWOAH5EhQ8Z7GPw4f13+6nyTIPhuyJAhYxAjbevXGmc1dpAaypAhYxyjU5qmgxHr9A4lf3dXyZAhYzQjbYR1Njs7Y2HofWTIkDGUwUvKNHXjYbeWMt5+N2TIkDGO0YlX6RAGCd88ffxQi8uQIWMQIy0s+ShGp5UWl8QyZMgYzUiLWB5eUxhPSY/08TJkyBjEeKIQJakhb/MVZ0ZkyJCxOYOUiOnGQGezoRbcZciQMZtRK1w7D0tbdUHBLEOGjNEM3pqvrdogbJo4ypAhYzaDtMnSIVR+h1qr7heMDBkyXsbgKVoaHGttNfQxkCFDxmsYPEFM8bUGXFBCy5AhYyjjDBdPB/mmAm/JfWiuyZAhYyijsyXZb7qlXwZeEsuQIWMeIw2yne2EftIZz3fIkCFjECMNfOvylaSM/SJWhgwZMlJGOqhR+zkeD7gyZMgYzSB340NgPH2UIUPGexh8LCwd2yLnkzGyP2u3yZAhY0NGa1IDt/LJfx/f1JQhQ8Z+jB8tLSy6Q/eMdwAAAABJRU5ErkJggg==" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    <title>激坑！Angular 使用 Http 模块和 FormData 上传文件 | Random Notes | 来啊，快活啊......</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Angular,FormData">
+    <meta name="description" content="最近遇见一个常见的需求，便是上传 Excel 文件到后端进行解析。这种东西做得多了，对前端来说无非就是上传个文件，解析的逻辑我又不管的，easy job 啦~">
+<meta name="keywords" content="Angular,FormData">
+<meta property="og:type" content="article">
+<meta property="og:title" content="激坑！Angular 使用 Http 模块和 FormData 上传文件">
+<meta property="og:url" content="https://blog.imtouch.info/2018/01/02/angular-formdata-upload-bug/index.html">
+<meta property="og:site_name" content="Random Notes">
+<meta property="og:description" content="最近遇见一个常见的需求，便是上传 Excel 文件到后端进行解析。这种东西做得多了，对前端来说无非就是上传个文件，解析的逻辑我又不管的，easy job 啦~">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://blog.imtouch.info/2018/01/02/angular-formdata-upload-bug/caniuse-formdata.png">
+<meta property="og:image" content="https://blog.imtouch.info/2018/01/02/angular-formdata-upload-bug/postman-result.png">
+<meta property="og:updated_time" content="2018-04-04T15:05:07.560Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="激坑！Angular 使用 Http 模块和 FormData 上传文件">
+<meta name="twitter:description" content="最近遇见一个常见的需求，便是上传 Excel 文件到后端进行解析。这种东西做得多了，对前端来说无非就是上传个文件，解析的逻辑我又不管的，easy job 啦~">
+<meta name="twitter:image" content="https://blog.imtouch.info/2018/01/02/angular-formdata-upload-bug/caniuse-formdata.png">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="/css/style.css?v=1.7.1">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+</head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu"  >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.png)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ryancui-</h5>
+          <a href="mailto:cuizhaowei92@gmail.com" title="cuizhaowei92@gmail.com" class="mail">cuizhaowei92@gmail.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                归档
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                标签
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                分类
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/about"  >
+                <i class="icon icon-lg icon-rocket"></i>
+                看我
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/ryancui-" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">激坑！Angular 使用 Http 模块和 FormData 上传文件</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">激坑！Angular 使用 Http 模块和 FormData 上传文件</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2018-01-02T01:48:40.000Z" itemprop="datePublished" class="page-time">
+  2018-01-02
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+
+<article id="post-angular-formdata-upload-bug"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">激坑！Angular 使用 Http 模块和 FormData 上传文件</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2018-01-02 09:48:40" datetime="2018-01-02T01:48:40.000Z"  itemprop="datePublished">2018-01-02</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/">技术</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/技术/前端/">前端</a></li></ul></li></ul>
+
+
+
+            
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <p>最近遇见一个常见的需求，便是上传 Excel 文件到后端进行解析。这种东西做得多了，对前端来说无非就是上传个文件，解析的逻辑我又不管的，easy job 啦~</p>
+<a id="more"></a>
+<p>对于现代浏览器来说，通过 <code>FormData</code> 进行文件上传已经是很通用的做法了，再也不需要使用像构造 form 元素这种方法去做浏览器兼容。可以看到 <code>FormData</code> 的兼容性还是可以的。</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="caniuse-formdata.png" alt="CanIUse - FormData" title="">
+                </div>
+                <div class="image-caption">CanIUse - FormData</div>
+            </figure>
+<p>由于正在使用 Angular，于是直接用自带的 HTTP 服务上传文件吧</p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> file = event.target.files[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> formData = <span class="keyword">new</span> FormData();</span><br><span class="line">formData.append(<span class="string">'file'</span>, file);</span><br><span class="line"></span><br><span class="line"><span class="keyword">this</span>.http.request(url, <span class="keyword">new</span> RequestOptions(&#123;</span><br><span class="line">  method: RequestMethod.Post,</span><br><span class="line">  body: formData,</span><br><span class="line">  headers: <span class="keyword">new</span> Headers(&#123;</span><br><span class="line">    <span class="string">'Authorization'</span>: <span class="string">`Bearer <span class="subst">$&#123;token&#125;</span>`</span></span><br><span class="line">    <span class="string">'Content-Type'</span>: <span class="string">'multipart/form-data'</span></span><br><span class="line">  &#125;)</span><br><span class="line">&#125;));</span><br></pre></td></tr></table></figure>
+<p>一切都很美好，但后端哥哥反手就丢来一个报错：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">HTTP Status 400 - Required MultipartFile parameter &apos;file&apos; is not present</span><br></pre></td></tr></table></figure>
+<p>纳尼！我去看了下 Chrome dev tool，卧槽文件不见了。为了把锅分得清清楚楚明明白白，快使用 Postman！</p>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="postman-result.png" alt="请求正确返回" title="">
+                </div>
+                <div class="image-caption">请求正确返回</div>
+            </figure>
+<p>万念俱灰啊！！！！！！</p>
+<p>于是只能不停地 Google，终于找到了这个：</p>
+<p><a href="https://github.com/angular/angular/issues/13241" target="_blank" rel="noopener">Form data is empty when calling http.post() with ContentType header</a></p>
+<p>纳尼！这个 http 模块有 bug！FormData 不能传文件，所以后端拿不到值。</p>
+<p>换成最原始的 <code>XMLHttpRequest</code></p>
+<figure class="highlight typescript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> xhr = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line">xhr.open(<span class="string">'POST'</span>, url);</span><br><span class="line">xhr.setRequestHeader(<span class="string">'Authorization'</span>, <span class="string">`Bearer <span class="subst">$&#123;token&#125;</span>`</span>);</span><br><span class="line">xhr.send(body);</span><br><span class="line">xhr.onload = <span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (xhr.status === <span class="number">200</span>) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(xhr.response);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>就没有问题了，一切正常。</p>
+<p>那个 Issue 的状态是 Closed, 目测可能在 5+ 修复了？我这里的环境是 Angular 4.4.4，无论是使用 <code>HttpModule</code> 还是 <code>HttpClientModule</code> 进行 <code>FormData</code> 的文件上传，后端均拿不到值。</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2018-04-04T15:05:07.560Z" itemprop="dateUpdated">2018-04-04 23:05:07</time>
+</span><br>
+
+
+        
+        欢迎留言交流，或到 <a href="https://github.com/ryancui-/ryancui-blog" target="_blank">这里</a> 开 Issue 进行讨论，谢谢~
+        
+    </div>
+    <footer>
+        <a href="https://blog.imtouch.info">
+            <img src="/img/avatar.jpg" alt="ryancui-">
+            ryancui-
+        </a>
+    </footer>
+</blockquote>
+
+        
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Angular/">Angular</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/FormData/">FormData</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/01/02/angular-formdata-upload-bug/&title=《激坑！Angular 使用 Http 模块和 FormData 上传文件》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/01/02/angular-formdata-upload-bug/&title=《激坑！Angular 使用 Http 模块和 FormData 上传文件》 — Random Notes&source=最近遇见一个常见的需求，便是上传 Excel 文件到后端进行解析。这种东西做得多了，对前端来说无非就是上传个文件，解析的逻辑我又不管的，easy job 啦~" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/01/02/angular-formdata-upload-bug/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《激坑！Angular 使用 Http 模块和 FormData 上传文件》 — Random Notes&url=https://blog.imtouch.info/2018/01/02/angular-formdata-upload-bug/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/01/02/angular-formdata-upload-bug/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2018/01/09/mac-clear-osxkeychain/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Mac 上清除 git osxkeychain 保存的登录名密码</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/12/06/server-configurate/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">服务器由零配置</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "tUULPv1qN1rw8tVm4aGEr6MB-gzGzoHsz",
+            appKey: "u3e4Eifoq20Y7CYHbgj8rTnT",
+            avatar: "mm",
+            placeholder: "欢迎讨论与交流。",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+</article>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+
+        <p>
+            
+            <span>博客内容遵循 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ryancui- &copy; 2017 - 2019</span>
+            <span>
+                
+                <a href="http://www.miitbeian.gov.cn/" target="_blank">粤ICP备16017001号</a><br>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://blog.imtouch.info/2018/01/02/angular-formdata-upload-bug/&title=《激坑！Angular 使用 Http 模块和 FormData 上传文件》 — Random Notes&pic=https://blog.imtouch.info/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://blog.imtouch.info/2018/01/02/angular-formdata-upload-bug/&title=《激坑！Angular 使用 Http 模块和 FormData 上传文件》 — Random Notes&source=最近遇见一个常见的需求，便是上传 Excel 文件到后端进行解析。这种东西做得多了，对前端来说无非就是上传个文件，解析的逻辑我又不管的，easy job 啦~" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://blog.imtouch.info/2018/01/02/angular-formdata-upload-bug/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《激坑！Angular 使用 Http 模块和 FormData 上传文件》 — Random Notes&url=https://blog.imtouch.info/2018/01/02/angular-formdata-upload-bug/&via=https://blog.imtouch.info" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://blog.imtouch.info/2018/01/02/angular-formdata-upload-bug/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAN4AAADeCAAAAAB3DOFrAAACuElEQVR42u3aQW4bMRAEQP//0w6QqyOpe4aUFaB4EuTdFYuHHbqHX1/x+P47Hn3z8/PP8fPeR3+dXbkaeHh4eKOpP59W/n0yiXax8kX8x6/j4eHhXeM9n8Tza2YTev7k2V14eHh4n8ZLMO1itdtrPDw8vP+dl8DyEpLHFnh4eHifwEvCiDZcyKOKdg5XshY8PDy87vlFA+wTPl/s7+Hh4eEtuur5mEUPpw4lPJwVHh4e3gXeLHRIAotZmcmPKeSLhYeHh3eW1wajs6NX7RTzDfSLa/Dw8PAu8DaRRN7oylOC9gmH8xg8PDy8ktc273P82SAjKTAvunx4eHh4C96+6Z5siJNDWvnGvYhC8PDw8K7x8huKOrPYduff4+Hh4f0uL48PZhvf2RK04W+dUuPh4eEteEmIMAMn0W0eXiR34eHh4b2TtykP+8LTNreiZBoPDw/vAi/vlbVHB2aHsTaHZfHw8PDew9tsr9vIoG1oteHvgRgXDw8PbxRG5AVjdk177GBWWvDw8PBu8KIGfNnsz0tFfldbSPDw8PDew8vb8+3hgE2oMSsYdZXDw8PDW/PyZlX7Km/LQ96KK7JqPDw8vEO8oiUf/9gsIG4Xt/iPAQ8PD2/Ny5tV+UZ5f1cOLs6U4eHh4V3gzZpPLXL2zGS2RcXDw8PDW/DqV208iVnJSZ7ZLgoeHh7eWV7b4poFFu12uW2VvQgj8PDw8I7y2gZ//sqeHaLKQ436ejw8PLxDvO9y5C/9/ZWz+OPhlhoPDw/vEC8fbaNr/6JvP+Ph4eG9kzfbFicBbh7Fni0MRfXDw8PDW/D2xSBZjlO/VSwcHh4e3gfwnheJPNSY7e6vFwY8PDy8o7x8a5u30JIG26pthoeHh3eNt2n/z45kJcvXLsSxrAUPDw9v3QbLC0MeFszYpyIMPDw8vBHvD0vz5CmQWCqvAAAAAElFTkSuQmCC" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: false };
+
+
+</script>
+
+<script src="/js/main.min.js?v=1.7.1"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="/js/search.min.js?v=1.7.1" async></script>
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
